@@ -20,9 +20,55 @@
 \tableofcontents
 
 \chapter{Uvod}
-Uvod rada. Nakon uvoda dolaze poglavlja u kojima se obrađuje tema.
+
+U redovnoj nastavi Fakulteta elektrotehnike i računarstva studenti se nerijetko susreću sa zadaćama čija je rješenja potrebno ostvariti pisanjem programa u odgovarajućim programskim jezicima. Ručno vrednovanje takvih rješenja bio bi dug i težak posao te se zato u sklopu određenih kolegija za vrednovanje rješenja koriste automatizirani sustavi.
+
+Princip rada takvih sustava je jednostavan - svaki student svoje rješenje piše po specifikaciji koja zahtijeva da program sa standardnog ulaza učita ulazne podatke te na standardni izlaz ispiše rješenje izvođenja u nekom strukturiranom zapisu. Sve što sustav za evaluaciju mora poznavati da bi dobro odradio svoj posao je jedan ili više parova ulaza i očekivanog izlaza. Algoritam sustava za izvršavanje može se zatim svesti na slijedeće:
+
+\begin{enumerate}
+\item Prevedi izvorni kod u izvršni oblik
+\item Pokreni program
+\item Na standardni ulaz programa proslijedi ulazne podatke
+\item Čekaj kraj programa
+\item Sakupi izlaz programa
+\item Usporedi dobiveni izlaz sa očekivanim i javi rezultat
+\end{enumerate}
+
+Iako se taj posao na prvi pogled čini jednostavnim, iza navedenih koraka skriva se mnogo izazova od kojih su neki:
+
+\begin{enumerate}
+\item Kako prevesti kod u izvršni oblik?
+	\begin{itemize}
+	\item Koje programske jezike i okruženja podržati?
+	\item Koje inačice programskih jezika i okruženja podržati?
+	\item Kako ostvariti podršku za više sličnih izvršnih okolina na jednom sustavu?
+	\item Što ako se program ne uspije uspješno prevesti?
+	\end{itemize}
+\item Kako sigurno i uspješno izvršiti program?
+	\begin{itemize}
+	\item Što ako program sadrži grešku i neće nikada završiti?
+	\item Što ako je program maliciozan i pokuša naškoditi izvršnoj okolini?
+	\end{itemize}
+\item Kako vrednovati dodatna svojstva rješenja?
+	\begin{itemize}
+	\item Možemo li prihvatiti samo rješenja koja izvršavanje završe u određenom vremenu?
+	\item Možemo li prihvatiti samo rješenja koja koriste određenu količinu memorije?
+	\end{itemize}
+\end{enumerate}
+
+Uz sve to, sustav za vrednovanje također mora biti efikasan. Primjera radi, ako kolegij upiše 600 studenata, od čega ih 500 preda rješenje laboratorijske vježbe te ako se vrednovanje te vježbe sastoji od 20 testnih primjera koji se u prosjeki svaki izvršava pet sekundi, za evaluaciju laboratorijske vježbe biti će potrebno 500*20*5 = 50.000 sekundi ili otprilike 14 sati, ako ispitivanje provodimo jedan po jedan primjer.
+
+Idealan sustav za vrednovanje rješenja trebao bi biti brz, efikasan, siguran i lak za korištenje. U nastavku ćemo prvo promotriti par postojećih rješenja, a zatim opisati implementaciju vlastitog sustava temeljenog na tehnologiji {\textit{Docker}}. Ostvareni sustav temeljen je na svojstvu razmjernog rasta kako bi se izvršavanje moglo rasporediti na neograničen broj nezavisnih sustava. Također nudi i fleksibilnost po pitanju izvršnih okolina koje su podržane te je jednostavan za postaviti i koristiti.
+
+% TODO neki hook zašto je ostvareni sustav kul
 
 \chapter{Postojeći sustavi}
+
+\section{SPRUT}
+
+\section{CodeAssign}
+
+\section{Judge0}
 
 \chapter{Korištene tehnologije}
 
