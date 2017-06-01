@@ -70,9 +70,34 @@ Idealan sustav za vrednovanje rješenja trebao bi biti brz, efikasan, siguran i 
 
 \section{Judge0}
 
-\chapter{Korištene tehnologije}
-
 \chapter{Sustav za sigurno i učinkovito udaljeno izvođenje studentskih programskih vježbi}
+
+\section{Korištene tehnologije}
+
+Prije samog opisa ostvarenja sustava dajemo kratak pregled korištenih tehnologija kako bi olakšali praćenje i razumijevanje samog postupka implementacije.
+
+\subsection{Docker}
+
+Veoma pojednostavljeno, Docker je tehnologija koja nam omogućava da u jednu crnu kutiju, osim samih izvršnih datoteka, također upakiramo i cijelu okolinu (\textit{userspace operativnog sustava}) u kojoj se naš program izvršava. Posljedica toga je da, ako želimo pokrenuti program X na svome računalu ili poslužitelju (gdje X može biti jednostavna \textit{hello-world} aplikacija ili složeni mrežni sustav), ne moramo brinuti o tome u kojem je jeziku taj program pisan te koje sve ovisnosti i preduvjete moramo zadovoljiti prije pokretanja. Docker nam omogućava da svaki program apstrahiramo na crnu kutiju sa jasno definiranim ulazima i izlazima.
+
+Docker sve više raste u popularnosti te je za očekivati da će postati \textit{de facto} standard za postavljanje i pokretanje programa i web usluga. Unutar svog projekta ga koristimo iz istog razloga - svi mikroservisi nude svoje Docker slike kako bi se cijeli sustav jednostavnije mogao postaviti i pokrenuti. No, također ga koristimo i za pojednostavljenu izgradnju i izvršavanje studentskih rješenja, o čemu će više riječi biti kasnije.
+
+\subsection{Spring}
+
+Naš sustav ostvarili smo u obliku više nezavisnih mikroservisa kako bi osigurali mogućnost razmjernog rasta. Mikroservise smo ostvarili u programskom okviru Spring jer je autor imao prijašnjeg iskustva s istim, a on nam je omogućio brz razvoj mikroservisa povezanih protokolom HTTP te brzu i jednostavnu implementaciju komunikacije s bazom podataka.
+
+\subsection{Kotlin}
+
+Kotlin je programski jezik koji se nedavno pojavio te je uzeo velikog maha u zajednici osoba koje razvijaju za platformu Android. Radi se o modernom programskom jeziku koji se (među ostalim) prevodi u Java bytekod te nudi potpunu interoperabilnost sa postojećim JVM tehnologijama.
+
+Od prednosti nad programskim jezikom Java istaknuti ćemo sigurniji i bolji sustav tipova, jednostavniju i izražajniju sintaksu te bolju podršku za određene konstrukte funkcijskog programiranja.
+
+Kotlin smo koristili za izradu svih mikroservisa i pomoćnih biblioteka. 
+
+\subsection{H2}
+
+Kako u nekom trenutku moramo spremiti rezultate vrednovanja, odlučili smo ih spremiti u relacijsku bazu podataka. Za tu komponentu smo odabrali bazu H2 jer korišteni programski okvir Spring Data ima odličnu podršku za istu. Također, H2 može svoje podatke spremati u običnu datoteku na datotečnom sustavu što nam pojednostavljuje proces postavljanja i održavanja baze podataka.
+
 
 \section{Logička arhitektura}
 
