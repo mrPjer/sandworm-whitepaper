@@ -1,5 +1,5 @@
 \documentclass[times, utf8, zavrsni]{fer}
-\usepackage{booktabs,appendix}
+\usepackage{booktabs,appendix,listings}
 
 \begin{document}
 
@@ -98,10 +98,59 @@ Kotlin smo koristili za izradu svih mikroservisa i pomoćnih biblioteka.
 
 Kako u nekom trenutku moramo spremiti rezultate vrednovanja, odlučili smo ih spremiti u relacijsku bazu podataka. Za tu komponentu smo odabrali bazu H2 jer korišteni programski okvir Spring Data ima odličnu podršku za istu. Također, H2 može svoje podatke spremati u običnu datoteku na datotečnom sustavu što nam pojednostavljuje proces postavljanja i održavanja baze podataka.
 
+\section{Idejno ostvarenje}
+
+Prije opisivanja ideje ostvarenja, podsjetimo se što očekujemo od sustava kojeg želimo napraviti, ali i koristiti:
+
+\begin{enumerate}
+\item
+\end{enumerate}
+
+Glavni alat na kojem ćemo bazirati svoje rješenje jesu izvršne Docker slike. Naime, Docker nam omogućava da bilo koji program upakiramo, zajedno s njegovom izvršnom okolinom, u crnu kutiju koju zatim možemo izvršiti poput izvršne datoteke. Sve što nam je pritom potrebno je Docker okolina te ne ovisimo o implementacijskim detaljima programa kojeg izvršavamo. Izvršne Docker slike možemo pojednostavljeno smatrati kako statično povezivanje na steroidima - u kutiji uz program dolazi i cijeli \textit{userspace} operativnog sustava nad kojim će se program izvršiti.
+
+Iduća veoma korisna činjenica je ta da u samu Docker sliku možemo \textit{upeći} ulazne podatke koje će program primiti. Tako ćemo dobiti izvršnu Docker sliku koja će za deterministički program uvijek davati jednak izlaz, neovisno o tome gdje je pokrenuta, a možemo ju pokrenuti bilo gdje gdje imamo pristup Dockeru.
+
+Prije nego što možemo rješenje izvršiti, moramo prilikom generiranja Docker slike ponuditi ili izvršnu okolinu za interpretirane jezike ili prevedene datoteke za jezike koji se prevode. Ovaj korak je individualan za svaki jezik, a detalje ćemo ponuditi nešto kasnije.
+
+Zadnja stvar koja će nas zanimati je kako je tekao proces prevođenja i izvršavanja samog programa te koji je njegov konačni ispis. Prilikom izvršavanja izvršne Docker slike, standardni izlaz programa biti će vidljiv na ekranu. No, kako bi mogli automatizirati evaluaciju te obrađivati izlaz, morat ćemo ga proslijediti na udaljenu lokaciju. To možemo ostvariti na način da prilikom izvršavanja sam program omotamo u drugi program koji će uhvatiti njegov izlaz i proslijediti ga na odgovarajuću lokaciju. No, kako želimo zadržati fleksibilnost, cilj nam je udaljenu lokaciju na koju će se slati informacije o izvršavanju na neki način parametrizirati. Izvršne Docker slike nam i to omogućuju te možemo prilikom izvršavanja slike također predati i dodatne argumente, što ćemo iskoristiti za parametriziranje udaljene lokacije na koju će se slati informacije o izvršavanju.
+
+Uzimanjem svega navedenog u obzir, koristeći izvršne Docker slike možemo dobiti \textit{nešto} koje će svojim pokretanjem rezultate izvršavanja programa poslati na neku udaljenu lokaciju. Idealni poziv takve slike bio bi:
+
+\begin{lstlisting}
+./nesto https://mojaudaljenalokacija
+\end{lstlisting}
+
+dok će u stvarnosti izgledati ovako:
+
+\begin{lstlisting}[language=Bash]
+docker run --rm -it \
+	sandworm/images/test_image/compiled/hello_petar \
+	https://sandworm-logger/neki-tag
+\end{lstlisting}
+
+Rezultat ovog pristupa je taj da nam nije bitno gdje se izvršavanje događa te kamo se usmjerava rezultat izvršavanja. To nam omogućava da veoma lako ostvarimo svojstvo razmjernog rasta - radilica koje će izvršavati programe možemo imati proizvoljno mnogo, a isto to možemo napraviti i sa servisima koji će skupljati informacije o izvršavanju. Ono što će nam još trebati je servis ili alat koji će se brinuti o zakazivanju izvršavanja - na kojoj će se radilici izvesti koja slika te kamo će ona proslijediti rezultat izvođenja.
+
+Konačno, cijeli proces vrednovanja možemo opisati slijedećim koracima:
+
+\begin{enumerate}
+\item Za svaki par (program, ulazna definicija) generirati izvršnu Docker sliku sa potpuno fiksiranim kontekstom izvršavanja
+\item Pokrenuti sliku na radilici sa Docker podrškom
+\item Pokupiti informacije o izvršavanju i vrednovati rezultat
+\end{enumerate}
 
 \section{Logička arhitektura}
 
 \section{Ostvarenje}
+
+\subsection{Bazne slike s izvršnim okolinama za pojedine jezike}
+
+\subsection{Alat za pakiranje rješenja i ulaznih definicija u izvršne Docker slike}
+
+\subsection{Praćenje i dijeljenje rezultata izvođenja}
+
+\subsection{Servis za prikupljanje i skladištenje rezultata}
+
+\subsection{Servis za zakazivanje izvođenja i upravljanje radilicama}
 
 \chapter{Vrednovanje}
 
