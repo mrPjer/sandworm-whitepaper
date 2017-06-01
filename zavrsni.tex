@@ -103,7 +103,10 @@ Kako u nekom trenutku moramo spremiti rezultate vrednovanja, odlučili smo ih sp
 Prije opisivanja ideje ostvarenja, podsjetimo se što očekujemo od sustava kojeg želimo napraviti, ali i koristiti:
 
 \begin{enumerate}
-\item
+\item Sigurnost
+\item Mogućnost razmjernog rasta (\textit{skalabilnost})
+\item Efikasnost
+\item Jednostavnost korištenja
 \end{enumerate}
 
 Glavni alat na kojem ćemo bazirati svoje rješenje jesu izvršne Docker slike. Naime, Docker nam omogućava da bilo koji program upakiramo, zajedno s njegovom izvršnom okolinom, u crnu kutiju koju zatim možemo izvršiti poput izvršne datoteke. Sve što nam je pritom potrebno je Docker okolina te ne ovisimo o implementacijskim detaljima programa kojeg izvršavamo. Izvršne Docker slike možemo pojednostavljeno smatrati kako statično povezivanje na steroidima - u kutiji uz program dolazi i cijeli \textit{userspace} operativnog sustava nad kojim će se program izvršiti.
@@ -134,9 +137,11 @@ Konačno, cijeli proces vrednovanja možemo opisati slijedećim koracima:
 
 \begin{enumerate}
 \item Za svaki par (program, ulazna definicija) generirati izvršnu Docker sliku sa potpuno fiksiranim kontekstom izvršavanja
-\item Pokrenuti sliku na radilici sa Docker podrškom
-\item Pokupiti informacije o izvršavanju i vrednovati rezultat
+\item Pokrenuti sliku na nekoj radilici sa Docker podrškom
+\item Preuzeti rezultate izvršavanja sa nekog servisa za praćenje izvršavanja
 \end{enumerate}
+
+Konkretan sustav implementiran je kao skup nezavisnih alata i mikroservisa koji obavljaju gorenavedene zadaće, a biti će opisani u nastavku.
 
 \section{Logička arhitektura}
 
