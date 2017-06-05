@@ -1,5 +1,5 @@
 \documentclass[times, utf8, zavrsni]{fer}
-\usepackage{booktabs,appendix,listings}
+\usepackage{booktabs,appendix,listings,hyperref}
 
 \begin{document}
 
@@ -161,11 +161,53 @@ Konkretan sustav implementiran je kao skup nezavisnih alata i mikroservisa koji 
 
 \chapter{Daljnje dorade}
 
+U nastavku iznosimo ideje za koje smatramo da bi bilo korisno razmotriti i implementirati kao proširenja postojećeg sustava.
+
 \section{Vrednovanje ispisa programa}
+
+Jedna od motivacija izgradnje ovog sustava bila je mogućnost zamjene SPRUT-a kao evaluacijskog mehanizma u kontekstu studentskih laboratorijskih vježbi.
+
+Sustav koji smo napravili trenutno podržava samo izvršavanje programa, ali ne i evaluaciju. Točnije, s trenutnim ostvarenjem nismo u mogućnosti automatizirano vrednovati rezultat izvođenja programskog rješenja.
+
+Uzevši u obzir trenutnu arhitekturu sustava, vrednovanje ispisa moguće je ostvariti povlačenjem ispisa programa sa servisa za prikupljanje i skladištenje rezultata, filtriranje istih po oznaci stdout te uspoređivanje dobivenog sa očekivanim izlazom. Sam ispis možemo dohvatiti na temelju oznake koju dobijemo prilikom zakazivanja izvršavanja programa.
+
+Dodatno, osim standardnog izlaza, ništa nas ne sprječava da program vrednujemo i po drugim zapisima - recimo, na temelju zapisa možemo odrediti i je li bilo grešaka prilikom prevođenja te vrijeme koje je programu bilo potrebno da bi se izvršio.
+
+Ukratko, trenutni sustav bilježi mnogo informacija na temelju kojih se može vrednovati ponašanje programa. Za izvedbu vrednovanja dovoljno je zakazati izvršavanje programa i zatim kasnije preuzeti informacije dostupne u servisu za prikupljanje i skladištenje rezultata.
 
 \section{Unošenje izvršnih ograničenja}
 
-\section{Korištenje Platforma-kao-Servis sustava za automatsko provizioniranje radilica}
+Sustav trenutno nema podršku za definiranje izvršnih ograničenja (eng. {\textit{runtime constraints}}).
+
+Izvršna ograničenja su nam korisna jer s njima možemo dodatno ograničiti izvođenje zadajući recimo najviše dozvoljeno vrijeme izvođenja, najviše dozvoljenu količinu iskorištene memorije ili najviše dozvoljen broj pokrenutih dretvi.
+
+Izvršna ograničenja u postojećem sustavu mogu se ostvariti omatanjem skripte {\textit{runner.sh}} alatom {\textit{isolate}}\footnote{\url{https://github.com/ioi/isolate}}. {\textit{Isolate}} nam omogućava definiranje raznih izvršnih ograničenja nad bilo kojim programom pa tako i programima koje izvršavamo u sklopu našeg sustava.
+
+Za izvršna ograničenja je bitno napomenuti da primjena istih ovisi o okolini u kojoj se program izvršava. Primjerice, naivna implementacija ograničenja ukupne memorije bi ograničila količinu memorije koju proces može zauzeti i ubila ga ako on istu prijeđe. No, tehnologije zasnovane na sakupljačima smeća često ne pokreću proces oslobađanja memorije dok sami ne zaključe da je to potrebno.
+
+Primjerice, ako značajno ograničimo količinu memorije za proces koji izvršava kod pisan u programskom jeziku Java, a pritom ne obavijestimo virtualni stroj o ograničenjima (za JVM to možemo napraviti zastavicom {\textit{Xmx}}) isti nikad neće pokrenuti proces sakupljanja smeća te će program brzo nasilno završiti, iako je pisani program ispravan te ne bi zauzeo previše memorije ako bi se proces sakupljanja smeća na vrijeme pokrenuo.
+
+Uz samu podršku za zadavanje izvršnih ograničenja korisno bi bilo dodati i mogućnost definiranja istih kao dio ulazne definicije programa. Primjerice, jedna datoteka {\textit{constraints.yml}} pisana u formatu YAML\footnote{\url{https://en.wikipedia.org/wiki/YAML}} mogla bi sadržavati lako čitljivu definiciju svih ograničenja.Tu datoteku bi zatim upekli u sliku te pomoću nje prilikom pokretanja konstruirali parametre za poziv alata {\textit{isolate}}. Dodatno, na temelju nje bi morali izgraditi i podršku za ograničenja za pojedine tehnologije izvršavanja u njihovim odgovarajućim slikama kako bi izbjegli probleme poput onog sa sakupljanjem smeća navedenog prije.
+
+
+\section{Korištenje Infrastruktura-kao-Usluga sustava za automatsko provizioniranje radilica}
+
+Sustav koji smo opisali trenutno se oslanja na predefiniran set radilica zapisanih unutar servisa za zakazivanje izvođenja i upravljanje radilicama. Posljedica je da, neovisno o količini programa koje trebamo evaluirati u danom trenutku radilice uvijek moraju biti spremne i pokrenute.
+
+Predviđeno opterećenje sustava u akademskim uvjetima je skokovito - postojat će dugi periodi kada se sustav neće koristiti te kratki periodi kada će biti potrebno vrednovati velik broj studentskih rješenja.
+
+Kako će radilice biti potrebne samo kratko vrijeme, predlažemo da se sustav za upravljanje radilicama doradi na način da ih automatski provizionira kada je to potrebno te ugasi kada više nisu potrebne. Primjerice, ako imamo fizičke strojeve koje koristimo kao radilice, sustav za upravljanje može koristiti tehnologiju {\textit{Wake-on-LAN}}{\footnote{\url{https://en.wikipedia.org/wiki/Wake-on-LAN}} kako bi strojeve palio i gasio po potrebi i tako uštedio na troškovima energije.
+
+		  No, kako je posljedica naše arhitekture ta da nam uistinu nije bitno na čemu izvršavamo programe dokle god to nešto ima podršku za Docker, možemo se također osloniti i na Infrastruktura-kao-Usluga (eng. {\textit{Infrastructure-as-a-Service}}{\footnote{{\url{https://en.wikipedia.org/wiki/Cloud_computing}}}} sustave za automatsko provizioniranje radilica kada nam trebaju te gašenje istih kada nam ne trebaju. Ovim pristupom možemo ostvariti višu paralelizaciju izvođenja te smanjiti troškove jer takve usluge nude naplaćivanje po satu, što odgovara našim potrebama.
+
+Tako bi mogli imati samo jedan fizički stroj lokalno koji bi brinuo o zaprimanju zahtjeva, dok bi sav težak posao mogli odraditi na dinamički provizioniranim radilicama.
+
+Odabir ponuđača IaaS usluga ovisi ponajprije o cijeni te potrebama hardvera koji se zakupuje. Ponuđače koje ćemo spomenuti su {\textit{DigitalOcean}}{\footnote{\url{https://www.digitalocean.com/}}}, {\textit{Amazon Web Services}}{\footnote{\url{https://aws.amazon.com/}}}, {\textit{Microsoft Azure}}{\footnote{\url{https://azure.microsoft.com/}}} te {\textit{Google Cloud Platform}}{\footnote{\url{https://cloud.google.com/}}}. DigitalOcean, primjerice, nudi provizioniranje sustava unutar 55 sekundi što je prihvatljivo vrijeme čekanja u odnosu na trajanje cijelog procesa vrednovanja.
+
+Za ostvarenje ove ideje bilo bi potrebno prilagoditi sustav za zakazivanje izvođenja i upravljanje radilicama na način da, umjesto unaprijed definiranog niza radilica, koristeći programska sučelja odgovarajućeg ponuđača usluga kreira i uništava radilice po potrebi. Konkretno, za ponuđača usluga DigitalOcean možemo iskoristiti biblioteku {\textit{digitalocean-api-java}}{\footnote{\url{https://github.com/jeevatkm/digitalocean-api-java}}}.
+
+Po pitanju cijenje i paralelizacije koju ovim pristupom možemo ostvariti, DigitalOcean u trenutku pisanja u svojoj ponudi, među ostalim, nudi i virtualne strojeve sa 512MB RAM, 20GB prostora za podatke te jednom virtualnom jezgrom što bi trebalo biti dovoljno za izvođenje studentskih vježbi. Cijena korištenja je \$0.007 po satu{\footnote{\url{https://www.digitalocean.com/pricing/}}} ili ugrubo 5 lipa po satu. Tako za trošak od kune po satu možemo pokrenuti ugrubo dvadeset strojeva koji će paralelno izvršavati i vrednovati studentske programe, što je i više nego prihvatljivo za naše potrebe.
+
 
 \chapter{Zaključak}
 Zaključak.
