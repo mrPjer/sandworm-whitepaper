@@ -209,6 +209,7 @@ Na idućih nekoliko strana opisat ćemo konkretno ostvarenje sustava. Projekt je
 \item {\textit{sandworm-packer}} - biblioteka i komandnolinijski alat za pakiranje ulaznih definicija u izvršne Docker slike
 \item {\textit{sandworm-packer-web}} - web usluga za pristup funkcionalnosti alata za pakiranje
 \item {\textit{sandworm-scheduler}} - usluga za zakazivanje izvođenja i upravljanje radilicama
+\item {\textit{sandworm-logger}} - usluga za prikupljanje i skladištenje rezultata
 \item {\textit{sandworm-whitepaper}} - izvorne datoteke ovog rada
 \end{enumerate}
 
@@ -367,7 +368,140 @@ Skripta osigurava postojanje datoteke {\textit{stdin}} te zatim poziva {\textit{
 
 Za detaljan opis kako preusmjeravanja tokova u navedenoj skripti rade preporučamo pogledati komentar{\footnote{\url{https://stackoverflow.com/a/31151808/576809}}} na usluzi StackOverflow kojim smo se poslužili prilikom izrade skripte.
 
-\subsection{Servis za prikupljanje i skladištenje rezultata}
+\subsection{Usluga za prikupljanje i skladištenje rezultata}
+
+Drugi dio postpuka praćenja izvođenja je mrežna usluga koja će prihvaćati informacije o izvođenju, skladištiti ih te omogućiti dohvat istih. U tu svrhu ostvarili smo mikroservis naziva {\textit{sandworm-logger} koji preko HTTP programskog sučelja nudi upravo potrebnu funkcionalnost.
+
+Sustav je implementiran u programskom okviru Spring sa bibliotekama Spring Boot i Spring Data, dok same podatke sprema u relacijsku bazu podataka H2.
+
+Samo ostvarenje usluge je uz potporu programskog okvira bilo jednostavno.
+
+Prvo smo definirali model podataka koje ćemo spremati u bazu podataka:
+
+\begin{lstlisting}
+package hr.fer.zemris.sandworm.logger.model
+
+import java.time.LocalDateTime
+import javax.persistence.Entity
+import javax.persistence.GeneratedValue
+import javax.persistence.Id
+
+@Entity
+data class Message(
+        @Id
+        @GeneratedValue
+        var id: Long?,
+
+        var taskId: String,
+        var tag: String,
+        var content: String,
+        var timestamp: LocalDateTime,
+        var receivedAt: LocalDateTime
+) {
+    constructor() : this(
+	 	null,
+		"",
+		"",
+		"",
+		LocalDateTime.MIN,
+		LocalDateTime.MIN
+	)
+}
+\end{lstlisting}
+
+Kao jezik pisanja servisa odabrali smo Kotlin i na ovom primjeru je već vidljiva ekspresivnost jezika i prednost nad Javom. Kotlinov {\textit{Data Class}}{\footnote{\url{https://kotlinlang.org/docs/reference/data-classes.html}}} konstrukt nam omogućuje da deklarativno opišemo entitet koji želimo, dok će se sam jezik pobrinuti za implementacije gettera, settera, metoda {\textit{equals}}, {\textit{hashCode}} i {\textit{toString}}. Također je vidljiva i interoperabilnost sa postojećim alatima - model smo anotirali sa {\textit{javax.persistence.*}} anotacijama koje možemo koristiti zbog Kotlinove potpune podrške za postojeći Java kod.
+
+
+Nakon definicije modela definirali smo jednostavan CRUD{\footnote{CRUD - {\textit{Create, Read, Update, Delete}}}} repozitorij:
+
+\begin{lstlisting}
+package hr.fer.zemris.sandworm.logger.repository
+
+import hr.fer.zemris.sandworm.logger.model.Message
+import org.springframework.data.repository.CrudRepository
+import java.time.LocalDateTime
+
+interface MessageRepository : CrudRepository<Message, Long> {
+
+    fun findByTaskId(taskId: String): List<Message>
+
+    fun findByTaskIdAndTimestampGreaterThan(
+	 	taskId: String,
+		timestamp: LocalDateTime
+	 ): List<Message>
+
+}
+\end{lstlisting}
+
+Ovakav repozitorij možemo koristiti za komunikaciju sa bazom podataka te nam on omogućava unos, ispis i uređivanje informacija o porukama koje primamo. Također smo definirali i dvije pomoćne metode koje nam omogućavaju dohvat svih poruka vezanih za određen zadatak te dohvat tih poruka ograničen na one koje su se dogodile nakon određenog trenutka u vremenu.
+
+U definiciji svog sustava dali smo samo sučelje repozitorija - za konkretnu implementaciju pobrinuti će se programski okvir Spring na temelju naše deklaracije.
+
+Za kraj nam je ostalo definirati krajnje točke našeg mrežnog sučelja, što u programskom okviru {\textit{Spring}} radimo definicijom komponente zvane {\textit{Controller}}:
+
+\begin{lstlisting}
+package hr.fer.zemris.sandworm.logger.controller
+
+import hr.fer.zemris.sandworm.logger.model.Message
+import hr.fer.zemris.sandworm.logger.repository.MessageRepository
+import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.format.annotation.DateTimeFormat
+import org.springframework.format.annotation.DateTimeFormat.ISO.DATE_TIME
+import org.springframework.web.bind.annotation.*
+import java.time.LocalDateTime
+
+@RestController
+class MainController
+@Autowired constructor(
+        val messageRepository: MessageRepository
+) {
+
+    @PostMapping("/{taskId}")
+    fun logMessage(
+            @PathVariable taskId: String,
+            @RequestParam tag: String,
+            @RequestParam content: String,
+            @RequestParam @DateTimeFormat(iso = DATE_TIME)
+				timestamp: LocalDateTime
+    ) = messageRepository.save(Message(
+            null,
+            taskId,
+            tag,
+            content,
+            timestamp,
+            LocalDateTime.now()
+    ))
+
+    @GetMapping("/{taskId}")
+    fun getMessages(@PathVariable taskId: String)
+	 	= messageRepository.findByTaskId(taskId)
+
+    @GetMapping("/{taskId}/since/{since}")
+    fun getMessagesSince(
+            @PathVariable taskId: String,
+            @PathVariable @DateTimeFormat(iso = DATE_TIME)
+				since: LocalDateTime
+    )
+     = messageRepository.findByTaskIdAndTimestampGreaterThan(
+	  		taskId,
+			since
+	  )
+
+}
+\end{lstlisting}
+
+{\textit{Controller}} nije ništa više nego sučelje prema repozitoriju koje je izloženo preko protokola HTTP. Konkretna mapiranja su definirana u anotacijama {\textit{PostMapping}} i {\textit{GetMapping}} koje deklariraju vezanje na HTTP metode POST i GET.
+
+\hfill
+\break
+
+Metode koje su nam dostupne preko HTTP sučelja su:
+
+\begin{enumerate}
+\item Kreiranje novog unosa za dani zadatak i oznaku (stdout, stderr ili neka druga prikladna oznaka)
+\item Dohvat unosa za dani zadatak
+\item Dohvat unosa za dani zadatak koji su se dogodili nakon određenog trenutka u vremenu
+\end{enumerate}
 
 \subsection{Alat za pakiranje rješenja i ulaznih definicija u izvršne Docker slike}
 
