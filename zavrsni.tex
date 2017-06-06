@@ -176,11 +176,29 @@ Konkretan sustav ostvaren je kao skup nezavisnih alata i mikroservisa koji obavl
 
 \section{Logička arhitektura}
 
+Kao što smo već naveli, sam sustav ostvaren je kao skup nezavisnih alata i mikroservisa. Logička arhitektura koja prikazuje način na koji su manje jedinice spojene u funkcionalnu cjelinu prikazan je u nastavku.
+
 \begin{figure}[H]
 	\centering
 	\includegraphics[width=\textwidth]{sandworm-schema.png}
 	\caption{Prikaz logičke arhitekture sustava}
 \end{figure}
+
+Alati s kojima korisnik dolazi u susret su usluga za pakiranje ulaznih podataka i izvršnog koda u izvršne Docker slike, {\textit{sandworm-packer-web}}, usluga za zakazivanje i izvršavanje kreiranih slika, {\textit{sandworm-scheduler}} te usluga za prikupljanje i skladištenje rezultata, {\textit{sandworm-logger}}.
+
+\hfill
+\break
+
+Zamišljena interakcija korisnika (fizičkog ili drugog programa) je slijedeća:
+
+\begin{enumerate}
+\item Na uslugu za pakiranje korisnik šalje ulaznu definiciju programa kojeg vrednuje - naziv izvršne okoline, izvorni kod, skup ulaznih datoteka, lokaciju zapisivanja rezultata postupka pakiranja te proizvoljan naziv pod kojim će biti spremljene informacije o pakiranju te na temelju kojeg će biti generirani nazivi Docker slika. Jednom kada poziv završi, u dijeljenom registru Docker slika ({\textit{Docker registry}}) nalazit će se slike za svaki ulazni podatak te jedna slika bez ulaznih podataka, ali sa prevedenim programom.
+\item Na uslugu za zakazivanje izvođenja korisnik za svaku generiranu sliku šalje novi zahtjev u kojem definira putanju do dijeljenog registra, naziv slike te putanju do usluge za prikupljanje i skladištenje rezultata. Usluga će zatim zakazati izvršavanje na jednoj od radilica ({\textit{worker \#n}}) te informaciju o tome poslati na uslugu za prikupljanje i skladištenje rezultata. Jednom kada izvršavanje završi, u toj istoj usluzi će se nalaziti i informacija o tijeku izvođenja te prikupljeni standardni izlaz programa.
+\item Korisnik na temelju naziva kojeg je zadao u prvom koraku sa usluge za prikupljanje i skladištenje rezultata povlači informacije o tijeku pakiranja, prevođenja i izvršavanja.
+\end{enumerate}
+
+Usluga za pakiranje rješenja i ulaznih definicija ({\textit{sandworm-packer-web}}) ostvarena je kao jednostavan omotač oko biblioteke za pakiranje rješenja i ulaznih definicija ({\textit{sandworm-packer}}) koja je ostvarena kao zaseban alat kojeg možemo koristiti iz komandne linije te ju zato posebno ističemo na shemi logičke arhitekture.
+
 
 \section{Ostvarenje}
 
