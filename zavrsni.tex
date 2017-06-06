@@ -1,5 +1,6 @@
 \documentclass[times, utf8, zavrsni]{fer}
-\usepackage{booktabs,appendix,listings,hyperref}
+\usepackage{booktabs,appendix,listings,hyperref,graphicx,float}
+\graphicspath{ {img/} }
 
 \begin{document}
 
@@ -174,6 +175,12 @@ Dodatno, ukoliko prilikom pokretanja ne navedemo udaljenu lokaciju na koju će s
 Konkretan sustav ostvaren je kao skup nezavisnih alata i mikroservisa koji obavljaju navedene zadaće, a detaljnije ćemo ih opisati u nastavku.
 
 \section{Logička arhitektura}
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=\textwidth]{sandworm-schema.png}
+	\caption{Prikaz logičke arhitekture sustava}
+\end{figure}
 
 \section{Ostvarenje}
 
