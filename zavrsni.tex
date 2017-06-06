@@ -314,9 +314,62 @@ U gornje dvije slike prikazan je postupak dodavanja podrške za jedan prevedeni 
 
 \subsection{Praćenje i dijeljenje rezultata izvođenja}
 
-\subsection{Alat za pakiranje rješenja i ulaznih definicija u izvršne Docker slike}
+Kako bi mogli pratiti tijek izvođenja programa potrebno je informaciju o izvođenju negdje spremiti. Ovaj proces sastoji se od dvije komponente - s jedne strane imamo sustav koji nudi programsko sučelje za spremanje i arhiviranje informacija o izvođenju, dok s druge strane imamo sam proces izvođenja programa koji generira informacije koje treba spremiti.
+
+Osvrnimo se prvo na to kako ćemo pratiti sam proces izvođenja programa. Ukoliko program izvodimo lokalno, taj postupak je jednostavan - ispis programa bit će vidljiv pred nama u konzoli. No, kako nam je jedan od ciljeva mogućnost razmjernog rasta, moramo odvojiti postupak izvođenja od postupka skladištenja rezultata izvođenja. Mogućnost preusmjeravanja ispisa programa na udaljeno računalo će nam omogućiti da nas uistinu nije briga gdje se i kako program izvodi.
+
+Ideja iza ove funkcionalnosti je ta da preusmjerimo standardni izlaz i standardni izlaz za greške programa kojeg izvodimo na ulaz programa koji će sve što primi na svoj ulaz slati na udaljeni mrežni servis. Taj program za proslijeđivanje je konkretno skripta {\textit{stream-collector.sh}} dostupna u temeljnoj slici.
+
+\begin{lstlisting}
+LOGGER_ENDPOINT="$1"
+LOGGER_TAG="$2"
+
+while IFS= read -r line || [[ -n "$line" ]];
+do
+	if [ "$LOGGER_TAG" == "stderr" ]; then
+		echo $line >&2;
+	else
+		echo $line;
+	fi
+
+	if [ ! -z "$LOGGER_ENDPOINT" ]; then
+		curl \
+			"$LOGGER_ENDPOINT" \
+			--silent
+			--data-urlencode "tag=$LOGGER_TAG" \
+			--data-urlencode "content=$line" \
+			--data-urlencode \
+				"timestamp=`date --iso-8601=s`"
+			> /dev/null
+	fi
+done
+\end{lstlisting}
+
+Skripta kao ulazne parametre prima lokaciju udaljenog odredišta na koje će slati ispis te oznaku pod kojom će spremiti taj ispis. Zatim, za svaku liniju svog ulaza prvo taj ulaz ispiše kako bi mogli i u konzoli pratiti izvođenje. Zatim, ako je udaljeno odredište definirano, na njega se HTTP POST zahtjevom šalju informacije o ispisu i vremenu kada se taj ispis dogodio.
+
+Ukoliko udaljeno odredište nije definirano, skripta samo ispisuje ono što primi na svoj ulaz, što nam omogućava da izvršnu sliku pokrećemo i lokalno, bez udaljenog praćenja ishoda.
+
+Idući korak je omotati skriptu za izvođenje, {\textit{runner.sh}} tako da njene izlaze preusmjerimo u skriptu {\textit{stream-collector.sh}}. Ovo je ostvareno u ulaznoj skripti temeljne slike, {\textit{entrypoint.sh}}:
+
+\begin{lstlisting}
+LOGGER_ENDPOINT="\$1"
+
+set -e;
+
+touch ./stdin;
+
+{ ./runner.sh 2>&1 1>&3 3>&- < ./stdin | \
+	./stream-collector.sh "\$LOGGER_ENDPOINT" stderr; \
+} 3>&1 1>&2 | ./stream-collector.sh "\$LOGGER_ENDPOINT" stdout;
+\end{lstlisting}
+
+Skripta osigurava postojanje datoteke {\textit{stdin}} te zatim poziva {\textit{runner.sh}}, proslijeđujući joj na standardni ulaz sadržaj datoteke {\textit{stdin}} te proslijeđujući njene izlaze skripti {\textit{stream-collector.sh}}.
+
+Za detaljan opis kako preusmjeravanja tokova u navedenoj skripti rade preporučamo pogledati komentar{\footnote{\url{https://stackoverflow.com/a/31151808/576809}}} na usluzi StackOverflow kojim smo se poslužili prilikom izrade skripte.
 
 \subsection{Servis za prikupljanje i skladištenje rezultata}
+
+\subsection{Alat za pakiranje rješenja i ulaznih definicija u izvršne Docker slike}
 
 \subsection{Servis za zakazivanje izvođenja i upravljanje radilicama}
 
