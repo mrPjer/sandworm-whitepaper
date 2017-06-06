@@ -64,11 +64,37 @@ Idealan sustav za vrednovanje rješenja trebao bi biti brz, efikasan, siguran i 
 
 \chapter{Postojeći sustavi}
 
+Osvrnimo se prvo na nekoliko već postojećih sustava za izvršavanje i evaluaciju programskih rješenja. Sustave navodimo dijelom jer su poslužili kao inspiracija u razvoju našeg rješenja zbog svojih inovativnih pristupa, a dijelom zato jer su valjane alternative koje treba razmotriti i uzeti u obzir prilikom odabira sustava za evaluaciju.
+
 \section{SPRUT}
+
+SPRUT{\footnote{\url{https://balrog.zemris.fer.hr/}}} je sustav za vrednovanje studentskih vježbi koji se koristi automatsko vrednovanje studentskih laboratorijskih vježbi na Fakultetu elektrotehnike i računarstva u sklopu kolegija poput {\textit{Uvod u teoriju računarstva (86537)}}{\footnote{\url{https://www.fer.unizg.hr/predmet/utrz}}} te {\textit{Prevođenje programskih jezika (86504)}}{\footnote{\url{https://www.fer.unizg.hr/predmet/ppj_a}}}.
+
+Iako SPRUT trenutno zadovoljava potrebe na trenutnim kolegijima, mana mu je serijski način izvođenja i nemogućnost razmjernog rasta, zbog čega vrednovanje studentskih vježbi traje dugo te je jedina mogućnost za optimizaciju vertikalni rast, tj. kupovina bržeg hardvera.
 
 \section{CodeAssign}
 
+CodeAssign{\footnote{\url{https://codeassign.com/}}} je sustav nastao kao studentski projekt u sklopu kolegija {\textit{Oblikovanje programske potpore (34269)}}{\footnote{\url{https://www.fer.unizg.hr/predmet/opp}}}. CodeAssign je zamišljen kao mjesto gdje studenti, profesori i svi ostali zainteresirani mogu dijeliti programske zadatke i vježbe čija se rješenja automatizirano vrednuju.
+
+Ono što CodeAssign razlikuje od ostalih rješenja je to što se svo izvršavanje koda događa na klijentu, dok poslužitelj samo potvrđuje valjanost dobivenog izlaza. Prednost takvog pristupa je znatno jednostavnija arhitektura poslužitelja, koji samo mora uspoređivati dobiveni izlaz sa očekivanim te puno veća fleksibilnost na klijentu - korisnik sam odabire programsku okolinu u kojoj će raditi te se sam mora pobrinuti da ista radi.
+
+Kako CodeAssign ne dolazi u dodir sa izvornim kodom rješenja niti izvršava sam program, nije prikladan za vrednovanje laboratorijskih vježbi jer ne može potvrditi valjanost programskog rješenja. S druge strane, zbog lakoće korištenja i održavanja te fleksibilnosti u odabiru programske okoline smatramo ga dobrim odabirom za jednostavnije vježbe čija je svrha utvrđivanje i lakše praćenje gradiva.
+
+CodeAssign je većinskim dijelom otvorenog koda{\footnote{\url{https://github.com/codeassign}}} te sama implementacija se može koristiti i u obrazovne svrhe.
+
 \section{Judge0}
+
+Judge0{\footnote{\url{http://judge0.com/}}} je javno dostupan sustav otvorenog koda{\footnote{\url{https://github.com/judge0}}} koji nudi uslugu sigurnog izvršavanja potencijalno malicioznog izvornog koda.
+
+Prednost Judge0 je u tome što sustav nudi jednostavno programsko sučelje kojim se mogu zakazati izvođenja programa, dok mu je mana to što nije namijenjen razmjernom rastu te također obrađuje zadatke serijski. 
+
+\section{Evaluator}
+
+Evaluator{\footnote{\url{https://evaluator.mioc.hr/}}} je sustav koji se koristi u redovnoj nastavi zagrebačke XV. gimnazije te u sklopu vještine {\textit{Natjecateljsko programiranje (65973)}}{\footnote{\url{https://www.fer.unizg.hr/predmet/natpro}}} na Fakultetu elektrotehnike i računarstva.
+
+Kako se redovno koristi u nastavi, Evaluator je postao robustan i stabilan sustav sa podrškom za različitim izvršnim okolinama te naprednim mogućnostima poput razmjernog rasta dodavanjem novih radilica te preciznog definiranja ograničenja na vrijeme izvođenja.
+
+Mana Evaluatora je u tome što se radi o zatvorenom sustavu kojeg ne možemo jednostavno preuzeti i prilagoditi svojim potrebama.
 
 \chapter{Sustav za sigurno i učinkovito udaljeno izvođenje studentskih programskih vježbi}
 
