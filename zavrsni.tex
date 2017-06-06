@@ -202,11 +202,119 @@ Usluga za pakiranje rješenja i ulaznih definicija ({\textit{sandworm-packer-web
 
 \section{Ostvarenje}
 
-\subsection{Bazne slike s izvršnim okolinama za pojedine jezike}
+Na idućih nekoliko strana opisat ćemo konkretno ostvarenje sustava. Projekt je, sukladno logičkoj arhitekturi, podijeljen na odgovarajuće podprojekte. Oni su:
 
-\subsection{Alat za pakiranje rješenja i ulaznih definicija u izvršne Docker slike}
+\begin{enumerate}
+\item {\textit{sandworm-images}} - temeljne Docker slike potrebne za izgradnju izvršnih Docker slika s podrškom za razne izvršne okoline
+\item {\textit{sandworm-packer}} - biblioteka i komandnolinijski alat za pakiranje ulaznih definicija u izvršne Docker slike
+\item {\textit{sandworm-packer-web}} - web usluga za pristup funkcionalnosti alata za pakiranje
+\item {\textit{sandworm-scheduler}} - usluga za zakazivanje izvođenja i upravljanje radilicama
+\item {\textit{sandworm-whitepaper}} - izvorne datoteke ovog rada
+\end{enumerate}
+
+
+\subsection{Temeljne slike s izvršnim okolinama za pojedine jezike}
+
+Kako bi sustav mogao podržati različite okoline izvršavanja bilo je potrebno napraviti nekoliko temeljnih Docker slika nad kojima će se graditi konačne izvršne slike. Točnije, za svaku željenu okolinu (npr. C, C++, JavaScript) potrebno je napraviti zasebnu sliku. Iako smo mogli napraviti jednu sliku koja bi sadržavala sve okoline, ovaj smo pristup odabrali zbog veće fleksibilnosti. Pojedine slike su veoma jednostavne i lakše za održavati u odnosu na jednu veliku sliku.
+
+Svaka slika u svojem direktoriju sadrži skriptu {\textit{build.sh}} kojom se slika može izgraditi i koja označava sliku odgovarajućom oznakom. U vršnom direktoriju podprojekta nalazi se skripta {\textit{build.sh}} koja gradi sve pojedinačne slike.
+
+\subsubsection{Temeljna slika}
+
+Temeljna slika ({\textit{base}}) sadrži skripte koje nude osnovne funkcionalnosti sustava zajedničke svim okolinama. One su:
+
+\begin{enumerate}
+\item {\textit{compile.sh}} - skripta koja izvodi prevađanje izvornog koda u strojni kod za okoline u kojima je to potrebno
+\item {\textit{stream-collector.sh}} - skripta koja šalje proizvoljan ispis na uslugu za prikupljanje i skladištenje rezultata
+\item {\textit{entrypoint.sh}} - skripta koja omata skriptu {\textit{runner.sh}} i pomoću {\textit{stream-collector.sh}} šalje njen izlaz i izlaz za greške na uslugu za prikupljanje i skladištenje rezultata, definiranu kao prvi argument skripte
+\end{enumerate}
+
+Iako {\textit{entrypoint.sh}} poziva skriptu {\textit{runner.sh}}, ona nije dio temeljne slike. Naprotiv, nju će ponuditi slike specifične za svaku okolinu, jer ona određuje kako se program izvršava i kako mu se predaju ulazni podaci.
+
+Sama definicija temeljne slike dostupna u datoteci {\textit{Dockerfile}} veoma je jednostavna:
+
+\begin{lstlisting}
+FROM ubuntu:16.04
+
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends curl \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+
+COPY compile.sh .
+COPY entrypoint.sh .
+COPY stream-collector.sh .
+
+ENTRYPOINT ["/bin/bash", "./entrypoint.sh"]
+\end{lstlisting}
+
+Slika prvo definira izvornu sliku za koju smo odabrali Ubuntu 16.04. Zatim u sebe kopira pomoćne skripte te na kraju definira skriptu {\textit{entrypoint.sh}} kao {\textit{entrypoint}} Docker slike, tj. skriptu koja će biti pokrenuta ako Docker sliku pokrenemo kao izvršni program.
+
+Temeljna slika je sama po sebi beskorisna jer joj nedostaje ključna skripta {\textit{runner.sh}}. Ako pokušamo izgraditi i pokrenuti temeljnu skriptu, dobit ćemo grešku zbog skripte koja nedostaje. Da bi dobili izvršno okruženje koje radi moramo još definirati i instalaciju okruženja te način pozivanja programa.
+
+\subsubsection{C i C++}
+
+Idući korak je definiranje slika s izvršnim okruženjima pa ćemo početi sa okruženjem za programske jezike C i C++. Pogledajmo prvo definiciju slike u datoteci {\textit{Dockerfile}}:
+
+\begin{lstlisting}
+FROM sandworm/base/base
+
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends build-essential \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+
+COPY runner.sh .
+\end{lstlisting}
+
+Za podršku za programske jezike C i C++ dovoljno je nad temeljnom slikom instalirati paket {\textit{build-essential}} (koji sadrži alate gcc i g++ potrebne za prevođenje koda) te ponuditi skriptu za pokretanje programa, {\textit{runner.sh}}. Pogledajmo i njenu definiciju:
+
+\begin{lstlisting}
+#!/usr/bin/env bash
+
+./a.out
+\end{lstlisting}
+
+Sve što je potrebno za pokrenuti preveden program je pokrenuti izvršnu datoteku koja je generirana procesom prevođenja u skripti {\textit{compile.sh}} u temeljnoj slici, dok će se za preusmjeravanje ulaznih podataka te hvatanja izlaznih podataka pobrinuti omatajuća skripta {\textit{entrypoint.sh}}.
+
+Zbog arhitekturalnih ograničenja je postupak prevođenja potrebno definirati u temeljnoj slici. 
+
+Dodavanje podrške za nove okoline, kao što je vidljivo iz priloženog, vrlo je jednostavno.
+
+\subsubsection{JavaScript}
+
+Za razliku od jezika C i C++, programski jezik JavaScript je interpretirani jezik. No, to ne utječe pretjerano na količinu posla potrebnu za dodavanje podrške i za tu okolinu. Datoteka {\textit{Dockerfile}} prati sličnu strukturu kao i ona za jezike C i C++:
+
+\begin{lstlisting}
+FROM sandworm/base/base
+
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends nodejs \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+
+COPY runner.sh .
+\end{lstlisting}
+
+Ovdje smo umjesto paketa {\textit{build-essential}} instalirali paket {\textit{nodejs}} koji nam nudi izvršno okruženje za programski jezik JavaScript.
+
+Konačno, potrebno je i ponuditi skriptu za pokretanje izvršavanja, {\textit{runner.sh}}:
+
+\begin{lstlisting}
+#!/usr/bin/env bash
+
+nodejs main.js
+\end{lstlisting}
+
+Slično kao i prije, potrebno je pozvati izvršnu okolinu nad datotekom koja sadrži izvorni kod. Ovdje smo se ograničili na to da rješenje mora imati datoteku naziva {\textit{main.js}} koja sadrži ulaznu točku u program. Ako bi ovo htjeli promijeniti, dovoljno je doraditi ovu sliku, ili na temelju nje napraviti drugu.
+
+\subsubsection{Ostali jezici}
+
+U gornje dvije slike prikazan je postupak dodavanja podrške za jedan prevedeni i jedan interpretirani jezik. Kako dodavanje podrške za druge jezike prati istu šablonu, nećemo ih više ovdje navoditi, dok sam projekt sadrži još slike za programske jezike Python 2 i Python 3.
 
 \subsection{Praćenje i dijeljenje rezultata izvođenja}
+
+\subsection{Alat za pakiranje rješenja i ulaznih definicija u izvršne Docker slike}
 
 \subsection{Servis za prikupljanje i skladištenje rezultata}
 
