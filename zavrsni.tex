@@ -24,7 +24,7 @@
 
 U redovnoj nastavi Fakulteta elektrotehnike i računarstva studenti se nerijetko susreću sa zadaćama čija je rješenja potrebno ostvariti pisanjem programa u odgovarajućim programskim jezicima. Ručno vrednovanje takvih rješenja bio bi dug i težak posao te se zato u sklopu određenih kolegija za vrednovanje rješenja koriste automatizirani sustavi.
 
-Princip rada takvih sustava je jednostavan - svaki student svoje rješenje piše po specifikaciji koja zahtijeva da program sa standardnog ulaza učita ulazne podatke te na standardni izlaz ispiše rješenje izvođenja u nekom strukturiranom zapisu. Sve što sustav za evaluaciju mora poznavati da bi dobro odradio svoj posao je jedan ili više parova ulaza i očekivanog izlaza. Algoritam sustava za izvršavanje može se zatim svesti na slijedeće:
+Princip rada takvih sustava je jednostavan - svaki student svoje rješenje piše po specifikaciji koja zahtijeva da program sa standardnog ulaza učita ulazne podatke te na standardni izlaz ispiše rješenje izvođenja u nekom strukturiranom zapisu. Sve što sustav za evaluaciju mora poznavati da bi dobro odradio svoj posao je jedan ili više parova ulaza i očekivanog izlaza. Algoritam sustava za izvršavanje može se zatim svesti na sljedeće:
 
 \begin{enumerate}
 \item Prevedi izvorni kod u izvršni oblik
@@ -32,7 +32,7 @@ Princip rada takvih sustava je jednostavan - svaki student svoje rješenje piše
 \item Na standardni ulaz programa proslijedi ulazne podatke
 \item Čekaj kraj programa
 \item Sakupi izlaz programa
-\item Usporedi dobiveni izlaz sa očekivanim i javi rezultat
+\item Usporedi dobiveni izlaz s očekivanim i javi rezultat
 \end{enumerate}
 
 Iako se taj posao na prvi pogled čini jednostavnim, iza navedenih koraka skriva se mnogo izazova od kojih su neki:
@@ -57,7 +57,7 @@ Iako se taj posao na prvi pogled čini jednostavnim, iza navedenih koraka skriva
 	\end{itemize}
 \end{enumerate}
 
-Uz sve to, sustav za vrednovanje također mora biti efikasan. Primjera radi, ako kolegij upiše 600 studenata, od čega ih 500 preda rješenje laboratorijske vježbe te ako se vrednovanje te vježbe sastoji od 20 testnih primjera koji se u prosjeki svaki izvršava pet sekundi, za evaluaciju laboratorijske vježbe biti će potrebno 500*20*5 = 50.000 sekundi ili otprilike 14 sati, ako ispitivanje provodimo jedan po jedan primjer.
+Uz sve to, sustav za vrednovanje također mora biti efikasan. Primjera radi, ako kolegij upiše 600 studenata, od čega ih 500 preda rješenje laboratorijske vježbe te ako se vrednovanje te vježbe sastoji od 20 testnih primjera koji se u prosjeku svaki izvršava pet sekundi, za evaluaciju laboratorijske vježbe bit će potrebno 500*20*5 = 50.000 sekundi ili otprilike 14 sati, ako ispitivanje provodimo jedan po jedan primjer.
 
 Idealan sustav za vrednovanje rješenja trebao bi biti brz, efikasan, siguran i lak za korištenje. U nastavku ćemo prvo promotriti par postojećih rješenja, a zatim opisati implementaciju vlastitog sustava temeljenog na tehnologiji {\textit{Docker}}. Ostvareni sustav temeljen je na svojstvu razmjernog rasta kako bi se izvršavanje moglo rasporediti na neograničen broj nezavisnih sustava. Također nudi i fleksibilnost po pitanju izvršnih okolina koje su podržane te je jednostavan za postaviti i koristiti.
 
@@ -65,7 +65,7 @@ Idealan sustav za vrednovanje rješenja trebao bi biti brz, efikasan, siguran i 
 
 \chapter{Postojeći sustavi}
 
-Osvrnimo se prvo na nekoliko već postojećih sustava za izvršavanje i evaluaciju programskih rješenja. Sustave navodimo dijelom jer su poslužili kao inspiracija u razvoju našeg rješenja zbog svojih inovativnih pristupa, a dijelom zato jer su valjane alternative koje treba razmotriti i uzeti u obzir prilikom odabira sustava za evaluaciju.
+Osvrnimo se prvo na nekoliko postojećih sustava za izvršavanje i evaluaciju programskih rješenja. Sustave navodimo dijelom jer su poslužili kao inspiracija u razvoju našeg rješenja zbog svojih inovativnih pristupa, a dijelom jer su valjane alternative koje treba razmotriti i uzeti u obzir prilikom odabira sustava za evaluaciju.
 
 \section{SPRUT}
 
@@ -77,9 +77,9 @@ Iako SPRUT trenutno zadovoljava potrebe na trenutnim kolegijima, mana mu je seri
 
 CodeAssign{\footnote{\url{https://codeassign.com/}}} je sustav nastao kao studentski projekt u sklopu kolegija {\textit{Oblikovanje programske potpore (34269)}}{\footnote{\url{https://www.fer.unizg.hr/predmet/opp}}}. CodeAssign je zamišljen kao mjesto gdje studenti, profesori i svi ostali zainteresirani mogu dijeliti programske zadatke i vježbe čija se rješenja automatizirano vrednuju.
 
-Ono što CodeAssign razlikuje od ostalih rješenja je to što se svo izvršavanje koda događa na klijentu, dok poslužitelj samo potvrđuje valjanost dobivenog izlaza. Prednost takvog pristupa je znatno jednostavnija arhitektura poslužitelja, koji samo mora uspoređivati dobiveni izlaz sa očekivanim te puno veća fleksibilnost na klijentu - korisnik sam odabire programsku okolinu u kojoj će raditi te se sam mora pobrinuti da ista radi.
+Ono što CodeAssign razlikuje od ostalih rješenja je to što se sve izvršavanje koda događa na klijentu, dok poslužitelj samo potvrđuje valjanost dobivenog izlaza. Prednost takvog pristupa je znatno jednostavnija arhitektura poslužitelja, koji samo mora uspoređivati dobiveni izlaz s očekivanim te puno veća fleksibilnost na klijentu - korisnik sam odabire programsku okolinu u kojoj će raditi te se sam mora pobrinuti da ista radi.
 
-Kako CodeAssign ne dolazi u dodir sa izvornim kodom rješenja niti izvršava sam program, nije prikladan za vrednovanje laboratorijskih vježbi jer ne može potvrditi valjanost programskog rješenja. S druge strane, zbog lakoće korištenja i održavanja te fleksibilnosti u odabiru programske okoline smatramo ga dobrim odabirom za jednostavnije vježbe čija je svrha utvrđivanje i lakše praćenje gradiva.
+Kako CodeAssign ne dolazi u dodir s izvornim kodom rješenja niti izvršava sam program, nije prikladan za vrednovanje laboratorijskih vježbi jer ne može potvrditi valjanost programskog rješenja. S druge strane, zbog lakoće korištenja i održavanja te fleksibilnosti u odabiru programske okoline smatramo ga dobrim odabirom za jednostavnije vježbe čija je svrha utvrđivanje i lakše praćenje gradiva.
 
 CodeAssign je većinskim dijelom otvorenog koda{\footnote{\url{https://github.com/codeassign}}} te sama implementacija se može koristiti i u obrazovne svrhe.
 
@@ -93,7 +93,7 @@ Prednost Judge0 je u tome što sustav nudi jednostavno programsko sučelje kojim
 
 Evaluator{\footnote{\url{https://evaluator.mioc.hr/}}} je sustav koji se koristi u redovnoj nastavi zagrebačke XV. gimnazije te u sklopu vještine {\textit{Natjecateljsko programiranje (65973)}}{\footnote{\url{https://www.fer.unizg.hr/predmet/natpro}}} na Fakultetu elektrotehnike i računarstva.
 
-Kako se redovno koristi u nastavi, Evaluator je postao robustan i stabilan sustav sa podrškom za različitim izvršnim okolinama te naprednim mogućnostima poput razmjernog rasta dodavanjem novih radilica te preciznog definiranja ograničenja na vrijeme izvođenja.
+Kako se redovno koristi u nastavi, Evaluator je postao robustan i stabilan sustav s podrškom za različitim izvršnim okolinama te naprednim mogućnostima poput razmjernog rasta dodavanjem novih radilica te preciznog definiranja ograničenja na vrijeme izvođenja.
 
 Mana Evaluatora je u tome što se radi o zatvorenom sustavu kojeg ne možemo jednostavno preuzeti i prilagoditi svojim potrebama.
 
@@ -105,9 +105,9 @@ Prije samog opisa ostvarenja sustava dajemo kratak pregled korištenih tehnologi
 
 \subsection{Docker}
 
-Veoma pojednostavljeno, Docker{\footnote{\url{https://www.docker.com/}}} je tehnologija koja nam omogućava da u jednu crnu kutiju, osim samih izvršnih datoteka, također upakiramo i cijelu okolinu (\textit{userspace} operativnog sustava) u kojoj se naš program izvršava. Posljedica toga je da, ako želimo pokrenuti program X na svome računalu ili poslužitelju (gdje X može biti jednostavna \textit{hello-world} aplikacija ili složeni mrežni sustav), ne moramo brinuti o tome u kojem je jeziku taj program pisan te koje sve ovisnosti i preduvjete moramo zadovoljiti prije pokretanja. Docker nam omogućava da svaki program apstrahiramo na crnu kutiju sa jasno definiranim ulazima i izlazima.
+Veoma pojednostavljeno, Docker{\footnote{\url{https://www.docker.com/}}} je tehnologija koja nam omogućava da u jednu crnu kutiju, osim samih izvršnih datoteka, također upakiramo i cijelu okolinu (\textit{userspace} operativnog sustava) u kojoj se naš program izvršava. Posljedica toga je da, ako želimo pokrenuti program X na svome računalu ili poslužitelju (gdje X može biti jednostavna \textit{hello-world} aplikacija ili složeni mrežni sustav), ne moramo brinuti o tome u kojem je jeziku taj program pisan te koje sve ovisnosti i preduvjete moramo zadovoljiti prije pokretanja. Docker nam omogućava da svaki program apstrahiramo na crnu kutiju s jasno definiranim ulazima i izlazima.
 
-Docker sve više raste u popularnosti te je za očekivati da će postati \textit{de facto} standard za postavljanje i pokretanje programa i web usluga. Unutar svog projekta ga koristimo iz istog razloga - svi mikroservisi nude svoje Docker slike kako bi se cijeli sustav jednostavnije mogao postaviti i pokrenuti. No, također ga koristimo i za pojednostavljenu izgradnju i izvršavanje studentskih rješenja, o čemu će više riječi biti kasnije.
+Docker sve više raste u popularnosti te je za očekivati da će postati \textit{de facto} standard za postavljanje i pokretanje programa i web usluga. Unutar ovog projekta ga koristimo iz istog razloga - svi mikroservisi nude svoje Docker slike kako bi se cijeli sustav jednostavnije mogao postaviti i pokrenuti. No, također ga koristimo i za pojednostavljenu izgradnju i izvršavanje studentskih rješenja, o čemu će više riječi biti kasnije.
 
 \subsection{Spring}
 
@@ -115,7 +115,7 @@ Naš sustav ostvarili smo u obliku više nezavisnih mikroservisa kako bi osigura
 
 \subsection{Kotlin}
 
-Kotlin{\footnote{\url{https://kotlinlang.org/}}} je programski jezik koji se nedavno pojavio te je uzeo velikog maha u zajednici osoba koje razvijaju programska rješenja za platformu Android. Radi se o modernom programskom jeziku koji se (među ostalim) prevodi u Java bytekod te nudi potpunu interoperabilnost sa postojećim JVM tehnologijama.
+Kotlin{\footnote{\url{https://kotlinlang.org/}}} je programski jezik koji se nedavno pojavio te je uzeo velikog maha u zajednici osoba koje razvijaju programska rješenja za platformu Android. Radi se o modernom programskom jeziku koji se (među ostalim) prevodi u Java bytekod te nudi potpunu interoperabilnost s postojećim JVM tehnologijama.
 
 Od prednosti nad programskim jezikom Java istaknuti ćemo sigurniji i bolji sustav tipova, jednostavniju i izražajniju sintaksu te bolju podršku za određene konstrukte funkcijskog programiranja.
 
@@ -138,11 +138,11 @@ Prije opisivanja ideje ostvarenja, podsjetimo se što očekujemo od sustava koje
 
 Glavni alat na kojem ćemo bazirati svoje rješenje jesu izvršne Docker slike. Naime, Docker nam omogućava da bilo koji program upakiramo, zajedno s njegovom izvršnom okolinom, u crnu kutiju koju zatim možemo izvršiti poput izvršne datoteke. Sve što nam je pritom potrebno je Docker okolina te ne ovisimo o implementacijskim detaljima programa kojeg izvršavamo. Izvršne Docker slike možemo pojednostavljeno smatrati kako statično povezivanje na steroidima - u kutiji uz program dolazi i cijeli \textit{userspace} operativnog sustava nad kojim će se program izvršiti.
 
-Iduća veoma korisna činjenica je ta da u samu Docker sliku možemo \textit{upeći} ulazne podatke koje će program primiti. Tako ćemo dobiti izvršnu Docker sliku koja će za deterministički program uvijek davati jednak izlaz, neovisno o tome gdje je pokrenuta, a možemo ju pokrenuti bilo gdje gdje imamo pristup Dockeru.
+Iduća veoma korisna činjenica je ta da u samu Docker sliku možemo \textit{upeći} ulazne podatke koje će program primiti. Tako ćemo dobiti izvršnu Docker sliku koja će za deterministički program uvijek davati jednak izlaz, neovisno o tome gdje je pokrenuta, a možemo ju pokrenuti bilo gdje, gdje imamo pristup Dockeru.
 
 Prije nego što možemo rješenje izvršiti, moramo prilikom generiranja Docker slike ponuditi ili izvršnu okolinu za interpretirane jezike ili prevedene datoteke za jezike koji se prevode. Ovaj korak je individualan za svaki jezik, a detalje ćemo ponuditi nešto kasnije.
 
-Zadnja stvar koja će nas zanimati je kako je tekao proces prevođenja i izvršavanja samog programa te koji je njegov konačni ispis. Prilikom izvršavanja izvršne Docker slike, standardni izlaz programa biti će vidljiv na ekranu. No, kako bi mogli automatizirati evaluaciju te obrađivati izlaz, morat ćemo ga proslijediti na udaljenu lokaciju. To možemo ostvariti na način da prilikom izvršavanja sam program omotamo u drugi program koji će uhvatiti njegov izlaz i proslijediti ga na odgovarajuću lokaciju. No, kako želimo zadržati fleksibilnost, cilj nam je udaljenu lokaciju na koju će se slati informacije o izvršavanju na neki način parametrizirati. Izvršne Docker slike nam i to omogućuju te možemo prilikom izvršavanja slike također predati i dodatne argumente, što ćemo iskoristiti za parametriziranje udaljene lokacije na koju će se slati informacije o izvršavanju.
+Zadnja stvar koja će nas zanimati je kako je tekao proces prevođenja i izvršavanja samog programa te koji je njegov konačni ispis. Prilikom izvršavanja izvršne Docker slike, standardni izlaz programa bit će vidljiv na ekranu. No, kako bi mogli automatizirati evaluaciju te obrađivati izlaz, morat ćemo ga proslijediti na udaljenu lokaciju. To možemo ostvariti tako da prilikom izvršavanja sam program omotamo u drugi program koji će uhvatiti njegov izlaz i proslijediti ga na odgovarajuću lokaciju. No, kako želimo zadržati fleksibilnost, cilj nam je udaljenu lokaciju na koju će se slati informacije o izvršavanju na neki način parametrizirati. Izvršne Docker slike nam i to omogućuju te možemo prilikom izvršavanja slike također predati i dodatne argumente, što ćemo iskoristiti za parametriziranje udaljene lokacije na koju će se slati informacije o izvršavanju.
 
 Uzimanjem svega navedenog u obzir, koristeći izvršne Docker slike možemo dobiti \textit{nešto} što će svojim pokretanjem rezultate izvršavanja programa poslati na neku udaljenu lokaciju. Idealni poziv takve slike bio bi:
 
@@ -150,7 +150,7 @@ Uzimanjem svega navedenog u obzir, koristeći izvršne Docker slike možemo dobi
 ./nesto https://mojaudaljenalokacija
 \end{lstlisting}
 
-što bi unutar sebe pokrenulo program koji vrednujemo i informacije o toku izvršavanja poslalo na udalljeno web sjedište {\textit{mojaudaljenalokacija}}. U stvarnosti će taj poziv izgledati ovako:
+što bi unutar sebe pokrenulo program koji vrednujemo i informacije o toku izvršavanja poslalo na udaljeno web sjedište {\textit{mojaudaljenalokacija}}. U stvarnosti će taj poziv izgledati ovako:
 
 \begin{lstlisting}[language=Bash]
 docker run --rm -it \
@@ -162,15 +162,15 @@ docker run --rm -it \
 
 Rezultat ovog pristupa je taj da nam nije bitno gdje se izvršavanje događa te kamo se usmjerava rezultat izvršavanja. To nam omogućava da veoma lako ostvarimo svojstvo razmjernog rasta - radilica koje će izvršavati programe možemo imati proizvoljno mnogo, a isto to možemo napraviti i sa servisima koji će skupljati informacije o izvršavanju. Ono što će nam još trebati je servis ili alat koji će se brinuti o zakazivanju izvršavanja - na kojoj će se radilici izvesti koja slika te kamo će ona proslijediti rezultat izvođenja.
 
-Konačno, cijeli proces vrednovanja možemo opisati slijedećim koracima:
+Konačno, cijeli proces vrednovanja možemo opisati sljedećim koracima:
 
 \begin{enumerate}
-\item Za svaki par (program, ulazna definicija) generirati izvršnu Docker sliku sa potpuno fiksiranim kontekstom izvršavanja
-\item Pokrenuti sliku na nekoj radilici sa Docker podrškom - samo pokretanje će slati informacije o izvršavanju na udaljenu lokaciju
-\item Preuzeti rezultate izvršavanja sa nekog servisa za praćenje izvršavanja
+\item Za svaki par (program, ulazna definicija) generirati izvršnu Docker sliku s potpuno fiksiranim kontekstom izvršavanja
+\item Pokrenuti sliku na nekoj radilici s Docker podrškom - samo pokretanje će slati informacije o izvršavanju na udaljenu lokaciju
+\item Preuzeti rezultate izvršavanja s nekog servisa za praćenje izvršavanja
 \end{enumerate}
 
-Dodatno, ukoliko prilikom pokretanja ne navedemo udaljenu lokaciju na koju će se slati informacije o izvršavanju, možemo program pokrenuti bez funkcionalnosti skupljanja podataka. Time smo dobili crnu kutiju koja, jednom kad se pokrene, izvrši korisnički program sa jednim točno definiranim skupom podataka. Korisna posljedica je ta da smo dobili jednostavan način reprodukcije rezultata pokretanja koji ne ovisi o platformi na kojoj se program pokreće. Tako, ako student nije zadovoljan rezultatom vrednovanja svog programa, može pokrenuti generiranu sliku lokalno i uvjeriti se u ispis svog programa.
+Dodatno, ako prilikom pokretanja ne navedemo udaljenu lokaciju na koju će se slati informacije o izvršavanju, možemo program pokrenuti bez funkcionalnosti skupljanja podataka. Time smo dobili crnu kutiju koja, jednom kad se pokrene, izvrši korisnički program s jednim točno definiranim skupom podataka. Korisna posljedica je ta da smo dobili jednostavan način reprodukcije rezultata pokretanja koji ne ovisi o platformi na kojoj se program pokreće. Tako, ako student nije zadovoljan rezultatom vrednovanja svog programa, može pokrenuti generiranu sliku lokalno i uvjeriti se u ispis svog programa.
 
 Konkretan sustav ostvaren je kao skup nezavisnih alata i mikroservisa koji obavljaju navedene zadaće, a detaljnije ćemo ih opisati u nastavku.
 
@@ -189,12 +189,12 @@ Alati s kojima korisnik dolazi u susret su usluga za pakiranje ulaznih podataka 
 \hfill
 \break
 
-Zamišljena interakcija korisnika (fizičkog ili drugog programa) je slijedeća:
+Zamišljena interakcija korisnika (fizičkog ili drugog programa) je sljedeća:
 
 \begin{enumerate}
-\item Na uslugu za pakiranje korisnik šalje ulaznu definiciju programa kojeg vrednuje - naziv izvršne okoline, izvorni kod, skup ulaznih datoteka, lokaciju zapisivanja rezultata postupka pakiranja te proizvoljan naziv pod kojim će biti spremljene informacije o pakiranju te na temelju kojeg će biti generirani nazivi Docker slika. Jednom kada poziv završi, u dijeljenom registru Docker slika ({\textit{Docker registry}}) nalazit će se slike za svaki ulazni podatak te jedna slika bez ulaznih podataka, ali sa prevedenim programom.
+\item Na uslugu za pakiranje korisnik šalje ulaznu definiciju programa kojeg vrednuje - naziv izvršne okoline, izvorni kod, skup ulaznih datoteka, lokaciju zapisivanja rezultata postupka pakiranja te proizvoljan naziv pod kojim će biti spremljene informacije o pakiranju te na temelju kojeg će biti generirani nazivi Docker slika. Jednom kada poziv završi, u dijeljenom registru Docker slika ({\textit{Docker registry}}) nalazit će se slike za svaki ulazni podatak te jedna slika bez ulaznih podataka, ali s prevedenim programom.
 \item Na uslugu za zakazivanje izvođenja korisnik za svaku generiranu sliku šalje novi zahtjev u kojem definira putanju do dijeljenog registra, naziv slike te putanju do usluge za prikupljanje i skladištenje rezultata. Usluga će zatim zakazati izvršavanje na jednoj od radilica ({\textit{worker \#n}}) te informaciju o tome poslati na uslugu za prikupljanje i skladištenje rezultata. Jednom kada izvršavanje završi, u toj istoj usluzi će se nalaziti i informacija o tijeku izvođenja te prikupljeni standardni izlaz programa.
-\item Korisnik na temelju naziva kojeg je zadao u prvom koraku sa usluge za prikupljanje i skladištenje rezultata povlači informacije o tijeku pakiranja, prevođenja i izvršavanja.
+\item Korisnik na temelju naziva kojeg je zadao u prvom koraku s usluge za prikupljanje i skladištenje rezultata povlači informacije o tijeku pakiranja, prevođenja i izvršavanja.
 \end{enumerate}
 
 Usluga za pakiranje rješenja i ulaznih definicija ({\textit{sandworm-packer-web}}) ostvarena je kao jednostavan omotač oko biblioteke za pakiranje rješenja i ulaznih definicija ({\textit{sandworm-packer}}) koja je ostvarena kao zaseban alat kojeg možemo koristiti iz komandne linije te ju zato posebno ističemo na shemi logičke arhitekture.
@@ -222,9 +222,9 @@ U nastavku iznosimo ideje za koje smatramo da bi bilo korisno razmotriti i imple
 
 Jedna od motivacija izgradnje ovog sustava bila je mogućnost zamjene SPRUT-a kao evaluacijskog mehanizma u kontekstu studentskih laboratorijskih vježbi.
 
-Sustav koji smo napravili trenutno podržava samo izvršavanje programa, ali ne i evaluaciju. Točnije, s trenutnim ostvarenjem nismo u mogućnosti automatizirano vrednovati rezultat izvođenja programskog rješenja.
+Sustav koji smo napravili trenutno podržava samo izvršavanje programa, ali ne i evaluaciju. Točnije, s trenutnim ostvarenjem ne možemo automatizirano vrednovati rezultat izvođenja programskog rješenja.
 
-Uzevši u obzir trenutnu arhitekturu sustava, vrednovanje ispisa moguće je ostvariti povlačenjem ispisa programa sa servisa za prikupljanje i skladištenje rezultata, filtriranje istih po oznaci stdout te uspoređivanje dobivenog sa očekivanim izlazom. Sam ispis možemo dohvatiti na temelju oznake koju dobijemo prilikom zakazivanja izvršavanja programa.
+Uzevši u obzir trenutnu arhitekturu sustava, vrednovanje ispisa moguće je ostvariti povlačenjem ispisa programa sa servisa za prikupljanje i skladištenje rezultata, filtriranje istih po oznaci stdout te uspoređivanje dobivenog s očekivanim izlazom. Sam ispis možemo dohvatiti na temelju oznake koju dobijemo prilikom zakazivanja izvršavanja programa.
 
 Dodatno, osim standardnog izlaza, ništa nas ne sprječava da program vrednujemo i po drugim zapisima - recimo, na temelju zapisa možemo odrediti i je li bilo grešaka prilikom prevođenja te vrijeme koje je programu bilo potrebno da bi se izvršio.
 
@@ -251,7 +251,7 @@ Sustav koji smo opisali trenutno se oslanja na predefiniran set radilica zapisan
 
 Predviđeno opterećenje sustava u akademskim uvjetima je skokovito - postojat će dugi periodi kada se sustav neće koristiti te kratki periodi kada će biti potrebno vrednovati velik broj studentskih rješenja.
 
-Kako će radilice biti potrebne samo kratko vrijeme, predlažemo da se sustav za upravljanje radilicama doradi na način da ih automatski provizionira kada je to potrebno te ugasi kada više nisu potrebne. Primjerice, ako imamo fizičke strojeve koje koristimo kao radilice, sustav za upravljanje može koristiti tehnologiju {\textit{Wake-on-LAN}}{\footnote{\url{https://en.wikipedia.org/wiki/Wake-on-LAN}} kako bi strojeve palio i gasio po potrebi i tako uštedio na troškovima energije.
+Kako će radilice biti potrebne samo kratko vrijeme, predlažemo da se sustav za upravljanje radilicama doradi tako da ih automatski provizionira kada je to potrebno te ugasi kada više nisu potrebne. Primjerice, ako imamo fizičke strojeve koje koristimo kao radilice, sustav za upravljanje može koristiti tehnologiju {\textit{Wake-on-LAN}}{\footnote{\url{https://en.wikipedia.org/wiki/Wake-on-LAN}} kako bi strojeve palio i gasio po potrebi i tako uštedio na troškovima energije.
 
 		  No, kako je posljedica naše arhitekture ta da nam uistinu nije bitno na čemu izvršavamo programe dokle god to nešto ima podršku za Docker, možemo se također osloniti i na Infrastruktura-kao-Usluga (eng. {\textit{Infrastructure-as-a-Service}}{\footnote{{\url{https://en.wikipedia.org/wiki/Cloud_computing}}}} sustave za automatsko provizioniranje radilica kada nam trebaju te gašenje istih kada nam ne trebaju. Ovim pristupom možemo ostvariti višu paralelizaciju izvođenja te smanjiti troškove jer takve usluge nude naplaćivanje po satu, što odgovara našim potrebama.
 
@@ -259,9 +259,9 @@ Tako bi mogli imati samo jedan fizički stroj lokalno koji bi brinuo o zaprimanj
 
 Odabir ponuđača IaaS usluga ovisi ponajprije o cijeni te potrebama hardvera koji se zakupuje. Ponuđače koje ćemo spomenuti su {\textit{DigitalOcean}}{\footnote{\url{https://www.digitalocean.com/}}}, {\textit{Amazon Web Services}}{\footnote{\url{https://aws.amazon.com/}}}, {\textit{Microsoft Azure}}{\footnote{\url{https://azure.microsoft.com/}}} te {\textit{Google Cloud Platform}}{\footnote{\url{https://cloud.google.com/}}}. DigitalOcean, primjerice, nudi provizioniranje sustava unutar 55 sekundi što je prihvatljivo vrijeme čekanja u odnosu na trajanje cijelog procesa vrednovanja.
 
-Za ostvarenje ove ideje bilo bi potrebno prilagoditi sustav za zakazivanje izvođenja i upravljanje radilicama na način da, umjesto unaprijed definiranog niza radilica, koristeći programska sučelja odgovarajućeg ponuđača usluga kreira i uništava radilice po potrebi. Konkretno, za ponuđača usluga DigitalOcean možemo iskoristiti biblioteku {\textit{digitalocean-api-java}}{\footnote{\url{https://github.com/jeevatkm/digitalocean-api-java}}}.
+Za ostvarenje ove ideje bilo bi potrebno prilagoditi sustav za zakazivanje izvođenja i upravljanje radilicama tako da, umjesto unaprijed definiranog niza radilica, koristeći programska sučelja odgovarajućeg ponuđača usluga kreira i uništava radilice po potrebi. Konkretno, za ponuđača usluga DigitalOcean možemo iskoristiti biblioteku {\textit{digitalocean-api-java}}{\footnote{\url{https://github.com/jeevatkm/digitalocean-api-java}}}.
 
-Po pitanju cijenje i paralelizacije koju ovim pristupom možemo ostvariti, DigitalOcean u trenutku pisanja u svojoj ponudi, među ostalim, nudi i virtualne strojeve sa 512MB RAM, 20GB prostora za podatke te jednom virtualnom jezgrom što bi trebalo biti dovoljno za izvođenje studentskih vježbi. Cijena korištenja je \$0.007 po satu{\footnote{\url{https://www.digitalocean.com/pricing/}}} ili ugrubo 5 lipa po satu. Tako za trošak od kune po satu možemo pokrenuti ugrubo dvadeset strojeva koji će paralelno izvršavati i vrednovati studentske programe, što je i više nego prihvatljivo za naše potrebe.
+Po pitanju cijene i paralelizacije koju ovim pristupom možemo ostvariti, DigitalOcean u trenutku pisanja u svojoj ponudi, među ostalim, nudi i virtualne strojeve sa 512MB RAM, 20GB prostora za podatke te jednom virtualnom jezgrom što bi trebalo biti dovoljno za izvođenje studentskih vježbi. Cijena korištenja je \$0.007 po satu{\footnote{\url{https://www.digitalocean.com/pricing/}}} ili ugrubo 5 lipa po satu. Tako za trošak od kune po satu možemo pokrenuti ugrubo dvadeset strojeva koji će paralelno izvršavati i vrednovati studentske programe, što je i više nego prihvatljivo za naše potrebe.
 
 
 \chapter{Zaključak}
