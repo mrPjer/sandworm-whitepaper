@@ -593,9 +593,27 @@ class MainController {
 }
 \end{lstlisting}
 
-\subsection{Servis za zakazivanje izvođenja i upravljanje radilicama}
+\subsection{Usluga za zakazivanje izvođenja i upravljanje radilicama}
+
+Samo izvođenje kreiranih slika ključan je dio sustava te predstavlja najboljeg kandidata za ostvarivanje svojstva razmjernog rasta. Zato je izvođenje ostvareno na način da sustav sadrži uslugu za zakazivanje izvođenja spojenu na nekoliko radilica koje odrađuju posao izvođenja. Zadaća sustava za zakazivanje izvođenja je primati zahtjeve za izvođenjem, pratiti stanja radilica te im dodijeljivati izvođenje jednom kada su radilice slobodne i spremne za rad.
+
+Usluga je ostvarena kao web usluga u programskom okviru Spring koja nudi jednu krajnju točku - zakazivanje izvođenja koje kao parametar prima putanju do registra Docker slika u kojem se slika nalazi, naziv slike te putanju do usluge za praćenje izvođenja na koju će se slati informacije o izvođenju.
+
+Nakon što zaprimi zahtjev, usluga ga proslijeđuje unutarnjoj usluzi {\textit{SchedulerService}}. Ta usluga unutar sebe prati stanje i zauzeće dostupnih radilica te, kada jedna postane slobodna, zakazuje zahtijevano izvođenje. Samo izvođenje svodi se na komuniciranje sa Docker {\textit{daemonom}} prisutnim na radilici te slanjem instrukcija za povlačenje, a zatim i pokretanje odabrane slike. Definicija radilica prisutna je u privatnoj članskoj vrijednosti {\textit{availableClients}} u kojoj su zapisane putanje do Docker {\textit{daemona}} na radilicama.
+
+Komuniciranje sa Docker {\textit{daemonom}} na radilicama ostvareno je bibliotekom docker-java{\footnote{\url{https://github.com/docker-java/docker-java}}} koja nam omogućava da programski izvršavamo ekvivalente naredbi {\textit{docker pull}} i {\textit{docker run}}.
+
+Jednom kada je izvođenje završeno, radilica se vraća u bazen dostupnih radilica nakon čega je spremna obraditi novi zahtjev.
+
+Svaki korak procesa zakazivanja izvođenja također se šalje na uslugu za praćenje izvođenja kako bi se moglo pratiti stanje izvođenja (zakazan / u izvođenju / gotov) pojedinog zadatka.
 
 \subsubsection{Radilice}
+
+Radilice koje izvršavaju programe najjednostavnija su komponenta sustava. Radi se o bilo kojem stroju (fizičkom ili virtualnom) koji ima instaliranu Docker okolinu te čiji je Docker {\textit{daemon}} dostupan usluzi za zakazivanje.
+
+Radilicu možemo napraviti na način da na fizički stroj instaliramo okruženje Docker, ali također možemo kreirati radilice koristeći sam Docker. Točnije, ako pokrenemo {\textit{docker-in-docker}}{\footnote{\url{https://hub.docker.com/_/docker/}}} sliku, dobit ćemo potpuno izolirano okruženje koje je spremno da bi se koristilo kao radilica.
+
+Radilica je ta koja izvršava program i šalje njegov ispis usluzi za prikupljanje rezultata izvođenja pa je također bitno da je ta usluga mrežno dostupna radilici.
 
 \subsection{Dijeljeni registar Docker slika}
 
