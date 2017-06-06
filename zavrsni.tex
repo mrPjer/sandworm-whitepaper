@@ -595,9 +595,15 @@ class MainController {
 
 \subsection{Servis za zakazivanje izvođenja i upravljanje radilicama}
 
+\subsubsection{Radilice}
+
 \subsection{Dijeljeni registar Docker slika}
 
-\subsection{Radilice}
+Konačno, kako bi povezali uslugu za pakiranje i uslugu za izvršavanje slika, potrebno je među njima slike dijeliti. U tu svrhu nam je potreban dijeljeni registar Docker slika. Postoji mnogo implementacija Docker registara, a mi smo se za potrebe testiranja odlučili za službeni {\textit{Docker Registry}}{\footnote{\url{https://docs.docker.com/registry/}}} koji je ujedno dostupan kao i Docker slika.
+
+Službeni Docker registar je jednostavan za pokrenuti i koristiti, no mana mu je to što ne nudi mogućnost brisanja postojećih slika, što predstavlja problem u dužem korištenju jer je jedini način za čišćenje registra brisanje svih podataka i ponovno postavljanje onih koje želimo zadržati.
+
+S druge strane, generirane Docker slike će zauzimati malo prostora - zbog slojevite arhitekture slika, svaka pojedina slika će zauzimati samo onoliko prostora koliko donosi nad svojom temeljnom slikom pa će tako prostor zauzimati samo prevedeni korisnički programi (jednom po programu) te korisnički programi vezani uz ulaznu definiciju, za svaku definiciju posebno. Ukoliko su korisnički programi i ulazne definicije maleni (red veličine kB), što je slučaj sa studentskim vježbama, jeftinije je kupiti novi disk nego brinuti o zauzeću. No, svejedno moramo biti svjesni ovog problema, pogotovo ako uzmemo u obzir da postoji mogućnost da se korisnički program maliciozno upakira u sliku koja je veća od očekivanog.
 
 \chapter{Vrednovanje}
 
