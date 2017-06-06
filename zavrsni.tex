@@ -446,7 +446,8 @@ import hr.fer.zemris.sandworm.logger.model.Message
 import hr.fer.zemris.sandworm.logger.repository.MessageRepository
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.format.annotation.DateTimeFormat
-import org.springframework.format.annotation.DateTimeFormat.ISO.DATE_TIME
+import
+  org.springframework.format.annotation.DateTimeFormat.ISO.DATE_TIME
 import org.springframework.web.bind.annotation.*
 import java.time.LocalDateTime
 
@@ -505,9 +506,51 @@ Metode koje su nam dostupne preko HTTP sučelja su:
 
 \subsection{Alat za pakiranje rješenja i ulaznih definicija u izvršne Docker slike}
 
+Kako bi imali što za izvoditi, moramo napraviti alat koji će pakirati ulazne definicije u izvršne Docker slike. Ovu funkcionalnost ostvarili smo u komandnolinijskom alatu {\textit{sandworm-packer}}, pisanom u programskom jeziku Kotlin.
+
+Alat očekuje ulazne podatke u direktoriju oblika:
+
+\begin{lstlisting}
+source/
+    main.c
+    some_other_source_file.c
+inputs/
+    input description/
+        stdin
+        some_other_file
+\end{lstlisting}
+
+gdje je {\textit{source}} direktorij koji sadrži izvorni kod programa, a {\textit{inputs}} direktorij koji sadrži poddirektorije gdje svaki poddirektorij predstavlja jedan ulazni skup podataka. Datoteka {\textit{stdin}} u ulaznom skupu podataka biti će proslijeđena na standardni ulaz programa prilikom izvođenja, dok će sve ostale datoteke prisutne u tom direktoriju također biti prisutne i u direktoriju programa prilikom izvršavanja.
+
+Sam alat podržava nekoliko opcija, a ispis svih možemo dobiti pokretanjem programa bez argumenata:
+
+\begin{lstlisting}
+usage: packer
+-b,--base-image <arg>       Define the base image to build upon
+                            (e.g. sandworm/base/c_cpp)
+-i,--task-id <arg>          A (preferably unique) ID of this task
+                            run which will be passed to the
+                            remote logger
+-l,--logger-endpoint <arg>  The (optional) location of a remote
+                            sandworm logger (e.g.
+                            http://localhost:8080)
+-p,--image-prefix <arg>     The tag prefix of the generated
+                            images (e.g. sandworm/images/some_id)
+-s,--source-directory <arg> The location from which to take the
+                            source and the input files
+\end{lstlisting}
+
+Konkretno, program pozivamo tako da mu definiramo koju će temeljnu sliku koristiti (te time i programsko okruženje koje će biti dostupno prilikom izvođenja), identifikator zadatka koji će biti korišten prilikom zapisivanja informacija o pakiranju i prevođenju, lokaciju udaljene usluge za prikupljanje rezultata, prefiks naziva generiranih Docker slika te konačno direktorij u kojem se nalaze ulazne definicije na temelju kojih će se izgraditi pojedine izvršne slike. 
+
+Samo ostvarenje oslanja se na nekoliko pomoćnih biblioteka. Za definiranje komandnolinijskog sučelja te učitavanje opcija korištena je biblioteka {\textit{Commons CLI}}{\footnote{\url{https://commons.apache.org/proper/commons-cli/}}}. Za komunikaciju sa lokalnim Docker {\textit{daemonom}} (zbog izgradnje slika) korištena je biblioteka {\textit{docker-java}}{\footnote{\url{https://github.com/docker-java/docker-java}}}, dok je za komunikaciju sa udaljenom uslugom za prikupljanje rezultata preko protokola HTTP korištena biblioteka {\textit{OkHttp}}{\footnote{\url{https://square.github.io/okhttp/}}}.
+
+Alat je ostvaren u tri razreda. Pomoćni razred {\textit{RemoteLogger}} služi za komunikaciju sa udaljenom uslugom za prikupljanje rezultata. Skripta {\textit{PackerCli}} služi kao ulazna točka u program i predstavlja definiciju komandnolinijskog sučelja. Konačno, razred {\textit{Packer}} sadrži algoritam za pakiranje ulaznih definicija u izvršne slike.
+
 \subsection{Servis za zakazivanje izvođenja i upravljanje radilicama}
 
 \subsection{Dijeljeni registar Docker slika}
+
+\subsection{Radilice}
 
 \chapter{Vrednovanje}
 
