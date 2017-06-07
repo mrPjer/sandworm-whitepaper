@@ -58,9 +58,9 @@ Iako se taj posao na prvi pogled čini jednostavnim, iza navedenih koraka skriva
 	\end{itemize}
 \end{enumerate}
 
-Uz sve to, sustav za vrednovanje također mora biti efikasan. Primjera radi, ako kolegij upiše 600 studenata, od čega ih 500 preda rješenje laboratorijske vježbe te ako se vrednovanje te vježbe sastoji od 20 testnih primjera koji se u prosjeku svaki izvršava pet sekundi, za evaluaciju laboratorijske vježbe bit će potrebno 500*20*5 = 50.000 sekundi ili otprilike 14 sati, ako ispitivanje provodimo jedan po jedan primjer.
+Uz sve to, sustav za vrednovanje također mora biti učinkovit. Primjera radi, ako kolegij upiše 600 studenata, od čega ih 500 preda rješenje laboratorijske vježbe te ako se vrednovanje te vježbe sastoji od 20 testnih primjera koji se u prosjeku svaki izvršava pet sekundi, za evaluaciju laboratorijske vježbe bit će potrebno 500*20*5 = 50.000 sekundi ili otprilike 14 sati, ako ispitivanje provodimo jedan po jedan primjer.
 
-Idealan sustav za vrednovanje rješenja trebao bi biti brz, efikasan, siguran i lak za korištenje. U nastavku ćemo prvo promotriti par postojećih rješenja, a zatim opisati implementaciju vlastitog sustava temeljenog na tehnologiji {\textit{Docker}}. Ostvareni sustav temeljen je na svojstvu razmjernog rasta kako bi se izvršavanje moglo rasporediti na neograničen broj nezavisnih sustava. Također nudi i fleksibilnost po pitanju izvršnih okolina koje su podržane te je jednostavan za postaviti i koristiti.
+Idealan sustav za vrednovanje rješenja trebao bi biti brz, učinkovit, siguran i lak za korištenje. U nastavku ćemo prvo promotriti par postojećih rješenja, a zatim opisati implementaciju vlastitog sustava temeljenog na tehnologiji {\textit{Docker}}. Ostvareni sustav temeljen je na svojstvu razmjernog rasta kako bi se izvršavanje moglo rasporediti na neograničen broj nezavisnih sustava. Također nudi i fleksibilnost po pitanju izvršnih okolina koje su podržane te je jednostavan za postaviti i koristiti.
 
 % TODO neki hook zašto je ostvareni sustav kul
 
@@ -133,7 +133,7 @@ Prije opisivanja ideje ostvarenja, podsjetimo se što očekujemo od sustava koje
 \begin{enumerate}
 \item Sigurnost
 \item Mogućnost razmjernog rasta (\textit{skalabilnost})
-\item Efikasnost
+\item Učinkovitost
 \item Jednostavnost korištenja
 \end{enumerate}
 
