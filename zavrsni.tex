@@ -499,7 +499,7 @@ class MainController
 Metode koje su nam dostupne preko HTTP sučelja su:
 
 \begin{enumerate}
-\item Kreiranje novog unosa za dani zadatak i oznaku (stdout, stderr ili neka druga prikladna oznaka)
+\item Kreiranje novog unosa za dani zadatak i oznaku ({\textit{stdout}}, {\textit{stderr}} ili neka druga prikladna oznaka)
 \item Dohvat unosa za dani zadatak
 \item Dohvat unosa za dani zadatak koji su se dogodili nakon određenog trenutka u vremenu
 \end{enumerate}
@@ -635,7 +635,7 @@ Jedna od motivacija izgradnje ovog sustava bila je mogućnost zamjene SPRUT-a ka
 
 Sustav koji smo napravili trenutno podržava samo izvršavanje programa, ali ne i evaluaciju. Točnije, s trenutnim ostvarenjem ne možemo automatizirano vrednovati rezultat izvođenja programskog rješenja.
 
-Uzevši u obzir trenutnu arhitekturu sustava, vrednovanje ispisa moguće je ostvariti povlačenjem ispisa programa sa servisa za prikupljanje i skladištenje rezultata, filtriranje istih po oznaci stdout te uspoređivanje dobivenog s očekivanim izlazom. Sam ispis možemo dohvatiti na temelju oznake koju dobijemo prilikom zakazivanja izvršavanja programa.
+Uzevši u obzir trenutnu arhitekturu sustava, vrednovanje ispisa moguće je ostvariti povlačenjem ispisa programa sa servisa za prikupljanje i skladištenje rezultata, filtriranje istih po oznaci {\textit{stdout}} te uspoređivanje dobivenog s očekivanim izlazom. Sam ispis možemo dohvatiti na temelju oznake koju dobijemo prilikom zakazivanja izvršavanja programa.
 
 Dodatno, osim standardnog izlaza, ništa nas ne sprječava da program vrednujemo i po drugim zapisima - recimo, na temelju zapisa možemo odrediti i je li bilo grešaka prilikom prevođenja te vrijeme koje je programu bilo potrebno da bi se izvršio.
 
