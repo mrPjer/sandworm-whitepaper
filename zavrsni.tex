@@ -1,6 +1,7 @@
 \documentclass[times, utf8, zavrsni]{fer}
-\usepackage{booktabs,appendix,listings,hyperref,graphicx,float}
+\usepackage{booktabs,appendix,listings,hyperref,graphicx,float,courier}
 \graphicspath{ {img/} }
+\lstset{basicstyle=\footnotesize\ttfamily,breaklines=true}
 
 \begin{document}
 
@@ -446,8 +447,7 @@ import hr.fer.zemris.sandworm.logger.model.Message
 import hr.fer.zemris.sandworm.logger.repository.MessageRepository
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.format.annotation.DateTimeFormat
-import
-  org.springframework.format.annotation.DateTimeFormat.ISO.DATE_TIME
+import org.springframework.format.annotation.DateTimeFormat.ISO.DATE_TIME
 import org.springframework.web.bind.annotation.*
 import java.time.LocalDateTime
 
