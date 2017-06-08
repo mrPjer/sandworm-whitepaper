@@ -202,6 +202,7 @@ Usluga za pakiranje rješenja i ulaznih definicija ({\textit{sandworm-packer-web
 
 
 \section{Ostvarenje}
+\label{sec:implementation}
 
 Na idućih nekoliko strana opisat ćemo konkretno ostvarenje sustava. Projekt je, sukladno logičkoj arhitekturi, podijeljen na odgovarajuće potprojekte. Oni su:
 
@@ -690,9 +691,78 @@ Zaključak.
 
 \chapter{Upute za korištenje}
 
+U nastavku su opisani postupci korištenja sustava. Ove postupke može izvoditi čovjek, ali ih se preporuča automatizirati kao dio ostvarenja složenijeg sustava.
+
 \section{Dodavanje podrške za nova izvršna okruženja}
 
+Ostvarenje podrške za postojeća izvršna okruženja opisano je u poglavlju \ref{sec:implementation} \nameref{sec:implementation}.
+
+Za dodavanje podrške za novo izvršno okruženje potrebno je stvoriti novu temeljnu sliku sa instaliranom izvršnom okolinom tog okružtenja te ponuditi skriptu {\textit{runner.sh}} koja opisuje način pokretanja izvornog koda unutar te izvršne okoline. Ukoliko je potrebno opisati i postupak prevođenja ili druge obrade koda prije samog izvršavanja, postupak za to nužno je dodati u skriptu {\textit{compile.sh}} unutar temelje slike projekta.
+
+\subsection{Stvaranje nove temeljne slike sa instaliranom izvršnom okolinom}
+
+Projekt nudi temeljnu sliku {\textit{sandworm/base/base}} koja sadrži osnovne alate potrebne za rad sustava te je poželjno da slike s instaliranim izvršnim okolinama budu izvedene iz nje. U suprotnom, potrebno je ponovno ostvariti funkcionalnosti koje ta temeljna slika nudi, što je moguće proširenjem njene datoteke {\textit{Dockerfile}} dostupne u potprojektu {\textit{sandworm-images}}.
+
+Pod pretpostavkom da je željena izvršna okolina dostupna na operativnom sustavu Ubuntu u paketu {\textit{izvrsna-okolina}}, za ostvarenje temeljne slike dovoljno je napraviti datoteku {\textit{Dockerfile}} sa sadržajem:
+
+\begin{lstlisting}
+FROM sandworm/base/base
+
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends izvrsna-okolina \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+
+COPY runner.sh .
+\end{lstlisting}
+
+Naravno, po potrebi je ovu datoteku moguće proširiti i drugim naredbama koje će pripremiti izvršnu okolinu. Jedini uvjet je da je nakon izgradnje temeljne slike izvršna okolina u njoj dostupna i spremna za rad.
+
+\subsection{Kreiranje skripte za izvršavanje, {\textit{runner.sh}}}
+
+Idući korak je kreiranje skripte za izvršavanje koja sustavu govori kako pokrenuti rješenje u izvršnoj okolini. Pod pretpostavkom da se ulazna točka u izvorni kod nalazi u datoteci {\textit{main.skr}} te da ju izvršna okolina može pokrenuti naredbom {\textit{izvrsna-okolina main.skr}}, datoteka {\textit{runner.sh}} može biti ovog oblika:
+
+\begin{lstlisting}
+#!/usr/bin/env bash
+
+izvrsna-okolina main.skr
+\end{lstlisting}
+
+\subsection{Opisivanje postupka prevođenja ili obrade koda}
+
+Ukoliko je izvorni kod prije samog izvršavanja potrebno prevesti ili na neki drugi način obraditi, podršku za to potrebno je dodati u skriptu {\textit{compile.sh}} temeljne slike {\textit{sandworm/base/base}}. Trenutni sadržaj te datoteke, sa podrškom za jezike C i C++ je:
+
+\begin{lstlisting}
+# Tries to compile with a compiler if it's present
+
+type gcc >/dev/null && ls *.c >/dev/null 2>&1 && gcc *.c
+type g++ >/dev/null && ls *.cpp >/dev/null 2>&1 && g++ *.cpp
+
+exit 0
+\end{lstlisting}
+
+Skripta provjeri je li dostupna izvršna okolina u pitanju te nalaze li se u direktoriju datoteke koje ta okolina može prevesti. Ako su uvjeti zadovoljeni, postupak prevođenja se provodi.
+
+Na temelju ovog primjera moguće je dodati i podršku za prevođenjem proizvoljnih formata datoteka.
+
+Bitno je napomenuti da, ako se ove izmjene rade u temeljnoj slici {\textit{sandworm/base/base}} da je istu potrebno ponovno izgraditi izvršavanjem skripte {\textit{build.sh}} u njenom direktoriju.
+
+\subsection{Izgradnja napravljene temeljne slike}
+
+Jednom kada je sve spremno, kako bi temeljnu sliku mogli koristiti, potrebno joj je dati ime, izgraditi ju i poslati ju na dijeljeni registar Docker slika. Pod pretpostavkom da ćemo sliku nazvati {\textit{sandworm/base/izvrsna-okolina}} te da se registar nalazi na domeni {\textit{registry.example.xyz}}, sliku možemo izgraditi i poslati na registar naredbama:
+
+\begin{lstlisting}
+docker build -t \
+	registry.example.xyz/sandworm/base/izvrsna-okolina:latest .;
+docker push \
+	registry.example.xyz/sandworm/base/izvrsna-okolina:latest;
+\end{lstlisting}
+
+Nakon ovog koraka nova izvršna okolina spremna je za korištenje u sustavu i izvršavanje zadataka.
+
 \section{Priprema izvornih datoteka za izvođenje}
+
+\section{Pakiranje rješenja u izvršne Docker slike}
 
 \section{Zakazivanje izvršavanja}
 
