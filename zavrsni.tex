@@ -1,7 +1,6 @@
 \documentclass[times, utf8, zavrsni]{fer}
-\usepackage{booktabs,appendix,listings,hyperref,graphicx,float,courier}
+\usepackage{booktabs,appendix,listings,hyperref,graphicx,float,courier,dirtree}
 \graphicspath{ {img/} }
-\lstset{basicstyle=\footnotesize\ttfamily,breaklines=true}
 
 \begin{document}
 
@@ -760,7 +759,24 @@ docker push \
 
 Nakon ovog koraka nova izvršna okolina spremna je za korištenje u sustavu i izvršavanje zadataka.
 
-\section{Priprema izvornih datoteka za izvođenje}
+\section{Priprema ulazne definicije}
+
+Prvi korak pri vrednovanju koda je priprema ulazne definicije koja sadrži izvorni kod i ulazne kontekste programa. Izvorni kod može biti proizvoljnog oblika te je jedini uvjet na njega da ga odabrana izvršna okolina može izvršiti. Poželjno je prije pakiranja provjeriti je li izvorni kod dobrog oblika (primjerice, je li ulazna točka definirana u dobroj datoteci) jer će u suprotnom ta greška postati vidljiva tek u procesu izvođenja. Ulazni kontekst programa može također biti proizvoljnog oblika te može sadržavati proizvoljne datoteke koje će programu biti dostupne prilikom izvođenja. Jedino ograničenje je to da će sadržaj datoteke {\textit{stdin}} biti prilikom izvršavanja proslijeđen na standardni ulaz programa.
+
+Ulazna definicija je direktorij oblika:
+
+\dirtree{%
+.1 ..
+	.2 inputs.
+		.3 hello petar.
+			.4 stdin.
+		.3 hello world.
+			.4 stdin.
+	.2 source.
+		.3 hello.c.
+}
+
+gdje svaki poddirektorij u direktoriju {\textit{inputs}} predstavlja jedan ulazni kontekst naziva istog kao i taj direktorij, dok direktorij {\textit{source}} sadrži izvorni kod programa. Tako dani primjer predstavlja ulaznu definiciju {\textit{Hello world!}} programa pisanog u programskom jeziku C koja ima dva ulazna primjera naziva {\textit{hello petar}} i {\textit{hello world}}.
 
 \section{Pakiranje rješenja u izvršne Docker slike}
 
