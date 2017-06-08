@@ -683,16 +683,28 @@ Zaključak.
 
 \chapter{Upute za postavljanje}
 
+U nastavku je opisan postupak sastavljanja i pokretanja cijelog sustava. 
+
 \section{Preuzimanje izvornog koda}
 
-\section{Pokretanje okoline uz pomoć alata Docker}
+Izvorni kod cijelog sustava dostupan je na web-sjedištu {\url{https://github.com/mrPjer/sandworm}} te je ostvaren kao nekoliko zasebnih potprojekata spojenih u jednu cjelinu.
 
-\section{Pokretanje okoline uz pomoć alata Gradle}
+Za preuzimanje svih potprojekata dovoljno je izvršiti naredbu
+
+\begin{lstlisting}
+git clone --recursive https://github.com/mrPjer/sandworm.git
+\end{lstlisting}
+
+čime će u direktorij {\textit{sandworm}} biti preuzeti svi potprojekti.
 
 \section{Instalacija temeljnih slika}
 \label{sec:base-images}
 
 Kako bi se mogle izgraditi izvršne Docker slike koje će pokretati programe, prvo je potrebno izgraditi i instalirati temeljne slike koje nude potporne programe i izvršne okoline potrebne za izvršavanje programa. Za tu potrebu dostupna je skripta {\textit{build.sh}} unutar potprojekta {\textit{sandworm-images}} koju je dovoljno pokrenuti da bi se izgradile slike za sve izvršne okoline.
+
+\section{Pokretanje okoline uz pomoć alata Docker}
+
+\section{Pokretanje okoline uz pomoć alata Gradle}
 
 \chapter{Upute za korištenje}
 
