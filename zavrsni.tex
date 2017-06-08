@@ -821,6 +821,29 @@ Nakon što su slike izgrađene, poželjno je poslati ih na dijeljeni registar Do
 
 \subsection{Pakiranje pomoću web usluge}
 
+Uz pretpostavku da je web usluga za pakiranje pokrenuta i dostupna na adresi {\textit{packer.example.com}}, pakiranje možemo izvršiti i putem protokola HTTP. Ovaj postupak također zahtijeva da je pokrenuta i dostupna i usluga za prikupljanje i skladištenje rezultata pa ćemo pretpostaviti da je dostupna na adresi {\textit{logger.example.com}} te da zapise želimo ostvariti pod oznakon {\textit{hello-world}}.
+
+Prvo je potrebno ulaznu definiciju pretvoriti u zip arhivu:
+
+\begin{lstlisting}
+cd hello-world;
+zip -r definicija.zip .;
+\end{lstlisting}
+
+Zatim je tu definiciju potrebno poslati na web uslugu HTTP POST zahtjevom.
+
+\begin{lstlisting}
+curl --request POST \
+  --url https://packer.example.com \
+  --header 'content-type: multipart/form-data;' \
+  --form file=@definicija.zip \
+  --form loggerEndpoint=https://logger.example.com \
+  --form 'taskId=hello-world' \
+  --form 'baseImage=sandworm/base/c_cpp'
+\end{lstlisting}
+
+Nakon završetka ovog poziva, slike će biti izgrađene na jednak način kao i u postupku pakiranja sa komandnolinijskom aplikacijom.
+
 \subsection{Slanje generiranih slika na dijeljeni registar Docker slika}
 
 \section{Zakazivanje izvršavanja}
