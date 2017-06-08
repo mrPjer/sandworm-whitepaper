@@ -505,6 +505,7 @@ Metode koje su nam dostupne preko HTTP sučelja su:
 \end{enumerate}
 
 \subsection{Alat za pakiranje rješenja i ulaznih definicija u izvršne Docker slike}
+\label{sec:packer}
 
 Kako bi imali što za izvoditi, moramo napraviti alat koji će pakirati ulazne definicije u izvršne Docker slike. Ovu funkcionalnost ostvarili smo u komandnolinijskom alatu {\textit{sandworm-packer}}, pisanom u programskom jeziku Kotlin.
 
@@ -688,6 +689,11 @@ Zaključak.
 
 \section{Pokretanje okoline uz pomoć alata Gradle}
 
+\section{Instalacija temeljnih slika}
+\label{sec:base-images}
+
+Kako bi se mogle izgraditi izvršne Docker slike koje će pokretati programe, prvo je potrebno izgraditi i instalirati temeljne slike koje nude potporne programe i izvršne okoline potrebne za izvršavanje programa. Za tu potrebu dostupna je skripta {\textit{build.sh}} unutar potprojekta {\textit{sandworm-images}} koju je dovoljno pokrenuti da bi se izgradile slike za sve izvršne okoline.
+
 \chapter{Upute za korištenje}
 
 U nastavku su opisani postupci korištenja sustava. Ove postupke može izvoditi čovjek, ali ih se preporuča automatizirati kao dio ostvarenja složenijeg sustava.
@@ -780,9 +786,42 @@ gdje svaki poddirektorij u direktoriju {\textit{inputs}} predstavlja jedan ulazn
 
 \section{Pakiranje rješenja u izvršne Docker slike}
 
+Kako bi se rješenje moglo izvršiti potrebno je ulaznu definiciju pretvoriti u niz izvršnih Docker slika gdje će svaka slika sadržavati izvršnu okolinu te izvorni kod združen sa ulaznim kontekstom za danu ulaznu definiciju. Ta pretvorba može biti izvršena koristeći komandnolinijsku aplikaciju ili koristeći web uslugu za pakiranje.
+
+Sam alat za pakiranje opisan je u poglavlju \ref{sec:packer} \nameref{sec:packer}.
+
 \subsection{Pakiranje pomoću komandnolinijske aplikacije}
 
+Slike je moguće generirati lokalno koristeći komandnolinijsku aplikaciju dostupnu u potprojektu {\textit{sandworm-packer}}. Prvo je potrebno prevesti aplikaciju koristeći naredbu
+
+\begin{lstlisting}
+./gradlew shadowJar
+\end{lstlisting}
+
+Nakon toga, pod pretpostavkama da je instalirana slika sa podrškom za izvršnu okolinu C (opisano u \ref{sec:base-images} \nameref{sec:base-images}), da se ulazna definicija nalazi u direktoriju {\textit{hello-world}} te da želimo da generirane slike imaju prefiks {\textit{sandworm/images/hello}}, izvršne slike možemo generirati naredbom
+
+\begin{lstlisting}
+java -jar build/libs/packer-1.0-SNAPSHOT-all.jar \
+	--base-image sandworm/base/c_cpp \
+	--source-directory hello-world \
+	--image-prefix sandworm/images/hello
+\end{lstlisting}
+
+Ovaj postupak generirati će tri Docker slike - jednu sa spremnim prevedenim izvornim kodom te dvije koje na tu sliku još dodaju kontekst izvođenja. Nazivi generiranih slika biti će {\textit{prefiks}}/source za sliku sa prevedenim kodom te {\textit{prefix}}/compiled/{\textit{naziv ulazne definicije}} za konačne izvršne slike.
+
+Točnije, gornjim postupkom biti će generirane slike {\textit{sandworm/images/hello/source}}, {\textit{sandworm/images/hello/compiled/hello\_world}} i {\textit{sandworm/images/hello/compiled/hello\_petar}}.
+
+Konačno, ako želimo izvršiti sliku za primjer {\textit{hello world}}, to možemo učiniti naredbom
+
+Nakon što su slike izgrađene, poželjno je poslati ih na dijeljeni registar Docker slika kako bi im i druge komponente sustava mogle pristupiti.
+
+\begin{lstlisting}
+docker run --rm -it sandworm/images/hello/compiled/hello_world;
+\end{lstlisting}
+
 \subsection{Pakiranje pomoću web usluge}
+
+\subsection{Slanje generiranih slika na dijeljeni registar Docker slika}
 
 \section{Zakazivanje izvršavanja}
 
