@@ -1,5 +1,5 @@
 \documentclass[times, utf8, zavrsni]{fer}
-\usepackage{booktabs,appendix,listings,hyperref,graphicx,float,courier,dirtree}
+\usepackage{booktabs,appendix,listings,hyperref,graphicx,float,courier,dirtree,pdfpages}
 \graphicspath{ {img/} }
 
 \begin{document}
@@ -12,8 +12,7 @@
 
 \maketitle
 
-% Ispis stranice s napomenom o umetanju izvornika rada. Uklonite naredbu \izvornik ako želite izbaciti tu stranicu.
-\izvornik
+\includepdf[pages=-,pagecommand={},width=\paperwidth]{final_task.pdf}
 
 % Dodavanje zahvale ili prazne stranice. Ako ne želite dodati zahvalu, naredbu ostavite radi prazne stranice.
 \zahvala{}
@@ -627,6 +626,111 @@ S druge strane, generirane Docker slike će zauzimati malo prostora - zbog sloje
 
 \chapter{Vrednovanje}
 
+U nastavku je ostvareno rješenje vrednovano na temelju zahtjeva koje smo postavili.
+
+\section{Sigurnost}
+
+Važna komponenta svakog sustava koji izvršava nepovjerljiv kod je sigurnost. Izvršavanjem programa prate se neprovjerene upute zadane od treće strane za koju se može pretpostaviti da će biti maliciozna. Samim time nužno je da ostvarenje sustava brine o sigurnosti i minimiziranju štete.
+
+Samo izvršavanje programa vrši se unutar Docker {\textit{containera}}, izoliranih, samostalnih cjelina. Ovim cjelinama operativni sustav domaćin može ograničiti mrežne, procesne, memorijske i diskovne sposobnosti. Tako, neovisno o događajima unutar cjeline, na operativni sustav domaćin neće biti utjecaja. Najveća šteta koju maliciozni program u takvom kontekstu može napraviti je zauzeti veliku količinu diska ili se dugo izvršavati, što operativni sustav domaćin može detektirati i pritom zaustaviti cjelinu.
+
+Ukoliko zbog malicioznog programa dođe do prestanka radilice, postupak oporavka je jednostavan. Dovoljno je s radilice obrisati malicioznu cjelinu. Time će radilica biti vraćena u radno stanje i moći će nastaviti obrađivati zahtjeve. Dodatno, kako radilica, osim prisutstva Docker okoline, ne zahtjeva dodatnu konfiguraciju, najlakši način oporavka radilice je ponovno provizioniranje iste.
+
+Dodatnu sigurnost moguće je postići unošenjem izvršnih ograničenja, što je opisano u \ref{sec:runtimeconstraints} \nameref{sec:runtimeconstraints}.
+
+\section{Razmjeran rast}
+
+Drugo važno svojstvo modernog i učinkovitog sustava je mogućnost razmjernog rasta, tj. povećanje mogućnosti obrade dodavanjem novih strojeva ({\textit{horizontalni} rast).
+
+Ovo svojstvo ostvareno je mikroservisnom arhitekturom u kojoj su sve komponente nezavisne cjeline, a komunikacija među njima je u potpunosti parametrizirana - primjerice, prilikom zakazivanja izvršavanja ujedno definiramo i lokaciju usluge za praćenje rezultata izvođenja. Posljedica takve arhitekture je da je moguće po volji dodavati i smanjivati broj inačica pojedine usluge čime se ujedno i linearno mijenjaju mogućnosti obrade cijelog sustava.
+
+Samo izvršavanje programa, koje predstavlja najzahtjevniji dio sustava, izvodi se na radilicama spojenim u bazen. U taj bazen moguće je dodati proizvoljan broj radilica, ovisno o tome kako je poželjno optimirati vrijeme izvođenja u odnosu na troškove.
+
+\section{Učinkovitost}
+
+Zbog svojstva razmjernog rasta sustav je u mreži više računala učinkovitiji od izvođenja na jednom računalu. No, važno je razmotriti i rubni slučaj kada se sve cjeline pokreću na jednom sustavu te usporediti koliko je učinkovitosti izgubljeno te koje su mogućnosti dobivene zauzvrat.
+
+\subsection{Vremenska učinkovitost}
+
+Vremenska učinkovitost najviše stradava zbog troškova pakiranja programa u izvršne slike te pokretanja i zaustavljanja Docker cjelina prilikom izvršavanja programa. U općem slučaju će ti troškovi biti amortizirani trajanjem izvođenja samog programa.
+
+Primjerice, trajanje prevođenja jednostavnog programa {\textit{Hello, World}} pisanog u programskom jeziku C traje ugrubo 0.2 sekunde.
+
+\begin{lstlisting}
+time gcc hello.c 
+gcc hello.c  0,05s user 0,03s system 43% cpu 0,182 total
+\end{lstlisting}
+
+Izvršavanje samog programa gotovo je trenutno.
+
+\begin{lstlisting}
+echo "World" | time ./a.out
+Hello, World!./a.out  0,00s user 0,00s system 0% cpu 0,003 total
+\end{lstlisting}
+
+S druge strane, pakiranje istog tog programa sa dvije ulazne definicije dugotrajan je proces.
+
+\begin{lstlisting}
+time java -jar build/libs/packer-1.0-SNAPSHOT-all.jar \
+  --base-image sandworm/base/c_cpp \
+  --source-directory src/main/resources/c_sample \
+  --image-prefix sandworm/images/test_image
+(...)
+packer/build/definition/hello petar :: Step 3/3 : RUN ./compile.sh
+(...)
+packer/build/definition :: Pushing image bd7c69e150b7
+packer/build/definition :: Pushing image 9560392135d3
+(...)
+2,54s user 0,13s system 13% cpu 19,541 total
+\end{lstlisting}
+
+Samo izvršavanje Docker slike znatno je brže, ali i dalje je mnogo sporije od {\textit{sirovog}} izvršavanja na domaćinu
+
+\begin{lstlisting}
+time docker run --rm \
+  sandworm/images/test_image/compiled/hello_world
+Hello, world!
+docker run --rm sandworm/images/test_image/compiled/hello_world
+  0,03s user 0,01s system 1% cpu 3,012 total
+\end{lstlisting}
+
+Ukoliko pak maknemo zastavicu {\textit{rm}} i time preskočimo brisanje pokrenute slike nakon izvršavanja, dobijemo još bolji rezultat
+
+\begin{lstlisting}
+time docker run
+  sandworm/images/test_image/compiled/hello_world 
+Hello, world!
+docker run sandworm/images/test_image/compiled/hello_world
+  0,03s user 0,01s system 2% cpu 1,376 total
+\end{lstlisting}
+
+pa je jedna od mogućih optimizacija pokretanje programa bez zastavice {\textit{rm}} te periodično čišćenje radilice kada joj zauzeće padne.
+
+Činjenica ostaje da pakiranje i pokretanje Dockerom unosi velike troškove koje je teško opravdati za male programe poput {\textit{Hello, World}}. S druge strane, kako su generirane slike neovisne o mjestu kreiranja i mjestu izvršavanja, možemo ih kreirati bilo gdje i izvršiti bilo gdje, što nam omogućava da imamo više strojeva koji paralelno pakiraju i više strojeva koji paralelno izvršavaju slike, čime možemo skratiti trajanje cijelog postupka. Dodatna prednost pristupa Dockerom je ta što slika predstavlja cjelinu s kojom je lako reproducirati rezultate izvođenja - za deterministični program izvođenje jednom pakirane slike će uvijek imati isti rezultat i isti ispis, što otvara mogućnost da student sam lokalno reproducira rezultat vrednovanja. Konačno, udio troškova Dockera biti će manji za programe čiji proces prevođenja i izvršavanja traje duže.
+
+\subsection{Prostorna učinkovitost}
+
+Svaka Docker slika u sebi sadrži cijelu okolinu operativnog sustava u kojem se program izvršava. Srećom, slike koje su izvedene iz istih temeljnih slika mogu tu temeljnu sliku dijeliti, čime je ukupan trošak slike smanjen.
+
+Primjerice, za slike generirane za prijašnji primjer veličine su
+
+\begin{lstlisting}
+docker images --format="{{.Repository}} {{.Size}}" | grep sandworm
+sandworm/images/test_image/compiled/hello_petar 325MB
+sandworm/images/test_image/compiled/hello_world 325MB
+sandworm/images/test_image/source 325MB
+sandworm/base/c_cpp 325MB
+sandworm/base/base 137MB
+\end{lstlisting}
+
+Vidljivo je da temeljna slika zauzima 137MB dok je dodavanje podrške za programske jezike C i C++ povećalo veličinu slike na 325MB. S druge strane, utjecaj prevođenja programa i dodavanje izvršnog konteksta nije vidljiv na razini MB.
+
+Ukratko, pakiranje u slike je prostorno učinkovito jer svaki novi sloj iskorištava prostor dostupan u sloju iz kojeg je izveden. Za pristup bez Dockera bi prostorno zauzeće bilo slično jer bi bilo nužno instalirati isti skup potpornih programa za izvršavanje kao i u slikama {\textit{base}} i {\textit{c\_cpp}}.
+
+\section{Jednostavnost korištenja}
+
+Korisničko sučelje sustava ostvareno je kao skup jasno definiranih krajnjih točaka kojima se može pristupiti protkolom HTTP. Ovo omogućava korisniku da sustav koristi ručno ili da ostvari program koji će komunicirati sa sustavom. Iako je sustav složen za ručno korištenje, korištenjem dostupnog programskog sučelja moguće je automatizirati korištenje sustava kako bi isto bilo jednostavnije. Sam način korištenja opisan je u \ref{sec:usagemanual} \nameref{sec:usagemanual}.
+
 \chapter{Daljnje dorade}
 
 U nastavku iznosimo ideje za koje smatramo da bi bilo korisno razmotriti i implementirati kao proširenja postojećeg sustava.
@@ -644,6 +748,7 @@ Dodatno, osim standardnog izlaza, ništa nas ne sprječava da program vrednujemo
 Ukratko, trenutni sustav bilježi mnogo informacija na temelju kojih se može vrednovati ponašanje programa. Za izvedbu vrednovanja dovoljno je zakazati izvršavanje programa i zatim kasnije preuzeti informacije dostupne u servisu za prikupljanje i skladištenje rezultata.
 
 \section{Unošenje izvršnih ograničenja}
+\label{sec:runtimeconstraints}
 
 Sustav trenutno nema podršku za definiranje izvršnih ograničenja (eng. {\textit{runtime constraints}}).
 
@@ -769,6 +874,7 @@ SERVER_PORT=8083 ./gradlew bootRun
 Kako bi pojedine cjeline mogle dijeliti izvršne Docker slike među sobom potrebno je pokrenuti dijeljeni registar Docker slika kojeg smo ranije opisali u poglavlju \ref{sec:dockerregistry} \nameref{sec:dockerregistry}.
 
 \chapter{Upute za korištenje}
+\label{sec:usagemanual}
 
 U nastavku su opisani postupci korištenja sustava. Ove postupke može izvoditi čovjek, ali ih se preporuča automatizirati kao dio ostvarenja složenijeg sustava.
 
