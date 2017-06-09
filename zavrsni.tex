@@ -617,6 +617,7 @@ Radilicu možemo napraviti tako da na fizički stroj instaliramo okruženje Dock
 Radilica je ta koja izvršava program i šalje njegov ispis usluzi za prikupljanje rezultata izvođenja pa je također bitno da je ta usluga mrežno dostupna radilici.
 
 \subsection{Dijeljeni registar Docker slika}
+\label{sec:dockerregistry}
 
 Konačno, kako bi povezali uslugu za pakiranje i uslugu za izvršavanje slika, potrebno je među njima slike dijeliti. U tu svrhu nam je potreban dijeljeni registar Docker slika. Postoji mnogo implementacija Docker registara, a mi smo se za potrebe testiranja odlučili za službeni {\textit{Docker Registry}}{\footnote{\url{https://docs.docker.com/registry/}}} koji je ujedno dostupan kao i Docker slika.
 
@@ -697,14 +698,66 @@ git clone --recursive https://github.com/mrPjer/sandworm.git
 
 čime će u direktorij {\textit{sandworm}} biti preuzeti svi potprojekti. U slučaju nedostupnosti prvog poslužitelja, projekt je zrcaljen na web sjedištu {\url{https://zr.psegina.com/sandworm.git}}.
 
+Ostvarenje opisano u ovom radu označeno je u svakom potprojektu oznakom {\textit{zavrsni-rad}}.
+
 \section{Instalacija temeljnih slika}
 \label{sec:base-images}
 
 Kako bi se mogle izgraditi izvršne Docker slike koje će pokretati programe, prvo je potrebno izgraditi i instalirati temeljne slike koje nude potporne programe i izvršne okoline potrebne za izvršavanje programa. Za tu potrebu dostupna je skripta {\textit{build.sh}} unutar potprojekta {\textit{sandworm-images}} koju je dovoljno pokrenuti da bi se izgradile slike za sve izvršne okoline.
 
-\section{Pokretanje okoline uz pomoć alata Docker}
+\section{Usluga za prikupljanje i skladištenje rezultata}
 
-\section{Pokretanje okoline uz pomoć alata Gradle}
+Ova usluga je ostvarena pomoću programskog okvira Spring Boot te ju možemo pokrenuti lokalno na vratima 8001 pozicioniranjem u potprojekt {\textit{sandworm-logger}} i izvršavanjem naredbe
+
+\begin{lstlisting}
+SERVER_PORT=8081 ./gradlew bootRun
+\end{lstlisting}
+
+\section{Usluga za pakiranje rješenja i ulaznih definicija u izvršne Docker slike}
+
+Ovaj usluga također je ostvarena pomoću programskog okvira Spring te ju možemo pokrenuti lokalno na vratima 8002 pozicioniranjem u potprojekt {\textit{sandworm-packer-web}} i izvršavanjem naredbe
+
+\begin{lstlisting}
+SERVER_PORT=8082 ./gradlew bootRun
+\end{lstlisting}
+
+\section{Radilice}
+
+Radilicu može predstavljati bilo kakav stroj, fizički ili virtualni, koji pokreće Docker te čiji je Docker {\textit{daemon}} dostupan preko mreže. Jednostavnosti radi, za testiranje možemo pokrenuti nekolicinu radilica pomoću samog alata Docker i slike {\textit{docker-in-docker}}{\footnote{\url{https://hub.docker.com/_/docker/}}}
+
+\begin{lstlisting}
+docker run --privileged \
+	--name sandworm-worker-1 -d docker:17.05.0-ce-dind;
+docker run --privileged \
+	--name sandworm-worker-2 -d docker:17.05.0-ce-dind;
+docker run --privileged \
+	--name sandworm-worker-3 -d docker:17.05.0-ce-dind;
+docker run --privileged \
+	--name sandworm-worker-4 -d docker:17.05.0-ce-dind;
+\end{lstlisting}
+
+Za svaku kreiranu radilicu možemo očitati IP adresu u lokalnoj virtualnoj mreži kako bi ih mogli spojiti na uslugu za upravljanje radilicama
+
+\begin{lstlisting}
+docker inspect sandworm-worker-1 | grep IPAddress;
+docker inspect sandworm-worker-2 | grep IPAddress;
+docker inspect sandworm-worker-3 | grep IPAddress;
+docker inspect sandworm-worker-4 | grep IPAddress;
+\end{lstlisting}
+
+\section{Usluga za zakazivanje izvođenja i upravljanje radilicama}
+
+Nakon što su radilice kreirane i spremne za rad možemo pokrenuti uslugu za zakazivanje izvođenja i upravljanje radilicama. Nakon pozicioniranja u potprojekt {\textit{sandworm-scheduler}} prvi korak je otvoriti datoteku {\textit{./src/main/kotlin/hr/fer/zemris/sandworm/scheduler/service/SchedulerService.kt}} te u njoj prilagoditi polje {\textit{availableClients}} sa adresama radilica dobivenim u prijašnjem koraku.
+
+Izmijenjenu datoteku spremimo te uslugu pokrenemo na vratima 8003 naredbom
+
+\begin{lstlisting}
+SERVER_PORT=8083 ./gradlew bootRun
+\end{lstlisting}
+
+\section{Dijeljeni registar Docker slika}
+
+Kako bi pojedine cjeline mogle dijeliti izvršne Docker slike među sobom potrebno je pokrenuti dijeljeni registar Docker slika kojeg smo ranije opisali u poglavlju \ref{sec:dockerregistry} \nameref{sec:dockerregistry}.
 
 \chapter{Upute za korištenje}
 
