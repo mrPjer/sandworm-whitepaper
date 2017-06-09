@@ -68,9 +68,9 @@ Za početak, dan je osvrt na nekoliko postojećih sustava za izvršavanje i eval
 
 \section{SPRUT}
 
-SPRUT{\footnote{\url{https://balrog.zemris.fer.hr/}}} je sustav za vrednovanje studentskih vježbi koji se koristi automatsko vrednovanje studentskih laboratorijskih vježbi na Fakultetu elektrotehnike i računarstva u sklopu kolegija poput {\textit{Uvod u teoriju računarstva (86537)}}{\footnote{\url{https://www.fer.unizg.hr/predmet/utrz}}} te {\textit{Prevođenje programskih jezika (86504)}}{\footnote{\url{https://www.fer.unizg.hr/predmet/ppj_a}}}.
+SPRUT{\footnote{\url{https://balrog.zemris.fer.hr/}}} je sustav za vrednovanje studentskih vježbi koji se koristi za automatsko vrednovanje studentskih laboratorijskih vježbi na Fakultetu elektrotehnike i računarstva u sklopu kolegija poput {\textit{Uvod u teoriju računarstva (86537)}}{\footnote{\url{https://www.fer.unizg.hr/predmet/utrz}}} te {\textit{Prevođenje programskih jezika (86504)}}{\footnote{\url{https://www.fer.unizg.hr/predmet/ppj_a}}}.
 
-Iako SPRUT trenutno zadovoljava potrebe na trenutnim kolegijima, mana mu je sekvencijalno izvođenje i nemogućnost razmjernog rasta, zbog čega vrednovanje studentskih vježbi traje dugo te je jedina mogućnost za optimizaciju vertikalni rast, tj. kupovina bržeg hardvera.
+Iako SPRUT trenutno zadovoljava potrebe na navedenim kolegijima, mana mu je sekvencijalno izvođenje i nemogućnost razmjernog rasta, zbog čega vrednovanje studentskih vježbi traje dugo te je jedina mogućnost za optimizaciju {\textit{vertikalni}} rast, tj. kupovina bržeg hardvera.
 
 \section{CodeAssign}
 
@@ -104,29 +104,29 @@ Prije samog opisa ostvarenja sustava dan je kratak pregled korištenih tehnologi
 
 \subsection{Docker}
 
-Veoma pojednostavljeno, Docker{\footnote{\url{https://www.docker.com/}}} je tehnologija koja nam omogućava da u jednu crnu kutiju, osim samih izvršnih datoteka, također upakiramo i cijelu okolinu (\textit{userspace} operativnog sustava) u kojoj se naš program izvršava. Posljedica toga je da, ako želimo pokrenuti program X na svome računalu ili poslužitelju (gdje X može biti jednostavna \textit{hello-world} aplikacija ili složeni mrežni sustav), ne moramo brinuti o tome u kojem je jeziku taj program pisan te koje sve ovisnosti i preduvjete moramo zadovoljiti prije pokretanja. Docker nam omogućava da svaki program apstrahiramo na crnu kutiju s jasno definiranim ulazima i izlazima.
+Veoma pojednostavljeno, Docker{\footnote{\url{https://www.docker.com/}}} je tehnologija koja omogućava da u jednu crnu kutiju, osim samih izvršnih datoteka, također bude upakirana i cijela okolina (\textit{userspace} operativnog sustava) u kojoj se program izvršava. Posljedica toga je da prilikom pokretanja programa X na računalu ili poslužitelju (gdje X može biti jednostavna \textit{hello-world} aplikacija ili složeni mrežni sustav), nije potrebno brinuti o tome u kojem je jeziku taj program pisan te koje je sve ovisnosti i preduvjete potrebno zadovoljiti prije pokretanja. Docker omogućava da svaki program bude apstrahiran na crnu kutiju s jasno definiranim ulazima i izlazima.
 
 Docker sve više raste u popularnosti te je za očekivati da će postati \textit{de facto} standard za postavljanje i pokretanje programa i web usluga. Unutar ovog projekta je korišten iz istog razloga - svi mikroservisi nude svoje Docker slike kako bi se cijeli sustav jednostavnije mogao postaviti i pokrenuti. No, također je korišten i za pojednostavljenu izgradnju i izvršavanje studentskih rješenja, o čemu će više riječi biti kasnije.
 
 \subsection{Spring}
 
-Naš sustav ostvarili smo u obliku više nezavisnih mikroservisa kako bi osigurali mogućnost razmjernog rasta. Mikroservise smo ostvarili u programskom okviru Spring{\footnote{\url{https://spring.io/}}} jer je autor imao prijašnjeg iskustva s istim, a on nam je omogućio brz razvoj mikroservisa povezanih protokolom HTTP te brzo i jednostavno ostvarenje komunikacije s bazom podataka.
+Sustav koji će biti opisan ostvaren je u obliku više nezavisnih mikroservisa kako bi bila osigurana mogućnost razmjernog rasta. Mikroservisi su ostvareni u programskom okviru Spring{\footnote{\url{https://spring.io/}}} jer je autor imao prijašnjeg iskustva s istim, a on je omogućio brz razvoj mikroservisa povezanih protokolom HTTP te brzo i jednostavno ostvarenje komunikacije s bazom podataka.
 
 \subsection{Kotlin}
 
 Kotlin{\footnote{\url{https://kotlinlang.org/}}} je programski jezik koji se nedavno pojavio te je uzeo velikog maha u zajednici osoba koje razvijaju programska rješenja za platformu Android. Radi se o modernom programskom jeziku koji se (među ostalim) prevodi u Java bytekod te nudi potpunu interoperabilnost s postojećim JVM tehnologijama.
 
-Od prednosti nad programskim jezikom Java istaknuti ćemo sigurniji i bolji sustav tipova, jednostavniju i izražajniju sintaksu te bolju podršku za određene konstrukte funkcijskog programiranja.
+Od prednosti nad programskim jezikom Java istaknut je sigurniji i bolji sustav tipova, jednostavnija i izražajnija sintaksa te bolja podršku za određene konstrukte funkcijskog programiranja.
 
-Kotlin smo koristili za izradu svih mikroservisa i pomoćnih biblioteka. 
+Kotlin je korišten za izradu svih mikroservisa i pomoćnih biblioteka. 
 
 \subsection{H2}
 
-Kako u nekom trenutku moramo spremiti rezultate vrednovanja, odlučili smo ih spremiti u relacijsku bazu podataka. Za tu komponentu smo odabrali bazu H2{\footnote{\url{http://www.h2database.com/html/main.html}}} jer korišteni programski okvir Spring Data ima odličnu podršku za istu. Također, H2 može svoje podatke spremati u običnu datoteku na datotečnom sustavu što nam pojednostavljuje proces postavljanja i održavanja baze podataka.
+Kako je u nekom trenutku nužno spremiti rezultate vrednovanja, odlučeno je spremiti ih u relacijsku bazu podataka. Za tu komponentu je odabrana baza H2{\footnote{\url{http://www.h2database.com/html/main.html}}} jer korišteni programski okvir Spring Data ima odličnu podršku za istu. Također, H2 može svoje podatke spremati u običnu datoteku na datotečnom sustavu što pojednostavljuje proces postavljanja i održavanja baze podataka.
 
 \section{Idejno ostvarenje}
 
-Prije opisivanja ideje ostvarenja, podsjećamo što očekujemo od sustava kojeg želimo napraviti, ali i koristiti:
+Od sustava kojeg želimo napraviti, ali i koristiti, očekujemo:
 
 \begin{enumerate}
 \item Sigurnost
@@ -135,33 +135,33 @@ Prije opisivanja ideje ostvarenja, podsjećamo što očekujemo od sustava kojeg 
 \item Jednostavnost korištenja
 \end{enumerate}
 
-Glavni alat na kojem će rješenje biti zasnovano jesu izvršne Docker slike. Naime, Docker nam omogućava da bilo koji program upakiramo, zajedno s njegovom izvršnom okolinom, u crnu kutiju koju zatim možemo izvršiti poput izvršne datoteke. Sve što nam je pritom potrebno je Docker okolina te ne ovisimo o implementacijskim detaljima programa kojeg izvršavamo. Izvršne Docker slike možemo pojednostavljeno smatrati kako statično povezivanje na steroidima - u kutiji uz program dolazi i cijeli \textit{userspace} operativnog sustava nad kojim će se program izvršiti.
+Glavni alat na kojem će rješenje biti zasnovano jesu izvršne Docker slike. Naime, Docker omogućava da bilo koji program bude upakiran, zajedno s njegovom izvršnom okolinom, u crnu kutiju koja se zatim može izvršiti poput izvršne datoteke. Sve što je pritom potrebno je Docker okolina te se ne ovisi o implementacijskim detaljima programa koji se izvršava. Izvršne Docker slike mogu se pojednostavljeno smatrati kao statično povezivanje na steroidima - u kutiji uz program dolazi i cijeli \textit{userspace} operativnog sustava nad kojim će se program izvršiti.
 
-Iduća veoma korisna činjenica je ta da u samu Docker sliku možemo \textit{upeći} ulazne podatke koje će program primiti. Tako ćemo dobiti izvršnu Docker sliku koja će za deterministički program uvijek davati jednak izlaz, neovisno o tome gdje je pokrenuta, a možemo ju pokrenuti bilo gdje, gdje imamo pristup Dockeru.
+Iduća veoma korisna činjenica je ta da se u samu Docker sliku mogu \textit{upeći} ulazni podaci koje će program primiti. Tako se dobiva izvršna Docker sliku koja će za deterministički program uvijek davati jednak izlaz, neovisno o tome gdje je pokrenuta, a može se pokrenuti bilo gdje, gdje postoji pristup Dockeru.
 
-Prije nego što možemo rješenje izvršiti, moramo prilikom generiranja Docker slike ponuditi ili izvršnu okolinu za interpretirane jezike ili prevedene datoteke za jezike koji se prevode. Ovaj korak je individualan za svaki jezik, a detalji će biti ponuđeni nešto kasnije.
+Prije nego što se rješenje može izvršiti, nužno je prilikom generiranja Docker slike ponuditi ili izvršnu okolinu za interpretirane jezike ili prevedene datoteke za jezike koji se prevode. Ovaj korak je individualan za svaki jezik, a detalji će biti ponuđeni nešto kasnije.
 
-Zadnja stvar koja će nas zanimati je kako je tekao proces prevođenja i izvršavanja samog programa te koji je njegov konačni ispis. Prilikom izvršavanja izvršne Docker slike, standardni izlaz programa bit će vidljiv na ekranu. No, kako bi mogli automatizirati evaluaciju te obrađivati izlaz, morat ćemo ga proslijediti na udaljenu lokaciju. To možemo ostvariti tako da prilikom izvršavanja sam program omotamo u drugi program koji će uhvatiti njegov izlaz i proslijediti ga na odgovarajuću lokaciju. No, kako želimo zadržati fleksibilnost, cilj nam je udaljenu lokaciju na koju će se slati informacije o izvršavanju na neki način parametrizirati. Izvršne Docker slike nam i to omogućuju te možemo prilikom izvršavanja slike također predati i dodatne argumente, što ćemo iskoristiti za parametriziranje udaljene lokacije na koju će se slati informacije o izvršavanju.
+Zadnja stvar koja će biti korisna je informacija kako je tekao proces prevođenja i izvršavanja samog programa te koji je njegov konačni ispis. Prilikom izvršavanja izvršne Docker slike, standardni izlaz programa bit će vidljiv na ekranu. No, kako bi se mogla automatizirati evaluacija te obrađivati izlaz, potrebno ga je proslijediti na udaljenu lokaciju. To je moguće ostvariti tako da prilikom izvršavanja sam program bude omotan u drugi program koji će uhvatiti njegov izlaz i proslijediti ga na odgovarajuću lokaciju. No, kako je poželjno zadržati fleksibilnost, cilj je udaljenu lokaciju na koju će se slati informacije o izvršavanju na neki način parametrizirati. Izvršne Docker slike i to omogućuju te je moguće prilikom izvršavanja slike također predati i dodatne argumente, što će biti iskorišteno za parametriziranje udaljene lokacije na koju će se slati informacije o izvršavanju.
 
-Uzimanjem svega navedenog u obzir, koristeći izvršne Docker slike možemo dobiti \textit{nešto} što će svojim pokretanjem rezultate izvršavanja programa poslati na neku udaljenu lokaciju. Idealni poziv takve slike bio bi:
+Uzimanjem svega navedenog u obzir, koristeći izvršne Docker slike moguće je dobiti \textit{nešto} što će svojim pokretanjem rezultate izvršavanja programa poslati na neku udaljenu lokaciju. Idealni poziv takve slike bio bi:
 
 \begin{lstlisting}
 ./nesto https://mojaudaljenalokacija
 \end{lstlisting}
 
-što bi unutar sebe pokrenulo program koji vrednujemo i informacije o toku izvršavanja poslalo na udaljeno web sjedište {\textit{mojaudaljenalokacija}}. U stvarnosti će taj poziv izgledati ovako:
+što bi unutar sebe pokrenulo program koji se vrednuje i informacije o toku izvršavanja poslalo na udaljeno web sjedište {\textit{mojaudaljenalokacija}}. U stvarnosti će taj poziv izgledati ovako:
 
 \begin{lstlisting}[language=Bash]
-docker run --rm -it \
+docker run --rm \
 	sandworm/images/test_image/compiled/hello_petar \
 	https://sandworm-logger/neki-tag
 \end{lstlisting}
 
 što će pokrenuti Docker sliku kreiranu za navedeni program i proslijediti pokretaču unutar nje lokaciju na koju treba poslati informacije o izvršavanju.
 
-Rezultat ovog pristupa je taj da nam nije bitno gdje se izvršavanje događa te kamo se usmjerava rezultat izvršavanja. To nam omogućava da veoma lako ostvarimo svojstvo razmjernog rasta - radilica koje će izvršavati programe možemo imati proizvoljno mnogo, a isto to možemo napraviti i sa servisima koji će skupljati informacije o izvršavanju. Ono što će nam još trebati je servis ili alat koji će se brinuti o zakazivanju izvršavanja - na kojoj će se radilici izvesti koja slika te kamo će ona proslijediti rezultat izvođenja.
+Rezultat ovog pristupa je taj da nije bitno gdje se izvršavanje događa te kamo se usmjerava rezultat izvršavanja. To omogućava da se veoma lako ostvari svojstvo razmjernog rasta - radilica koje će izvršavati programe može biti proizvoljno mnogo, a isto to se može napraviti i sa servisima koji će skupljati informacije o izvršavanju. Ono što će još trebati je servis ili alat koji će se brinuti o zakazivanju izvršavanja - na kojoj će se radilici izvesti koja slika te kamo će ona proslijediti rezultat izvođenja.
 
-Konačno, cijeli proces vrednovanja možemo opisati sljedećim koracima:
+Konačno, cijeli proces vrednovanja može se opisati sljedećim koracima:
 
 \begin{enumerate}
 \item Za svaki par (program, ulazna definicija) generirati izvršnu Docker sliku s potpuno fiksiranim kontekstom izvršavanja
@@ -169,13 +169,13 @@ Konačno, cijeli proces vrednovanja možemo opisati sljedećim koracima:
 \item Preuzeti rezultate izvršavanja s nekog servisa za praćenje izvršavanja
 \end{enumerate}
 
-Dodatno, ako prilikom pokretanja ne navedemo udaljenu lokaciju na koju će se slati informacije o izvršavanju, možemo program pokrenuti bez funkcionalnosti skupljanja podataka. Time smo dobili crnu kutiju koja, jednom kad se pokrene, izvrši korisnički program s jednim točno definiranim skupom podataka. Korisna posljedica je ta da smo dobili jednostavan način reprodukcije rezultata pokretanja koji ne ovisi o platformi na kojoj se program pokreće. Tako, ako student nije zadovoljan rezultatom vrednovanja svog programa, može pokrenuti generiranu sliku lokalno i uvjeriti se u ispis svog programa.
+Dodatno, ako prilikom pokretanja nije navedena udaljena lokaciju na koju će se slati informacije o izvršavanju, program se pokreće bez funkcionalnosti skupljanja podataka. Time je dobivena crna kutija koja, jednom kad se pokrene, izvrši korisnički program s jednim točno definiranim skupom podataka. Korisna posljedica je ta da je dobiven jednostavan način reprodukcije rezultata pokretanja koji ne ovisi o platformi na kojoj se program pokreće. Tako, ako student nije zadovoljan rezultatom vrednovanja svog programa, može pokrenuti generiranu sliku lokalno i uvjeriti se u ispis svog programa.
 
-Konkretan sustav ostvaren je kao skup nezavisnih alata i mikroservisa koji obavljaju navedene zadaće, a detaljnije ćemo ih opisati u nastavku.
+Konkretan sustav ostvaren je kao skup nezavisnih alata i mikroservisa koji obavljaju navedene zadaće, a detaljnije će biti opisani u nastavku.
 
 \section{Logička arhitektura}
 
-Kao što smo već naveli, sam sustav ostvaren je kao skup nezavisnih alata i mikroservisa. Logička arhitektura koja prikazuje način na koji su manje jedinice spojene u funkcionalnu cjelinu prikazan je u nastavku.
+Kao što je već navedeno, sam sustav ostvaren je kao skup nezavisnih alata i mikroservisa. Logička arhitektura koja prikazuje način na koji su manje jedinice spojene u funkcionalnu cjelinu prikazan je u nastavku.
 
 \begin{figure}[H]
 	\centering
@@ -202,7 +202,7 @@ Usluga za pakiranje rješenja i ulaznih definicija ({\textit{sandworm-packer-web
 \section{Ostvarenje}
 \label{sec:implementation}
 
-Na idućih nekoliko strana opisat ćemo konkretno ostvarenje sustava. Projekt je, sukladno logičkoj arhitekturi, podijeljen na odgovarajuće potprojekte. Oni su:
+Projekt je, sukladno logičkoj arhitekturi, podijeljen na odgovarajuće potprojekte. Oni su:
 
 \begin{enumerate}
 \item {\textit{sandworm-images}} - temeljne Docker slike potrebne za izgradnju izvršnih Docker slika s podrškom za razne izvršne okoline
@@ -216,7 +216,7 @@ Na idućih nekoliko strana opisat ćemo konkretno ostvarenje sustava. Projekt je
 
 \subsection{Temeljne slike s izvršnim okolinama za pojedine jezike}
 
-Kako bi sustav mogao podržati različite okoline izvršavanja bilo je potrebno napraviti nekoliko temeljnih Docker slika nad kojima će se graditi konačne izvršne slike. Točnije, za svaku željenu okolinu (npr. C, C++, JavaScript) potrebno je napraviti zasebnu sliku. Iako smo mogli napraviti jednu sliku koja bi sadržavala sve okoline, ovaj smo pristup odabrali zbog veće fleksibilnosti. Pojedine slike su veoma jednostavne i lakše za održavati u odnosu na jednu veliku sliku.
+Kako bi sustav mogao podržati različite okoline izvršavanja bilo je potrebno napraviti nekoliko temeljnih Docker slika nad kojima će se graditi konačne izvršne slike. Točnije, za svaku željenu okolinu (npr. C, C++, JavaScript) potrebno je napraviti zasebnu sliku. Iako je bilo moguće napraviti jednu sliku koja bi sadržavala sve okoline, ovaj je pristup odabran zbog veće fleksibilnosti. Pojedine slike su veoma jednostavne i lakše za održavati u odnosu na jednu veliku sliku.
 
 Svaka slika u svojem direktoriju sadrži skriptu {\textit{build.sh}} kojom se slika može izgraditi i koja označava sliku odgovarajućom oznakom. U vršnom direktoriju potprojekta nalazi se skripta {\textit{build.sh}} koja gradi sve pojedinačne slike.
 
@@ -255,7 +255,7 @@ Temeljna slika je sama po sebi beskorisna jer joj nedostaje ključna skripta {\t
 
 \subsubsection{C i C++}
 
-Idući korak je definiranje slika s izvršnim okruženjima pa ćemo početi s okruženjem za programske jezike C i C++. Pogledajmo prvo definiciju slike u datoteci {\textit{Dockerfile}}:
+Idući korak je definiranje slika s izvršnim okruženjima te će se krenuti s okruženjem za programske jezike C i C++. Prvo će biti promatrana definicija slike u datoteci {\textit{Dockerfile}}:
 
 \begin{lstlisting}
 FROM sandworm/base/base
@@ -268,7 +268,7 @@ RUN apt-get update \
 COPY runner.sh .
 \end{lstlisting}
 
-Za podršku za programske jezike C i C++ dovoljno je nad temeljnom slikom instalirati paket {\textit{build-essential}} (koji sadrži alate gcc i g++ potrebne za prevođenje koda) te ponuditi skriptu za pokretanje programa, {\textit{runner.sh}}. Pogledajmo i njenu definiciju:
+Za podršku za programske jezike C i C++ dovoljno je nad temeljnom slikom instalirati paket {\textit{build-essential}} (koji sadrži alate gcc i g++ potrebne za prevođenje koda) te ponuditi skriptu za pokretanje programa, {\textit{runner.sh}}. Njena definicija je:
 
 \begin{lstlisting}
 #!/usr/bin/env bash
@@ -297,9 +297,9 @@ RUN apt-get update \
 COPY runner.sh .
 \end{lstlisting}
 
-Ovdje smo umjesto paketa {\textit{build-essential}} instalirali paket {\textit{nodejs}} koji nam nudi izvršno okruženje za programski jezik JavaScript.
+Ovdje je umjesto paketa {\textit{build-essential}} instaliran paket {\textit{nodejs}} koji nudi izvršno okruženje za programski jezik JavaScript.
 
-Konačno, potrebno je i ponuditi skriptu za pokretanje izvršavanja, {\textit{runner.sh}}:
+Konačno, potrebno je ponuditi i skriptu za pokretanje izvršavanja, {\textit{runner.sh}}:
 
 \begin{lstlisting}
 #!/usr/bin/env bash
@@ -307,19 +307,19 @@ Konačno, potrebno je i ponuditi skriptu za pokretanje izvršavanja, {\textit{ru
 nodejs main.js
 \end{lstlisting}
 
-Slično kao i prije, potrebno je pozvati izvršnu okolinu nad datotekom koja sadrži izvorni kod. Ovdje smo se ograničili na to da rješenje mora imati datoteku naziva {\textit{main.js}} koja sadrži ulaznu točku u program. Ako bi ovo htjeli promijeniti, dovoljno je doraditi ovu sliku, ili na temelju nje napraviti drugu.
+Slično kao i prije, potrebno je pozvati izvršnu okolinu nad datotekom koja sadrži izvorni kod. Ovdje se ograničilo na to da rješenje mora imati datoteku naziva {\textit{main.js}} koja sadrži ulaznu točku u program. Ako je ovo potrebno promijeniti, dovoljno je doraditi ovu sliku, ili na temelju nje napraviti drugu.
 
 \subsubsection{Ostali jezici}
 
-U gornje dvije slike prikazan je postupak dodavanja podrške za jedan prevedeni i jedan interpretirani jezik. Kako dodavanje podrške za druge jezike prati istu šablonu, nećemo ih više ovdje navoditi, dok sam projekt sadrži još slike za programske jezike Python 2 i Python 3.
+U gornje dvije slike prikazan je postupak dodavanja podrške za jedan prevedeni i jedan interpretirani jezik. Kako dodavanje podrške za druge jezike prati istu šablonu, ostali neće biti ovdje navedeni, dok sam projekt sadrži još slike za programske jezike Python 2 i Python 3.
 
 \subsection{Praćenje i dijeljenje rezultata izvođenja}
 
-Kako bi mogli pratiti tijek izvođenja programa potrebno je informaciju o izvođenju negdje spremiti. Ovaj proces sastoji se od dvije komponente - s jedne strane imamo sustav koji nudi programsko sučelje za spremanje i arhiviranje informacija o izvođenju, dok s druge strane imamo sam proces izvođenja programa koji generira informacije koje treba spremiti.
+Da bi bilo moguće pratiti tijek izvođenja programa potrebno je informaciju o izvođenju negdje spremiti. Ovaj proces sastoji se od dvije komponente - s jedne strane postoji sustav koji nudi programsko sučelje za spremanje i arhiviranje informacija o izvođenju, dok s druge strane postoji sam proces izvođenja programa koji generira informacije koje treba spremiti.
 
-Osvrnimo se prvo na to kako ćemo pratiti sam proces izvođenja programa. Ako program izvodimo lokalno, taj postupak je jednostavan - ispis programa bit će vidljiv pred nama u konzoli. No, kako nam je jedan od ciljeva mogućnost razmjernog rasta, moramo odvojiti postupak izvođenja od postupka skladištenja rezultata izvođenja. Mogućnost preusmjeravanja ispisa programa na udaljeno računalo će nam omogućiti da nas uistinu nije briga gdje se i kako program izvodi.
+Kako će se pratiti proces izvođenja programa? Ako se program izvodi lokalno, taj postupak je jednostavan - ispis programa bit će vidljiv u konzoli. No, kako je jedan od ciljeva mogućnost razmjernog rasta, nužno je odvojiti postupak izvođenja od postupka skladištenja rezultata izvođenja. Mogućnost preusmjeravanja ispisa programa na udaljeno računalo omogućuje da uistinu nije bitno gdje se i kako program izvodi.
 
-Ideja iza ove funkcionalnosti je ta da preusmjerimo standardni izlaz i standardni izlaz za greške programa kojeg izvodimo na ulaz programa koji će sve što primi na svoj ulaz slati na udaljeni mrežni servis. Taj program za prosljeđivanje je konkretno skripta {\textit{stream-collector.sh}} dostupna u temeljnoj slici.
+Ideja iza ove funkcionalnosti je ta da se preusmjeri standardni izlaz i standardni izlaz za greške programa koji se izvodi na ulaz programa koji će sve što primi na svoj ulaz slati na udaljeni mrežni servis. Taj program za prosljeđivanje je konkretno skripta {\textit{stream-collector.sh}} dostupna u temeljnoj slici.
 
 \begin{lstlisting}
 LOGGER_ENDPOINT="$1"
@@ -346,11 +346,11 @@ do
 done
 \end{lstlisting}
 
-Skripta kao ulazne parametre prima lokaciju udaljenog odredišta na koje će slati ispis te oznaku pod kojom će spremiti taj ispis. Zatim, za svaku liniju svog ulaza prvo taj ulaz ispiše kako bi mogli i u konzoli pratiti izvođenje. Zatim, ako je udaljeno odredište definirano, na njega se HTTP POST zahtjevom šalju informacije o ispisu i vremenu kada se taj ispis dogodio.
+Skripta kao ulazne parametre prima lokaciju udaljenog odredišta na koje će slati ispis te oznaku pod kojom će spremiti taj ispis. Zatim, za svaku liniju svog ulaza prvo taj ulaz ispiše kako bi se moglo i u konzoli pratiti izvođenje. Zatim, ako je udaljeno odredište definirano, na njega se HTTP POST zahtjevom šalje informacije o ispisu i vremenu kada se taj ispis dogodio.
 
-Ako udaljeno odredište nije definirano, skripta samo ispisuje ono što primi na svoj ulaz, što nam omogućava da izvršnu sliku pokrećemo i lokalno, bez udaljenog praćenja ishoda.
+Ako udaljeno odredište nije definirano, skripta samo ispisuje ono što primi na svoj ulaz, što omogućava da se izvršna slika pokreće i lokalno, bez udaljenog praćenja ishoda.
 
-Idući korak je omotati skriptu za izvođenje, {\textit{runner.sh}} tako da njene izlaze preusmjerimo u skriptu {\textit{stream-collector.sh}}. Ovo je ostvareno u ulaznoj skripti temeljne slike, {\textit{entrypoint.sh}}:
+Idući korak je omotati skriptu za izvođenje, {\textit{runner.sh}} tako da njeni izlazi budu preusmjereni u skriptu {\textit{stream-collector.sh}}. Ovo je ostvareno u ulaznoj skripti temeljne slike, {\textit{entrypoint.sh}}:
 
 \begin{lstlisting}
 LOGGER_ENDPOINT="\$1"
@@ -364,19 +364,17 @@ touch ./stdin;
 } 3>&1 1>&2 | ./stream-collector.sh "\$LOGGER_ENDPOINT" stdout;
 \end{lstlisting}
 
-Skripta osigurava postojanje datoteke {\textit{stdin}} te zatim poziva {\textit{runner.sh}}, prosljeđujući joj na standardni ulaz sadržaj datoteke {\textit{stdin}} te prosljeđujući njene izlaze skripti {\textit{stream-collector.sh}}.
-
-Za detaljan opis kako preusmjeravanja tokova u navedenoj skripti rade preporučujemo pogledati komentar{\footnote{\url{https://stackoverflow.com/a/31151808/576809}}} na usluzi StackOverflow kojim smo se poslužili prilikom izrade skripte.
+Skripta osigurava postojanje datoteke {\textit{stdin}} te zatim poziva {\textit{runner.sh}}, prosljeđujući joj na standardni ulaz sadržaj datoteke {\textit{stdin}} te prosljeđujući njene izlaze{\footnote{\url{https://stackoverflow.com/a/31151808/576809}}} skripti {\textit{stream-collector.sh}}.
 
 \subsection{Usluga za prikupljanje i skladištenje rezultata}
 
-Drugi dio postupka praćenja izvođenja je mrežna usluga koja će prihvaćati informacije o izvođenju, skladištiti ih te omogućiti dohvat istih. U tu svrhu ostvarili smo mikroservis naziva {\textit{sandworm-logger} koji preko HTTP programskog sučelja nudi upravo potrebnu funkcionalnost.
+Drugi dio postupka praćenja izvođenja je mrežna usluga koja će prihvaćati informacije o izvođenju, skladištiti ih te omogućiti dohvat istih. U tu svrhu ostvaren je mikroservis naziva {\textit{sandworm-logger} koji preko HTTP programskog sučelja nudi upravo potrebnu funkcionalnost.
 
 Sustav je implementiran u programskom okviru Spring s bibliotekama Spring Boot i Spring Data, dok same podatke sprema u relacijsku bazu podataka H2.
 
 Samo ostvarenje usluge je uz potporu programskog okvira bilo jednostavno.
 
-Prvo smo definirali model podataka koje ćemo spremati u bazu podataka:
+Prvo je definiran model podataka koji će biti spremani u bazu podataka:
 
 \begin{lstlisting}
 package hr.fer.zemris.sandworm.logger.model
@@ -409,10 +407,10 @@ data class Message(
 }
 \end{lstlisting}
 
-Kao jezik pisanja servisa odabrali smo Kotlin i na ovom primjeru je već vidljiva ekspresivnost jezika i prednost nad Javom. Kotlinov {\textit{Data Class}}{\footnote{\url{https://kotlinlang.org/docs/reference/data-classes.html}}} konstrukt nam omogućuje da deklarativno opišemo entitet koji želimo, dok će se sam jezik pobrinuti za ostvarenje gettera, settera, metoda {\textit{equals}}, {\textit{hashCode}} i {\textit{toString}}. Također je vidljiva i interoperabilnost s postojećim alatima - model smo anotirali sa {\textit{javax.persistence.*}} anotacijama koje možemo koristiti zbog Kotlinove potpune podrške za postojeći Java kod.
+Kao jezik pisanja servisa odabran je Kotlin i na ovom primjeru je već vidljiva ekspresivnost jezika i prednost nad Javom. Kotlinov {\textit{Data Class}}{\footnote{\url{https://kotlinlang.org/docs/reference/data-classes.html}}} konstrukt omogućava da se entitet deklarativno opiše, dok će se sam jezik pobrinuti za ostvarenje gettera, settera, metoda {\textit{equals}}, {\textit{hashCode}} i {\textit{toString}}. Također je vidljiva i interoperabilnost s postojećim alatima - model je anotiran sa {\textit{javax.persistence.*}} anotacijama koje se mogu koristiti zbog Kotlinove potpune podrške za postojeći Java kod.
 
 
-Nakon definicije modela definirali smo jednostavan CRUD{\footnote{CRUD - {\textit{Create, Read, Update, Delete}}}} repozitorij:
+Nakon definicije modela definiran je jednostavan CRUD{\footnote{CRUD - {\textit{Create, Read, Update, Delete}}}} repozitorij:
 
 \begin{lstlisting}
 package hr.fer.zemris.sandworm.logger.repository
@@ -433,11 +431,11 @@ interface MessageRepository : CrudRepository<Message, Long> {
 }
 \end{lstlisting}
 
-Ovakav repozitorij možemo koristiti za komunikaciju s bazom podataka te nam on omogućava unos, ispis i uređivanje informacija o porukama koje primamo. Također smo definirali i dvije pomoćne metode koje nam omogućavaju dohvat svih poruka vezanih za određen zadatak te dohvat tih poruka ograničen na one koje su se dogodile nakon određenog trenutka u vremenu.
+Ovakav repozitorij može se koristiti za komunikaciju s bazom podataka te omogućava unos, ispis i uređivanje informacija o porukama koje se primaju. Također su definirane i dvije pomoćne metode koje omogućavaju dohvat svih poruka vezanih za određen zadatak te dohvat tih poruka ograničen na one koje su se dogodile nakon određenog trenutka u vremenu.
 
-U definiciji svog sustava dali smo samo sučelje repozitorija - za konkretno ostvarenje pobrinut će se programski okvir Spring na temelju naše deklaracije.
+U definiciji sustava dano je samo sučelje repozitorija - za konkretno ostvarenje pobrinut će se programski okvir Spring na temelju dane deklaracije.
 
-Za kraj nam je ostalo definirati krajnje točke našeg mrežnog sučelja, što u programskom okviru {\textit{Spring}} radimo definicijom komponente zvane {\textit{Controller}}:
+Za kraj ostaje definirati krajnje točke mrežnog sučelja, što se u programskom okviru {\textit{Spring}} ostvaruje definicijom komponente zvane {\textit{Controller}}:
 
 \begin{lstlisting}
 package hr.fer.zemris.sandworm.logger.controller
@@ -495,7 +493,7 @@ class MainController
 \hfill
 \break
 
-Metode koje su nam dostupne preko HTTP sučelja su:
+Metode koje su dostupne preko HTTP sučelja su:
 
 \begin{enumerate}
 \item Kreiranje novog unosa za dani zadatak i oznaku ({\textit{stdout}}, {\textit{stderr}} ili neka druga prikladna oznaka)
@@ -506,7 +504,7 @@ Metode koje su nam dostupne preko HTTP sučelja su:
 \subsection{Alat za pakiranje rješenja i ulaznih definicija u izvršne Docker slike}
 \label{sec:packer}
 
-Kako bi imali što za izvoditi, moramo napraviti alat koji će pakirati ulazne definicije u izvršne Docker slike. Ovu funkcionalnost ostvarili smo u komandnolinijskom alatu {\textit{sandworm-packer}}, pisanom u programskom jeziku Kotlin.
+Kako bi se moglo što izvoditi, potrebno je napraviti alat koji će pakirati ulazne definicije u izvršne Docker slike. Ova funkcionalnost ostvarena je u komandnolinijskom alatu {\textit{sandworm-packer}}, pisanom u programskom jeziku Kotlin.
 
 Alat očekuje ulazne podatke u direktoriju oblika:
 
@@ -522,7 +520,7 @@ inputs/
 
 gdje je {\textit{source}} direktorij koji sadrži izvorni kod programa, a {\textit{inputs}} direktorij koji sadrži poddirektorije gdje svaki poddirektorij predstavlja jedan ulazni skup podataka. Datoteka {\textit{stdin}} u ulaznom skupu podataka bit će proslijeđena na standardni ulaz programa prilikom izvođenja, dok će sve ostale datoteke prisutne u tom direktoriju također biti prisutne i u direktoriju programa prilikom izvršavanja.
 
-Sam alat podržava nekoliko opcija, a ispis svih možemo dobiti pokretanjem programa bez argumenata:
+Sam alat podržava nekoliko opcija, a ispis svih može se dobiti pokretanjem programa bez argumenata:
 
 \begin{lstlisting}
 usage: packer
@@ -540,7 +538,7 @@ usage: packer
                             source and the input files
 \end{lstlisting}
 
-Konkretno, program pozivamo tako da mu definiramo koju će temeljnu sliku koristiti (te time i programsko okruženje koje će biti dostupno prilikom izvođenja), identifikator zadatka koji će biti korišten prilikom zapisivanja informacija o pakiranju i prevođenju, lokaciju udaljene usluge za prikupljanje rezultata, prefiks naziva generiranih Docker slika te konačno direktorij u kojem se nalaze ulazne definicije na temelju kojih će se izgraditi pojedine izvršne slike. 
+Konkretno, program se poziva tako da mu se definira koju će temeljnu sliku koristiti (te time i programsko okruženje koje će biti dostupno prilikom izvođenja), identifikator zadatka koji će biti korišten prilikom zapisivanja informacija o pakiranju i prevođenju, lokaciju udaljene usluge za prikupljanje rezultata, prefiks naziva generiranih Docker slika te konačno direktorij u kojem se nalaze ulazne definicije na temelju kojih će se izgraditi pojedine izvršne slike. 
 
 Samo ostvarenje oslanja se na nekoliko pomoćnih biblioteka. Za definiranje komandnolinijskog sučelja te učitavanje opcija korištena je biblioteka {\textit{Commons CLI}}{\footnote{\url{https://commons.apache.org/proper/commons-cli/}}}. Za komunikaciju s lokalnim Docker {\textit{daemonom}} (zbog izgradnje slika) korištena je biblioteka {\textit{docker-java}}{\footnote{\url{https://github.com/docker-java/docker-java}}}, dok je za komunikaciju s udaljenom uslugom za prikupljanje rezultata preko protokola HTTP korištena biblioteka {\textit{OkHttp}}{\footnote{\url{https://square.github.io/okhttp/}}}.
 
@@ -548,7 +546,7 @@ Alat je ostvaren u tri razreda. Pomoćni razred {\textit{RemoteLogger}} služi z
 
 \subsubsection{Web sučelje prema alatu za pakiranje}
 
-Kako bi omogućili jednostavnije korištenje napravljenog alata, oko njega smo napravili omotač koji za njega izlaže programsko sučelje preko protokola HTTP. Njega smo također ostvarili pomoću programskog okvira {\textit{Spring}}, a ono izlaže jednu krajnju točku koja preko POST zahtjeva prima ZIP datoteku koja sadrži ulaznu definiciju programa, lokaciju usluge za praćenje rezultata, naziv zadatka te naziv temeljne slike nad kojom će biti izgrađene izvršne slike. Kako je alat za pakiranje napravljen prvenstveno kao biblioteka koju koristi komandnolinijska aplikacija, implementiranje omotača svelo se na prosljeđivanje zahtjeva toj biblioteci. Cijeli omotač ostvarili smo u jednom {\textit{Controlleru}} te Spring Boot pokretačkoj skripti. Ostvarenje {\textit{Controllera}} slijedi kako bi ilustrirali jednostavnost korištenja ostvarene biblioteke:
+Kako bi bilo omogućeno jednostavnije korištenje napravljenog alata, oko njega je napravljen omotač koji za njega izlaže programsko sučelje preko protokola HTTP. On je također ostvaren pomoću programskog okvira {\textit{Spring}} te izlaže jednu krajnju točku koja preko POST zahtjeva prima ZIP datoteku koja sadrži ulaznu definiciju programa, lokaciju usluge za praćenje rezultata, naziv zadatka te naziv temeljne slike nad kojom će biti izgrađene izvršne slike. Kako je alat za pakiranje napravljen prvenstveno kao biblioteka koju koristi komandnolinijska aplikacija, implementiranje omotača svelo se na prosljeđivanje zahtjeva toj biblioteci. Cijeli omotač ostvaren je u jednom {\textit{Controlleru}} te Spring Boot pokretačkoj skripti. Ostvarenje {\textit{Controllera}} slijedi kako bi se prikazala jednostavnost korištenja ostvarene biblioteke:
 
 \begin{lstlisting}
 package hr.fer.zemris.sandworm.packer.web
@@ -601,7 +599,7 @@ Usluga je ostvarena kao web usluga u programskom okviru Spring koja nudi jednu k
 
 Nakon što zaprimi zahtjev, usluga ga prosljeđuje unutarnjoj usluzi {\textit{SchedulerService}}. Ta usluga unutar sebe prati stanje i zauzeće dostupnih radilica te, kada jedna postane slobodna, zakazuje zahtijevano izvođenje. Samo izvođenje svodi se na komuniciranje s Docker {\textit{daemonom}} prisutnim na radilici te slanjem instrukcija za povlačenje, a zatim i pokretanje odabrane slike. Definicija radilica prisutna je u privatnoj članskoj vrijednosti {\textit{availableClients}} u kojoj su zapisane putanje do Docker {\textit{daemona}} na radilicama.
 
-Komuniciranje s Docker {\textit{daemonom}} na radilicama ostvareno je bibliotekom docker-java{\footnote{\url{https://github.com/docker-java/docker-java}}} koja nam omogućava da programski izvršavamo ekvivalente naredbi {\textit{docker pull}} i {\textit{docker run}}.
+Komuniciranje s Docker {\textit{daemonom}} na radilicama ostvareno je bibliotekom docker-java{\footnote{\url{https://github.com/docker-java/docker-java}}} koja omogućuje da se programski izvršavaju ekvivalenti naredbi {\textit{docker pull}} i {\textit{docker run}}.
 
 Jednom kada je izvođenje završeno, radilica se vraća u bazen dostupnih radilica nakon čega je spremna obraditi novi zahtjev.
 
@@ -611,22 +609,22 @@ Svaki korak procesa zakazivanja izvođenja također se šalje na uslugu za prać
 
 Radilice koje izvršavaju programe najjednostavnija su komponenta sustava. Radi se o bilo kojem stroju (fizičkom ili virtualnom) koji ima instaliranu Docker okolinu te čiji je Docker {\textit{daemon}} dostupan usluzi za zakazivanje.
 
-Radilicu možemo napraviti tako da na fizički stroj instaliramo okruženje Docker, ali također možemo kreirati radilice koristeći sam Docker. Točnije, ako pokrenemo {\textit{docker-in-docker}}{\footnote{\url{https://hub.docker.com/_/docker/}}} sliku, dobit ćemo potpuno izolirano okruženje koje je spremno da bi se koristilo kao radilica.
+Radilicu je moguće napraviti tako da se na fizički stroj instalira okruženje Docker, ali također se mogu kreirati i koristeći sam Docker. Točnije, ako se pokrene slika {\textit{docker-in-docker}}{\footnote{\url{https://hub.docker.com/_/docker/}}}, dobiva se potpuno izolirano okruženje koje je spremno za korištenje kao radilica.
 
 Radilica je ta koja izvršava program i šalje njegov ispis usluzi za prikupljanje rezultata izvođenja pa je također bitno da je ta usluga mrežno dostupna radilici.
 
 \subsection{Dijeljeni registar Docker slika}
 \label{sec:dockerregistry}
 
-Konačno, kako bi povezali uslugu za pakiranje i uslugu za izvršavanje slika, potrebno je među njima slike dijeliti. U tu svrhu nam je potreban dijeljeni registar Docker slika. Postoji mnogo ostvarenja Docker registara, a mi smo se za potrebe testiranja odlučili za službeni {\textit{Docker Registry}}{\footnote{\url{https://docs.docker.com/registry/}}} koji je ujedno dostupan kao i Docker slika.
+Konačno, kako bi se povezale usluga za pakiranje i usluga za izvršavanje slika, potrebno je među njima slike dijeliti. U tu svrhu je potreban dijeljeni registar Docker slika. Postoji mnogo ostvarenja Docker registara, a za potrebe testiranja odlučili za službeni {\textit{Docker Registry}}{\footnote{\url{https://docs.docker.com/registry/}}} koji je ujedno dostupan kao i Docker slika.
 
-Službeni Docker registar je jednostavan za pokrenuti i koristiti, no mana mu je to što ne nudi mogućnost brisanja postojećih slika, što predstavlja problem u dužem korištenju jer je jedini način za čišćenje registra brisanje svih podataka i ponovno postavljanje onih koje želimo zadržati.
+Službeni Docker registar je jednostavan za pokrenuti i koristiti, no mana mu je to što ne nudi mogućnost brisanja postojećih slika, što predstavlja problem u dužem korištenju jer je jedini način za čišćenje registra brisanje svih podataka i ponovno postavljanje onih koje se želi zadržati.
 
-S druge strane, generirane Docker slike će zauzimati malo prostora - zbog slojevite arhitekture slika, svaka pojedina slika će zauzimati samo onoliko prostora koliko donosi nad svojom temeljnom slikom pa će tako prostor zauzimati samo prevedeni korisnički programi (jednom po programu) te korisnički programi vezani uz ulaznu definiciju, za svaku definiciju posebno. Ako su korisnički programi i ulazne definicije maleni (red veličine kB), što je slučaj sa studentskim vježbama, jeftinije je kupiti novi disk nego brinuti o zauzeću. No, svejedno moramo biti svjesni ovog problema, pogotovo ako uzmemo u obzir da postoji mogućnost da se korisnički program maliciozno upakira u sliku koja je veća od očekivanog.
+S druge strane, generirane Docker slike će zauzimati malo prostora - zbog slojevite arhitekture slika, svaka pojedina slika će zauzimati samo onoliko prostora koliko donosi nad svojom temeljnom slikom pa će tako prostor zauzimati samo prevedeni korisnički programi (jednom po programu) te korisnički programi vezani uz ulaznu definiciju, za svaku definiciju posebno. Ako su korisnički programi i ulazne definicije maleni (red veličine kB), što je slučaj sa studentskim vježbama, jeftinije je kupiti novi disk nego brinuti o zauzeću. No, svejedno je potrebno biti svjestan ovog problema, pogotovo ako se uzme u obzir da postoji mogućnost da se korisnički program maliciozno upakira u sliku koja je veća od očekivanog.
 
 \chapter{Vrednovanje}
 
-U nastavku je ostvareno rješenje vrednovano na temelju zahtjeva koje smo postavili.
+U nastavku je ostvareno rješenje vrednovano na temelju zahtjeva koji su bili postavljeni.
 
 \section{Sigurnost}
 
@@ -694,7 +692,7 @@ docker run --rm sandworm/images/test_image/compiled/hello_world
   0,03s user 0,01s system 1% cpu 3,012 total
 \end{lstlisting}
 
-Ukoliko pak maknemo zastavicu {\textit{rm}} i time preskočimo brisanje pokrenute slike nakon izvršavanja, dobijemo još bolji rezultat
+Ukoliko se pak makne zastavica {\textit{rm}} i time preskoči brisanje pokrenute slike nakon izvršavanja, dobiva se još bolji rezultat
 
 \begin{lstlisting}
 time docker run
@@ -706,7 +704,7 @@ docker run sandworm/images/test_image/compiled/hello_world
 
 pa je jedna od mogućih optimizacija pokretanje programa bez zastavice {\textit{rm}} te periodično čišćenje radilice kada joj zauzeće padne.
 
-Činjenica ostaje da pakiranje i pokretanje Dockerom unosi velike troškove koje je teško opravdati za male programe poput {\textit{Hello, World}}. S druge strane, kako su generirane slike neovisne o mjestu kreiranja i mjestu izvršavanja, možemo ih kreirati bilo gdje i izvršiti bilo gdje, što nam omogućava da imamo više strojeva koji paralelno pakiraju i više strojeva koji paralelno izvršavaju slike, čime možemo skratiti trajanje cijelog postupka. Dodatna prednost pristupa Dockerom je ta što slika predstavlja cjelinu s kojom je lako reproducirati rezultate izvođenja - za deterministični program izvođenje jednom pakirane slike će uvijek imati isti rezultat i isti ispis, što otvara mogućnost da student sam lokalno reproducira rezultat vrednovanja. Konačno, udio troškova Dockera biti će manji za programe čiji proces prevođenja i izvršavanja traje duže.
+Činjenica ostaje da pakiranje i pokretanje Dockerom unosi velike troškove koje je teško opravdati za male programe poput {\textit{Hello, World}}. S druge strane, kako su generirane slike neovisne o mjestu kreiranja i mjestu izvršavanja, mogu se kreirati bilo gdje i izvršiti bilo gdje, što omogućuje imanje više strojeva koji paralelno pakiraju i više strojeva koji paralelno izvršavaju slike, čime se može skratiti trajanje cijelog postupka. Dodatna prednost pristupa Dockerom je ta što slika predstavlja cjelinu s kojom je lako reproducirati rezultate izvođenja - za deterministični program izvođenje jednom pakirane slike će uvijek imati isti rezultat i isti ispis, što otvara mogućnost da student sam lokalno reproducira rezultat vrednovanja. Konačno, udio troškova Dockera biti će manji za programe čiji proces prevođenja i izvršavanja traje duže.
 
 \subsection{Prostorna učinkovitost}
 
@@ -733,17 +731,17 @@ Korisničko sučelje sustava ostvareno je kao skup jasno definiranih krajnjih to
 
 \chapter{Daljnje dorade}
 
-U nastavku iznosimo ideje za koje smatramo da bi bilo korisno razmotriti i implementirati kao proširenja postojećeg sustava.
+U nastavku su iznesene ideje koje bi bilo korisno razmotriti i implementirati kao proširenja postojećeg sustava.
 
 \section{Vrednovanje ispisa programa}
 
 Jedna od motivacija izgradnje ovog sustava bila je mogućnost zamjene SPRUT-a kao evaluacijskog mehanizma u kontekstu studentskih laboratorijskih vježbi.
 
-Sustav koji smo napravili trenutno podržava samo izvršavanje programa, ali ne i evaluaciju. Točnije, s trenutnim ostvarenjem ne možemo automatizirano vrednovati rezultat izvođenja programskog rješenja.
+Sustav koji je opisan trenutno podržava samo izvršavanje programa, ali ne i evaluaciju. Točnije, s trenutnim ostvarenjem ne postoji mogućnost automatskog vrednovanja rezultata izvođenja programskog rješenja.
 
-Uzevši u obzir trenutnu arhitekturu sustava, vrednovanje ispisa moguće je ostvariti povlačenjem ispisa programa sa servisa za prikupljanje i skladištenje rezultata, filtriranje istih po oznaci {\textit{stdout}} te uspoređivanje dobivenog s očekivanim izlazom. Sam ispis možemo dohvatiti na temelju oznake koju dobijemo prilikom zakazivanja izvršavanja programa.
+Uzevši u obzir trenutnu arhitekturu sustava, vrednovanje ispisa moguće je ostvariti povlačenjem ispisa programa sa servisa za prikupljanje i skladištenje rezultata, filtriranjem istih po oznaci {\textit{stdout}} te uspoređivanjem dobivenog s očekivanim izlazom. Sam ispis može se dohvatiti na temelju oznake koja se dobije prilikom zakazivanja izvršavanja programa.
 
-Dodatno, osim standardnog izlaza, ništa nas ne sprječava da program vrednujemo i po drugim zapisima - recimo, na temelju zapisa možemo odrediti i je li bilo grešaka prilikom prevođenja te vrijeme koje je programu bilo potrebno da bi se izvršio.
+Dodatno, osim standardnog izlaza, ništa ne sprječava da se program vrednuje i po drugim zapisima - recimo, na temelju zapisa može se odrediti i je li bilo grešaka prilikom prevođenja te vrijeme koje je programu bilo potrebno da bi se izvršio.
 
 Ukratko, trenutni sustav bilježi mnogo informacija na temelju kojih se može vrednovati ponašanje programa. Za izvedbu vrednovanja dovoljno je zakazati izvršavanje programa i zatim kasnije preuzeti informacije dostupne u servisu za prikupljanje i skladištenje rezultata.
 
@@ -752,11 +750,11 @@ Ukratko, trenutni sustav bilježi mnogo informacija na temelju kojih se može vr
 
 Sustav trenutno nema podršku za definiranje izvršnih ograničenja (eng. {\textit{runtime constraints}}).
 
-Izvršna ograničenja su nam korisna jer s njima možemo dodatno ograničiti izvođenje zadajući recimo najviše dozvoljeno vrijeme izvođenja, najviše dozvoljenu količinu iskorištene memorije ili najviše dozvoljen broj pokrenutih dretvi.
+Izvršna ograničenja su korisna jer njima možemo dodatno ograničiti izvođenje zadajući, recimo, najviše dozvoljeno vrijeme izvođenja, najvišu dozvoljenu količinu iskorištene memorije ili najviše dozvoljen broj pokrenutih dretvi.
 
-Izvršna ograničenja u postojećem sustavu mogu se ostvariti omatanjem skripte {\textit{runner.sh}} alatom {\textit{isolate}}\footnote{\url{https://github.com/ioi/isolate}}. {\textit{Isolate}} nam omogućava definiranje raznih izvršnih ograničenja nad bilo kojim programom pa tako i programima koje izvršavamo u sklopu našeg sustava.
+Izvršna ograničenja u postojećem sustavu mogu se ostvariti omatanjem skripte {\textit{runner.sh}} alatom {\textit{isolate}}\footnote{\url{https://github.com/ioi/isolate}}. {\textit{Isolate}} omogućuje definiranje raznih izvršnih ograničenja nad bilo kojim programom pa tako i programima koji se izvršavaju u sklopu ostvarenog sustava.
 
-Za izvršna ograničenja je bitno napomenuti da primjena istih ovisi o okolini u kojoj se program izvršava. Primjerice, naivno ostvarenje ograničenja ukupne memorije bi ograničila količinu memorije koju proces može zauzeti i ubila ga ako on istu prijeđe. No, tehnologije zasnovane na sakupljačima smeća često ne pokreću proces oslobađanja memorije dok sami ne zaključe da je to potrebno.
+Za izvršna ograničenja bitno je napomenuti da primjena istih ovisi o okolini u kojoj se program izvršava. Primjerice, naivno ostvarenje ograničenja ukupne memorije bi ograničila količinu memorije koju proces može zauzeti i ubila ga ako on istu prijeđe. No, tehnologije zasnovane na sakupljačima smeća često ne pokreću proces oslobađanja memorije dok sami ne zaključe da je to potrebno.
 
 Primjerice, ako značajno ograničimo količinu memorije za proces koji izvršava kod pisan u programskom jeziku Java, a pritom ne obavijestimo virtualni stroj o ograničenjima (za JVM to možemo napraviti zastavicom {\textit{Xmx}}) isti nikad neće pokrenuti proces sakupljanja smeća te će program brzo nasilno završiti, iako je pisani program ispravan te ne bi zauzeo previše memorije ako bi se proces sakupljanja smeća na vrijeme pokrenuo.
 
@@ -765,21 +763,21 @@ Uz samu podršku za zadavanje izvršnih ograničenja korisno bi bilo dodati i mo
 
 \section{Korištenje Infrastruktura-kao-Usluga sustava za automatsko provizioniranje radilica}
 
-Sustav koji smo opisali trenutno se oslanja na predefiniran set radilica zapisanih unutar servisa za zakazivanje izvođenja i upravljanje radilicama. Posljedica je da, neovisno o količini programa koje trebamo evaluirati u danom trenutku radilice uvijek moraju biti spremne i pokrenute.
+Opisani sustav trenutno se oslanja na predefiniran set radilica zapisanih unutar servisa za zakazivanje izvođenja i upravljanje radilicama. Posljedica je da, neovisno o količini programa koje treba evaluirati u danom trenutku radilice uvijek moraju biti spremne i pokrenute.
 
 Predviđeno opterećenje sustava u akademskim uvjetima je skokovito - postojat će dugi periodi kada se sustav neće koristiti te kratki periodi kada će biti potrebno vrednovati velik broj studentskih rješenja.
 
-Kako će radilice biti potrebne samo kratko vrijeme, predlažemo da se sustav za upravljanje radilicama doradi tako da ih automatski provizionira kada je to potrebno te ugasi kada više nisu potrebne. Primjerice, ako imamo fizičke strojeve koje koristimo kao radilice, sustav za upravljanje može koristiti tehnologiju {\textit{Wake-on-LAN}}{\footnote{\url{https://en.wikipedia.org/wiki/Wake-on-LAN}} kako bi strojeve palio i gasio po potrebi i tako uštedio na troškovima energije.
+Kako će radilice biti potrebne samo kratko vrijeme, predlaže se da se sustav za upravljanje radilicama doradi tako da ih automatski provizionira kada je to potrebno te ugasi kada više nisu potrebne. Primjerice, ako se fizički strojevi koriste kao radilice, sustav za upravljanje može koristiti tehnologiju {\textit{Wake-on-LAN}}{\footnote{\url{https://en.wikipedia.org/wiki/Wake-on-LAN}} kako bi strojeve palio i gasio po potrebi i tako uštedio na troškovima energije.
 
-		  No, kako je posljedica naše arhitekture ta da nam uistinu nije bitno na čemu izvršavamo programe dokle god to nešto ima podršku za Docker, možemo se također osloniti i na Infrastruktura-kao-Usluga (eng. {\textit{Infrastructure-as-a-Service}}{\footnote{{\url{https://en.wikipedia.org/wiki/Cloud_computing}}}} sustave za automatsko provizioniranje radilica kada nam trebaju te gašenje istih kada nam ne trebaju. Ovim pristupom možemo ostvariti višu paralelizaciju izvođenja te smanjiti troškove jer takve usluge nude naplaćivanje po satu, što odgovara našim potrebama.
+No, kako je posljedica ostvarene arhitekture ta da uistinu nije bitno na čemu se izvršavaju programi, dokle god to nešto ima podršku za Docker, može se također osloniti i na Infrastruktura-kao-Usluga (eng. {\textit{Infrastructure-as-a-Service}}{\footnote{{\url{https://en.wikipedia.org/wiki/Cloud_computing}}}} sustave za automatsko provizioniranje radilica kada su potrebne te gašenje istih kada više nisu. Ovim pristupom može se ostvariti viša paralelizacija izvođenja te se mogu smanjiti troškovi jer takve usluge nude naplaćivanje po satu, što odgovara potrebama koje su opisane.
 
-Tako bi mogli imati samo jedan fizički stroj lokalno koji bi brinuo o zaprimanju zahtjeva, dok bi sav težak posao mogli odraditi na dinamički provizioniranim radilicama.
+Tako je moguće imati samo jedan fizički stroj lokalno koji brine o zaprimanju zahtjeva, dok bi sav težak posao bio odrađen na dinamički provizioniranim radilicama.
 
-Odabir ponuđača IaaS usluga ovisi ponajprije o cijeni te potrebama hardvera koji se zakupuje. Ponuđače koje ćemo spomenuti su {\textit{DigitalOcean}}{\footnote{\url{https://www.digitalocean.com/}}}, {\textit{Amazon Web Services}}{\footnote{\url{https://aws.amazon.com/}}}, {\textit{Microsoft Azure}}{\footnote{\url{https://azure.microsoft.com/}}} te {\textit{Google Cloud Platform}}{\footnote{\url{https://cloud.google.com/}}}. DigitalOcean, primjerice, nudi provizioniranje sustava unutar 55 sekundi što je prihvatljivo vrijeme čekanja u odnosu na trajanje cijelog procesa vrednovanja.
+Odabir ponuđača IaaS usluga ovisi ponajprije o cijeni te potrebama hardvera koji se zakupuje. Ponuđače koje vrijedi istaknuti su {\textit{DigitalOcean}}{\footnote{\url{https://www.digitalocean.com/}}}, {\textit{Amazon Web Services}}{\footnote{\url{https://aws.amazon.com/}}}, {\textit{Microsoft Azure}}{\footnote{\url{https://azure.microsoft.com/}}} te {\textit{Google Cloud Platform}}{\footnote{\url{https://cloud.google.com/}}}. DigitalOcean, primjerice, nudi provizioniranje sustava unutar 55 sekundi što je prihvatljivo vrijeme čekanja u odnosu na trajanje cijelog procesa vrednovanja.
 
-Za ostvarenje ove ideje bilo bi potrebno prilagoditi sustav za zakazivanje izvođenja i upravljanje radilicama tako da, umjesto unaprijed definiranog niza radilica, koristeći programska sučelja odgovarajućeg ponuđača usluga kreira i uništava radilice po potrebi. Konkretno, za ponuđača usluga DigitalOcean možemo iskoristiti biblioteku {\textit{digitalocean-api-java}}{\footnote{\url{https://github.com/jeevatkm/digitalocean-api-java}}}.
+Za ostvarenje ove ideje bilo bi potrebno prilagoditi sustav za zakazivanje izvođenja i upravljanje radilicama tako da, umjesto unaprijed definiranog niza radilica, koristeći programska sučelja odgovarajućeg ponuđača usluga kreira i uništava radilice po potrebi. Konkretno, za ponuđača usluga DigitalOcean može se iskoristiti biblioteka {\textit{digitalocean-api-java}}{\footnote{\url{https://github.com/jeevatkm/digitalocean-api-java}}}.
 
-Po pitanju cijene i paralelizacije koju ovim pristupom možemo ostvariti, DigitalOcean u trenutku pisanja u svojoj ponudi, među ostalim, nudi i virtualne strojeve sa 512MB RAM, 20GB prostora za podatke te jednom virtualnom jezgrom što bi trebalo biti dovoljno za izvođenje studentskih vježbi. Cijena korištenja je \$0.007 po satu{\footnote{\url{https://www.digitalocean.com/pricing/}}} ili ugrubo 5 lipa po satu. Tako za trošak od kune po satu možemo pokrenuti ugrubo dvadeset strojeva koji će paralelno izvršavati i vrednovati studentske programe, što je i više nego prihvatljivo za naše potrebe.
+Po pitanju cijene i paralelizacije koja ovim pristupom možemo biti ostvarena, DigitalOcean u trenutku pisanja u svojoj ponudi, među ostalim, nudi i virtualne strojeve sa 512MB RAM, 20GB prostora za podatke te jednom virtualnom jezgrom što bi trebalo biti dovoljno za izvođenje studentskih vježbi. Cijena korištenja je \$0.007 po satu{\footnote{\url{https://www.digitalocean.com/pricing/}}} ili ugrubo 5 lipa po satu. Tako za trošak od kune po satu moguće je pokrenuti ugrubo dvadeset strojeva koji će paralelno izvršavati i vrednovati studentske programe, što je i više nego prihvatljivo za opisane potrebe.
 
 
 \chapter{Zaključak}
@@ -790,6 +788,8 @@ Pomoću tehnologije Docker također je ostvarena i sigurnost. Programska rješen
 
 Najbitnija značajka sustava je jednostavnost održavanja - dodavanje podrški za nova izvršna okruženja jednostavno je i neometano te se ne može dogoditi da jedno okruženje smeta drugome. Dodavanje radilica također je jednostavan proces jer je jedini zahtjev nad radilicom taj da ista pokreće Docker te da je hardverski sposobna izvršiti program koji ćemo joj proslijediti.
 
+Mana sustava je neefikasnost u izvršavanju programa sa kratkim vremenom izvođenja zbog velikog troška pokretanja i gašenja Docker okolina, no to je trošak koji je moguće amortizirati programima koji se duže izvršavaju te iskorištavanjem većeg stupnja paralelizacije kojeg sustav nudi.
+
 Ostvareni sustav tek je podloga za ostvarenje platforme za vrednovanje studentskih rješenja. Potrebno je još barem ostvariti mehanizam bodovanja izlaza programa te napraviti korisničko sučelje prema programu koje će automatizirati postupak stvaranja i pokretanja izvršivih slika te prikazivanja bitnih elemenata rezultata.
 
 No, kao takvog, sustav je moguće iskoristiti kao izvršni sloj u već ostvarenim platformama kojima je potreban moderan, siguran i jednostavan izvršni sloj sa svojstvom razmjernog rasta.
@@ -798,11 +798,9 @@ No, kao takvog, sustav je moguće iskoristiti kao izvršni sloj u već ostvareni
 
 \chapter{Upute za postavljanje}
 
-U nastavku je opisan postupak sastavljanja i pokretanja cijelog sustava. 
-
 \section{Preuzimanje izvornog koda}
 
-Izvorni kod cijelog sustava dostupan je na web-sjedištu {\url{https://github.com/mrPjer/sandworm}} te je ostvaren kao nekoliko zasebnih potprojekata spojenih u jednu cjelinu.
+Izvorni kod cijelog sustava dostupan je na web sjedištu {\url{https://github.com/mrPjer/sandworm}} te je ostvaren kao nekoliko zasebnih potprojekata spojenih u jednu cjelinu.
 
 Za preuzimanje svih potprojekata dovoljno je izvršiti naredbu
 
@@ -821,7 +819,7 @@ Kako bi se mogle izgraditi izvršne Docker slike koje će pokretati programe, pr
 
 \section{Usluga za prikupljanje i skladištenje rezultata}
 
-Ova usluga je ostvarena pomoću programskog okvira Spring Boot te ju možemo pokrenuti lokalno na vratima 8001 pozicioniranjem u potprojekt {\textit{sandworm-logger}} i izvršavanjem naredbe
+Ova usluga je ostvarena pomoću programskog okvira Spring Boot koju se može pokrenuti lokalno na vratima 8001 pozicioniranjem u potprojekt {\textit{sandworm-logger}} i izvršavanjem naredbe
 
 \begin{lstlisting}
 SERVER_PORT=8081 ./gradlew bootRun
@@ -829,7 +827,7 @@ SERVER_PORT=8081 ./gradlew bootRun
 
 \section{Usluga za pakiranje rješenja i ulaznih definicija u izvršne Docker slike}
 
-Ovaj usluga također je ostvarena pomoću programskog okvira Spring te ju možemo pokrenuti lokalno na vratima 8002 pozicioniranjem u potprojekt {\textit{sandworm-packer-web}} i izvršavanjem naredbe
+Ovaj usluga također je ostvarena pomoću programskog okvira Spring te se može pokrenuti lokalno na vratima 8002 pozicioniranjem u potprojekt {\textit{sandworm-packer-web}} i izvršavanjem naredbe
 
 \begin{lstlisting}
 SERVER_PORT=8082 ./gradlew bootRun
@@ -837,7 +835,7 @@ SERVER_PORT=8082 ./gradlew bootRun
 
 \section{Radilice}
 
-Radilicu može predstavljati bilo kakav stroj, fizički ili virtualni, koji pokreće Docker te čiji je Docker {\textit{daemon}} dostupan preko mreže. Jednostavnosti radi, za testiranje možemo pokrenuti nekolicinu radilica pomoću samog alata Docker i slike {\textit{docker-in-docker}}{\footnote{\url{https://hub.docker.com/_/docker/}}}
+Radilicu može predstavljati bilo kakav stroj, fizički ili virtualni, koji pokreće Docker te čiji je Docker {\textit{daemon}} dostupan preko mreže. Jednostavnosti radi, za testiranje se može pokrenuti nekolicina radilica pomoću samog alata Docker i slike {\textit{docker-in-docker}}{\footnote{\url{https://hub.docker.com/_/docker/}}}
 
 \begin{lstlisting}
 docker run --privileged \
@@ -850,7 +848,7 @@ docker run --privileged \
 	--name sandworm-worker-4 -d docker:17.05.0-ce-dind;
 \end{lstlisting}
 
-Za svaku kreiranu radilicu možemo očitati IP adresu u lokalnoj virtualnoj mreži kako bi ih mogli spojiti na uslugu za upravljanje radilicama
+Za svaku kreiranu radilicu može se očitati IP adresa u lokalnoj virtualnoj mreži kako bi ih se moglo spojiti na uslugu za upravljanje radilicama
 
 \begin{lstlisting}
 docker inspect sandworm-worker-1 | grep IPAddress;
@@ -861,9 +859,9 @@ docker inspect sandworm-worker-4 | grep IPAddress;
 
 \section{Usluga za zakazivanje izvođenja i upravljanje radilicama}
 
-Nakon što su radilice kreirane i spremne za rad možemo pokrenuti uslugu za zakazivanje izvođenja i upravljanje radilicama. Nakon pozicioniranja u potprojekt {\textit{sandworm-scheduler}} prvi korak je otvoriti datoteku {\textit{./src/main/kotlin/hr/fer/zemris/sandworm/scheduler/service/SchedulerService.kt}} te u njoj prilagoditi polje {\textit{availableClients}} sa adresama radilica dobivenim u prijašnjem koraku.
+Nakon što su radilice kreirane i spremne za rad može se pokrenuti usluga za zakazivanje izvođenja i upravljanje radilicama. Nakon pozicioniranja u potprojekt {\textit{sandworm-scheduler}} prvi korak je otvoriti datoteku {\textit{./src/main/kotlin/hr/fer/zemris/sandworm/scheduler/service/SchedulerService.kt}} te u njoj prilagoditi polje {\textit{availableClients}} sa adresama radilica dobivenim u prijašnjem koraku.
 
-Izmijenjenu datoteku spremimo te uslugu pokrenemo na vratima 8003 naredbom
+Izmijenjenu datoteku potrebno je spremiti te se usluga može pokrenuti na vratima 8003 naredbom
 
 \begin{lstlisting}
 SERVER_PORT=8083 ./gradlew bootRun
@@ -871,7 +869,7 @@ SERVER_PORT=8083 ./gradlew bootRun
 
 \section{Dijeljeni registar Docker slika}
 
-Kako bi pojedine cjeline mogle dijeliti izvršne Docker slike među sobom potrebno je pokrenuti dijeljeni registar Docker slika kojeg smo ranije opisali u poglavlju \ref{sec:dockerregistry} \nameref{sec:dockerregistry}.
+Kako bi pojedine cjeline mogle dijeliti izvršne Docker slike među sobom potrebno je pokrenuti dijeljeni registar Docker slika koji je ranije opisan u poglavlju \ref{sec:dockerregistry} \nameref{sec:dockerregistry}.
 
 \chapter{Upute za korištenje}
 \label{sec:usagemanual}
@@ -991,7 +989,7 @@ Ovaj postupak generirati će tri Docker slike - jednu sa spremnim prevedenim izv
 
 Točnije, gornjim postupkom biti će generirane slike {\textit{sandworm/images/hello/source}}, {\textit{sandworm/images/hello/compiled/hello\_world}} i {\textit{sandworm/images/hello/compiled/hello\_petar}}.
 
-Konačno, ako želimo izvršiti sliku za primjer {\textit{hello world}}, to možemo učiniti naredbom
+Konačno, izvršavanje slike za primjer {\textit{hello world}}, moguće je učiniti naredbom
 
 \begin{lstlisting}
 docker run --rm -it sandworm/images/hello/compiled/hello_world;
@@ -1001,7 +999,7 @@ Nakon što su slike izgrađene, poželjno je poslati ih na dijeljeni registar Do
 
 \subsection{Pakiranje pomoću web usluge}
 
-Uz pretpostavku da je web usluga za pakiranje pokrenuta i dostupna na adresi {\textit{packer.example.com}}, pakiranje možemo izvršiti i putem protokola HTTP. Ovaj postupak također zahtijeva da je pokrenuta i dostupna i usluga za prikupljanje i skladištenje rezultata pa ćemo pretpostaviti da je dostupna na adresi {\textit{logger.example.com}} te da zapise želimo ostvariti pod oznakom {\textit{hello-world}}.
+Uz pretpostavku da je web usluga za pakiranje pokrenuta i dostupna na adresi {\textit{packer.example.com}}, pakiranje se može izvršiti i putem protokola HTTP. Ovaj postupak također zahtijeva da je pokrenuta i dostupna i usluga za prikupljanje i skladištenje rezultata pa ćemo pretpostaviti da je dostupna na adresi {\textit{logger.example.com}} te da se zapisi žele ostvariti pod oznakom {\textit{hello-world}}.
 
 Prvo je potrebno ulaznu definiciju pretvoriti u zip arhivu:
 
@@ -1034,7 +1032,7 @@ docker tag \
   registry.example.com/sandworm/images/hello/compiled/hello_world
 \end{lstlisting}
 
-Zatim tu istu sliku možemo poslati na registar naredbom
+Zatim ta ista slika može biti poslana na registar naredbom
 
 \begin{lstlisting}
 docker push \
@@ -1066,7 +1064,7 @@ curl --request GET \
   --url https://logger.example.com/scheduler-run
 \end{lstlisting}
 
-Rezultat ćemo dobiti u strukturiranom JSON obliku.
+Rezultat će biti dobiven u strukturiranom JSON obliku.
 
 \end{appendices}
 
