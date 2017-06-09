@@ -65,7 +65,7 @@ Idealan sustav za vrednovanje rješenja trebao bi biti brz, učinkovit, siguran 
 
 \chapter{Postojeći sustavi}
 
-Osvrnimo se prvo na nekoliko postojećih sustava za izvršavanje i evaluaciju programskih rješenja. Sustave navodimo dijelom jer su poslužili kao inspiracija u razvoju našeg rješenja zbog svojih inovativnih pristupa, a dijelom jer su valjane alternative koje treba razmotriti i uzeti u obzir prilikom odabira sustava za evaluaciju.
+Za početak, dan je osvrt na nekoliko postojećih sustava za izvršavanje i evaluaciju programskih rješenja. Sustavi su navedeni dijelom jer su poslužili kao inspiracija u razvoju našeg rješenja zbog svojih inovativnih pristupa, a dijelom jer su valjane alternative koje treba razmotriti i uzeti u obzir prilikom odabira sustava za vrednovanje.
 
 \section{SPRUT}
 
@@ -95,19 +95,19 @@ Evaluator{\footnote{\url{https://evaluator.mioc.hr/}}} je sustav koji se koristi
 
 Kako se redovno koristi u nastavi, Evaluator je postao robustan i stabilan sustav s podrškom za različitim izvršnim okolinama te naprednim mogućnostima poput razmjernog rasta dodavanjem novih radilica te preciznog definiranja ograničenja na vrijeme izvođenja.
 
-Mana Evaluatora je u tome što se radi o zatvorenom sustavu kojeg ne možemo jednostavno preuzeti i prilagoditi svojim potrebama.
+Mana Evaluatora je u tome što se radi o zatvorenom sustavu kojeg nije moguće jednostavno preuzeti i prilagoditi vlastitim potrebama.
 
 \chapter{Sustav za sigurno i učinkovito udaljeno izvođenje studentskih programskih vježbi}
 
 \section{Korištene tehnologije}
 
-Prije samog opisa ostvarenja sustava dajemo kratak pregled korištenih tehnologija kako bi olakšali praćenje i razumijevanje samog postupka ostvarenja.
+Prije samog opisa ostvarenja sustava dan je kratak pregled korištenih tehnologija kako bi bilo olakšano praćenje i razumijevanje samog postupka ostvarenja.
 
 \subsection{Docker}
 
 Veoma pojednostavljeno, Docker{\footnote{\url{https://www.docker.com/}}} je tehnologija koja nam omogućava da u jednu crnu kutiju, osim samih izvršnih datoteka, također upakiramo i cijelu okolinu (\textit{userspace} operativnog sustava) u kojoj se naš program izvršava. Posljedica toga je da, ako želimo pokrenuti program X na svome računalu ili poslužitelju (gdje X može biti jednostavna \textit{hello-world} aplikacija ili složeni mrežni sustav), ne moramo brinuti o tome u kojem je jeziku taj program pisan te koje sve ovisnosti i preduvjete moramo zadovoljiti prije pokretanja. Docker nam omogućava da svaki program apstrahiramo na crnu kutiju s jasno definiranim ulazima i izlazima.
 
-Docker sve više raste u popularnosti te je za očekivati da će postati \textit{de facto} standard za postavljanje i pokretanje programa i web usluga. Unutar ovog projekta ga koristimo iz istog razloga - svi mikroservisi nude svoje Docker slike kako bi se cijeli sustav jednostavnije mogao postaviti i pokrenuti. No, također ga koristimo i za pojednostavljenu izgradnju i izvršavanje studentskih rješenja, o čemu će više riječi biti kasnije.
+Docker sve više raste u popularnosti te je za očekivati da će postati \textit{de facto} standard za postavljanje i pokretanje programa i web usluga. Unutar ovog projekta je korišten iz istog razloga - svi mikroservisi nude svoje Docker slike kako bi se cijeli sustav jednostavnije mogao postaviti i pokrenuti. No, također je korišten i za pojednostavljenu izgradnju i izvršavanje studentskih rješenja, o čemu će više riječi biti kasnije.
 
 \subsection{Spring}
 
@@ -127,7 +127,7 @@ Kako u nekom trenutku moramo spremiti rezultate vrednovanja, odlučili smo ih sp
 
 \section{Idejno ostvarenje}
 
-Prije opisivanja ideje ostvarenja, podsjetimo se što očekujemo od sustava kojeg želimo napraviti, ali i koristiti:
+Prije opisivanja ideje ostvarenja, podsjećamo što očekujemo od sustava kojeg želimo napraviti, ali i koristiti:
 
 \begin{enumerate}
 \item Sigurnost
@@ -136,11 +136,11 @@ Prije opisivanja ideje ostvarenja, podsjetimo se što očekujemo od sustava koje
 \item Jednostavnost korištenja
 \end{enumerate}
 
-Glavni alat na kojem ćemo bazirati svoje rješenje jesu izvršne Docker slike. Naime, Docker nam omogućava da bilo koji program upakiramo, zajedno s njegovom izvršnom okolinom, u crnu kutiju koju zatim možemo izvršiti poput izvršne datoteke. Sve što nam je pritom potrebno je Docker okolina te ne ovisimo o implementacijskim detaljima programa kojeg izvršavamo. Izvršne Docker slike možemo pojednostavljeno smatrati kako statično povezivanje na steroidima - u kutiji uz program dolazi i cijeli \textit{userspace} operativnog sustava nad kojim će se program izvršiti.
+Glavni alat na kojem će rješenje biti zasnovano jesu izvršne Docker slike. Naime, Docker nam omogućava da bilo koji program upakiramo, zajedno s njegovom izvršnom okolinom, u crnu kutiju koju zatim možemo izvršiti poput izvršne datoteke. Sve što nam je pritom potrebno je Docker okolina te ne ovisimo o implementacijskim detaljima programa kojeg izvršavamo. Izvršne Docker slike možemo pojednostavljeno smatrati kako statično povezivanje na steroidima - u kutiji uz program dolazi i cijeli \textit{userspace} operativnog sustava nad kojim će se program izvršiti.
 
 Iduća veoma korisna činjenica je ta da u samu Docker sliku možemo \textit{upeći} ulazne podatke koje će program primiti. Tako ćemo dobiti izvršnu Docker sliku koja će za deterministički program uvijek davati jednak izlaz, neovisno o tome gdje je pokrenuta, a možemo ju pokrenuti bilo gdje, gdje imamo pristup Dockeru.
 
-Prije nego što možemo rješenje izvršiti, moramo prilikom generiranja Docker slike ponuditi ili izvršnu okolinu za interpretirane jezike ili prevedene datoteke za jezike koji se prevode. Ovaj korak je individualan za svaki jezik, a detalje ćemo ponuditi nešto kasnije.
+Prije nego što možemo rješenje izvršiti, moramo prilikom generiranja Docker slike ponuditi ili izvršnu okolinu za interpretirane jezike ili prevedene datoteke za jezike koji se prevode. Ovaj korak je individualan za svaki jezik, a detalji će biti ponuđeni nešto kasnije.
 
 Zadnja stvar koja će nas zanimati je kako je tekao proces prevođenja i izvršavanja samog programa te koji je njegov konačni ispis. Prilikom izvršavanja izvršne Docker slike, standardni izlaz programa bit će vidljiv na ekranu. No, kako bi mogli automatizirati evaluaciju te obrađivati izlaz, morat ćemo ga proslijediti na udaljenu lokaciju. To možemo ostvariti tako da prilikom izvršavanja sam program omotamo u drugi program koji će uhvatiti njegov izlaz i proslijediti ga na odgovarajuću lokaciju. No, kako želimo zadržati fleksibilnost, cilj nam je udaljenu lokaciju na koju će se slati informacije o izvršavanju na neki način parametrizirati. Izvršne Docker slike nam i to omogućuju te možemo prilikom izvršavanja slike također predati i dodatne argumente, što ćemo iskoristiti za parametriziranje udaljene lokacije na koju će se slati informacije o izvršavanju.
 
