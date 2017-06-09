@@ -678,7 +678,16 @@ Po pitanju cijene i paralelizacije koju ovim pristupom možemo ostvariti, Digita
 
 
 \chapter{Zaključak}
-Zaključak.
+
+Dano ostvarenje sustava zadovoljava sva svojstva koja su bila zadana na početku te je fleksibilno i proširivo na širok niz potreba. Arhitektura bazirana na izvršivim Docker slikama te mikroservisima koji ne dijele stanje omogućava sustavu da neometano razmjerno raste, dok je izvršavanje programa ostvareno pomoću radilica čije je provizioniranje jednostavno i brzo.
+
+Pomoću tehnologije Docker također je ostvarena i sigurnost. Programska rješenja pokreću se u Docker okolinama koje su izolirane od ostatka sustava te program tako ne može naštetiti radilici na kojoj se izvršava.
+
+Najbitnija značajka sustava je jednostavnost održavanja - dodavanje podrški za nova izvršna okruženja jednostavno je i neometano te se ne može dogoditi da jedno okruženje smeta drugome. Dodavanje radilica također je jednostavan proces jer je jedini zahtjev nad radilicom taj da ista pokreće Docker te da je hardverski sposobna izvršiti program koji ćemo joj proslijediti.
+
+Ostvareni sustav tek je podloga za ostvarenje platforme za vrednovanje studentskih rješenja. Potrebno je još barem ostvariti mehanizam bodovanja izlaza programa te napraviti korisničko sučelje prema programu koje će automatizirati postupak stvaranja i pokretanja izvršivih slika te prikazivanja bitnih elemenata rezultata.
+
+No, kao takvog, sustav je moguće iskoristiti kao izvršni sloj u već ostvarenim platformama kojima je potreban moderan, siguran i jednostavan izvršni sloj sa svojstvom razmjernog rasta.
 
 \begin{appendices}
 
