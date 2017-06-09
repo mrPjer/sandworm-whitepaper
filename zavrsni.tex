@@ -911,6 +911,21 @@ Nakon završetka ovog poziva, slike će biti izgrađene na jednak način kao i u
 
 \subsection{Slanje generiranih slika na dijeljeni registar Docker slika}
 
+Kako bi radilice mogle pristupiti kreiranim slikama, potrebno ih je poslati na dijeljeni registar Docker slika. To je moguće učiniti ponovnim označavanjem svake slike, dodavajući putanju do registra kao prefiks imenu slike. Recimo, za sliku {\textit{hello\_world}} iz prijašnjeg primjera, to je moguće učiniti naredbom
+
+\begin{lstlisting}
+docker tag \
+  sandworm/images/hello/compiled/hello_world \
+  registry.example.com/sandworm/images/hello/compiled/hello_world
+\end{lstlisting}
+
+Zatim tu istu sliku možemo poslati na registar naredbom
+
+\begin{lstlisting}
+docker push \
+  registry.example.com/sandworm/images/hello/compiled/hello_world
+\end{lstlisting}
+
 \section{Zakazivanje izvršavanja}
 
 \section{Dohvat rezultata izvršavanja}
