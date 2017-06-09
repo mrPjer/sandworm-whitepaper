@@ -58,7 +58,7 @@ Iako se taj posao na prvi pogled čini jednostavnim, iza navedenih koraka skriva
 
 Uz sve to, sustav za vrednovanje također mora biti učinkovit. Primjera radi, ako kolegij upiše 600 studenata, od čega ih 500 preda rješenje laboratorijske vježbe te ako se vrednovanje te vježbe sastoji od 20 testnih primjera koji se u prosjeku svaki izvršava pet sekundi, za evaluaciju laboratorijske vježbe bit će potrebno 500*20*5 = 50.000 sekundi ili otprilike 14 sati, ako ispitivanje provodimo jedan po jedan primjer.
 
-Idealan sustav za vrednovanje rješenja trebao bi biti brz, učinkovit, siguran i lak za korištenje. U nastavku ćemo prvo promotriti par postojećih rješenja, a zatim opisati ostvarenje vlastitog sustava temeljenog na tehnologiji {\textit{Docker}}. Ostvareni sustav temeljen je na svojstvu razmjernog rasta kako bi se izvršavanje moglo rasporediti na neograničen broj nezavisnih sustava. Također nudi i fleksibilnost po pitanju izvršnih okolina koje su podržane te je jednostavan za postaviti i koristiti.
+Idealan sustav za vrednovanje rješenja trebao bi biti brz, učinkovit, siguran i lak za korištenje. U nastavku ćemo prvo promotriti par postojećih rješenja, a zatim opisati ostvarenje vlastitog sustava temeljenog na tehnologiji {\textit{Docker}}. Ostvareni sustav temeljen je na svojstvu razmjernog rasta kako bi se izvršavanje moglo rasporediti na veći broj nezavisnih sustava. Također nudi i fleksibilnost po pitanju izvršnih okolina koje su podržane te je jednostavan za postaviti i koristiti.
 
 % TODO neki hook zašto je ostvareni sustav kul
 
@@ -632,7 +632,7 @@ Važna komponenta svakog sustava koji izvršava nepovjerljiv kod je sigurnost. I
 
 Samo izvršavanje programa vrši se unutar Docker {\textit{containera}}, izoliranih, samostalnih cjelina. Ovim cjelinama operativni sustav domaćin može ograničiti mrežne, procesne, memorijske i diskovne sposobnosti. Tako, neovisno o događajima unutar cjeline, na operativni sustav domaćin neće biti utjecaja. Najveća šteta koju maliciozni program u takvom kontekstu može napraviti je zauzeti veliku količinu diska ili se dugo izvršavati, što operativni sustav domaćin može detektirati i pritom zaustaviti cjelinu.
 
-Ukoliko zbog malicioznog programa dođe do prestanka radilice, postupak oporavka je jednostavan. Dovoljno je s radilice obrisati malicioznu cjelinu. Time će radilica biti vraćena u radno stanje i moći će nastaviti obrađivati zahtjeve. Dodatno, kako radilica, osim prisutstva Docker okoline, ne zahtjeva dodatnu konfiguraciju, najlakši način oporavka radilice je ponovno provizioniranje iste.
+Ako zbog malicioznog programa dođe do prestanka radilice, postupak oporavka je jednostavan. Dovoljno je s radilice obrisati malicioznu cjelinu. Time će radilica biti vraćena u radno stanje i moći će nastaviti obrađivati zahtjeve. Dodatno, kako radilica, osim prisustva Docker okoline, ne zahtijeva dodatnu konfiguraciju, najlakši način oporavka radilice je ponovno provizioniranje iste.
 
 Dodatnu sigurnost moguće je postići unošenjem izvršnih ograničenja, što je opisano u \ref{sec:runtimeconstraints} \nameref{sec:runtimeconstraints}.
 
@@ -666,7 +666,7 @@ echo "World" | time ./a.out
 Hello, World!./a.out  0,00s user 0,00s system 0% cpu 0,003 total
 \end{lstlisting}
 
-S druge strane, pakiranje istog tog programa sa dvije ulazne definicije dugotrajan je proces.
+S druge strane, pakiranje istog tog programa s dvije ulazne definicije dugotrajan je proces.
 
 \begin{lstlisting}
 time java -jar build/libs/packer-1.0-SNAPSHOT-all.jar \
@@ -692,7 +692,7 @@ docker run --rm sandworm/images/test_image/compiled/hello_world
   0,03s user 0,01s system 1% cpu 3,012 total
 \end{lstlisting}
 
-Ukoliko se pak makne zastavica {\textit{rm}} i time preskoči brisanje pokrenute slike nakon izvršavanja, dobiva se još bolji rezultat
+Ako se pak makne zastavica {\textit{rm}} i time preskoči brisanje pokrenute slike nakon izvršavanja, dobiva se još bolji rezultat
 
 \begin{lstlisting}
 time docker run
@@ -704,7 +704,7 @@ docker run sandworm/images/test_image/compiled/hello_world
 
 pa je jedna od mogućih optimizacija pokretanje programa bez zastavice {\textit{rm}} te periodično čišćenje radilice kada joj zauzeće padne.
 
-Činjenica ostaje da pakiranje i pokretanje Dockerom unosi velike troškove koje je teško opravdati za male programe poput {\textit{Hello, World}}. S druge strane, kako su generirane slike neovisne o mjestu kreiranja i mjestu izvršavanja, mogu se kreirati bilo gdje i izvršiti bilo gdje, što omogućuje imanje više strojeva koji paralelno pakiraju i više strojeva koji paralelno izvršavaju slike, čime se može skratiti trajanje cijelog postupka. Dodatna prednost pristupa Dockerom je ta što slika predstavlja cjelinu s kojom je lako reproducirati rezultate izvođenja - za deterministični program izvođenje jednom pakirane slike će uvijek imati isti rezultat i isti ispis, što otvara mogućnost da student sam lokalno reproducira rezultat vrednovanja. Konačno, udio troškova Dockera biti će manji za programe čiji proces prevođenja i izvršavanja traje duže.
+Činjenica ostaje da pakiranje i pokretanje Dockerom unosi velike troškove koje je teško opravdati za male programe poput {\textit{Hello, World}}. S druge strane, kako su generirane slike neovisne o mjestu kreiranja i mjestu izvršavanja, mogu se kreirati bilo gdje i izvršiti bilo gdje, što omogućuje imanje više strojeva koji paralelno pakiraju i više strojeva koji paralelno izvršavaju slike, čime se može skratiti trajanje cijelog postupka. Dodatna prednost pristupa Dockerom je ta što slika predstavlja cjelinu s kojom je lako reproducirati rezultate izvođenja - za deterministični program izvođenje jednom pakirane slike će uvijek imati isti rezultat i isti ispis, što otvara mogućnost da student sam lokalno reproducira rezultat vrednovanja. Konačno, udio troškova Dockera bit će manji za programe čiji proces prevođenja i izvršavanja traje duže.
 
 \subsection{Prostorna učinkovitost}
 
@@ -727,7 +727,7 @@ Ukratko, pakiranje u slike je prostorno učinkovito jer svaki novi sloj iskoriš
 
 \section{Jednostavnost korištenja}
 
-Korisničko sučelje sustava ostvareno je kao skup jasno definiranih krajnjih točaka kojima se može pristupiti protkolom HTTP. Ovo omogućava korisniku da sustav koristi ručno ili da ostvari program koji će komunicirati sa sustavom. Iako je sustav složen za ručno korištenje, korištenjem dostupnog programskog sučelja moguće je automatizirati korištenje sustava kako bi isto bilo jednostavnije. Sam način korištenja opisan je u \ref{sec:usagemanual} \nameref{sec:usagemanual}.
+Korisničko sučelje sustava ostvareno je kao skup jasno definiranih krajnjih točaka kojima se može pristupiti protokolom HTTP. Ovo omogućava korisniku da sustav koristi ručno ili da ostvari program koji će komunicirati sa sustavom. Iako je sustav složen za ručno korištenje, korištenjem dostupnog programskog sučelja moguće je automatizirati korištenje sustava kako bi isto bilo jednostavnije. Sam način korištenja opisan je u \ref{sec:usagemanual} \nameref{sec:usagemanual}.
 
 \chapter{Daljnje dorade}
 
@@ -788,7 +788,7 @@ Pomoću tehnologije Docker također je ostvarena i sigurnost. Programska rješen
 
 Najbitnija značajka sustava je jednostavnost održavanja - dodavanje podrški za nova izvršna okruženja jednostavno je i neometano te se ne može dogoditi da jedno okruženje smeta drugome. Dodavanje radilica također je jednostavan proces jer je jedini zahtjev nad radilicom taj da ista pokreće Docker te da je hardverski sposobna izvršiti program koji ćemo joj proslijediti.
 
-Mana sustava je neefikasnost u izvršavanju programa sa kratkim vremenom izvođenja zbog velikog troška pokretanja i gašenja Docker okolina, no to je trošak koji je moguće amortizirati programima koji se duže izvršavaju te iskorištavanjem većeg stupnja paralelizacije kojeg sustav nudi.
+Mana sustava je neefikasnost u izvršavanju programa s kratkim vremenom izvođenja zbog velikog troška pokretanja i gašenja Docker okolina, no to je trošak koji je moguće amortizirati programima koji se duže izvršavaju te iskorištavanjem većeg stupnja paralelizacije kojeg sustav nudi.
 
 Ostvareni sustav tek je podloga za ostvarenje platforme za vrednovanje studentskih rješenja. Potrebno je još barem ostvariti mehanizam bodovanja izlaza programa te napraviti korisničko sučelje prema programu koje će automatizirati postupak stvaranja i pokretanja izvršivih slika te prikazivanja bitnih elemenata rezultata.
 
@@ -859,7 +859,7 @@ docker inspect sandworm-worker-4 | grep IPAddress;
 
 \section{Usluga za zakazivanje izvođenja i upravljanje radilicama}
 
-Nakon što su radilice kreirane i spremne za rad može se pokrenuti usluga za zakazivanje izvođenja i upravljanje radilicama. Nakon pozicioniranja u potprojekt {\textit{sandworm-scheduler}} prvi korak je otvoriti datoteku {\textit{./src/main/kotlin/hr/fer/zemris/sandworm/scheduler/service/SchedulerService.kt}} te u njoj prilagoditi polje {\textit{availableClients}} sa adresama radilica dobivenim u prijašnjem koraku.
+Nakon što su radilice kreirane i spremne za rad može se pokrenuti usluga za zakazivanje izvođenja i upravljanje radilicama. Nakon pozicioniranja u potprojekt {\textit{sandworm-scheduler}} prvi korak je otvoriti datoteku {\textit{./src/main/kotlin/hr/fer/zemris/sandworm/scheduler/service/SchedulerService.kt}} te u njoj prilagoditi polje {\textit{availableClients}} s adresama radilica dobivenim u prijašnjem koraku.
 
 Izmijenjenu datoteku potrebno je spremiti te se usluga može pokrenuti na vratima 8003 naredbom
 
@@ -880,9 +880,9 @@ U nastavku su opisani postupci korištenja sustava. Ove postupke može izvoditi 
 
 Ostvarenje podrške za postojeća izvršna okruženja opisano je u poglavlju \ref{sec:implementation} \nameref{sec:implementation}.
 
-Za dodavanje podrške za novo izvršno okruženje potrebno je stvoriti novu temeljnu sliku sa instaliranom izvršnom okolinom tog okružtenja te ponuditi skriptu {\textit{runner.sh}} koja opisuje način pokretanja izvornog koda unutar te izvršne okoline. Ukoliko je potrebno opisati i postupak prevođenja ili druge obrade koda prije samog izvršavanja, postupak za to nužno je dodati u skriptu {\textit{compile.sh}} unutar temelje slike projekta.
+Za dodavanje podrške za novo izvršno okruženje potrebno je stvoriti novu temeljnu sliku s instaliranom izvršnom okolinom tog okružtenja te ponuditi skriptu {\textit{runner.sh}} koja opisuje način pokretanja izvornog koda unutar te izvršne okoline. Ako je potrebno opisati i postupak prevođenja ili druge obrade koda prije samog izvršavanja, postupak za to nužno je dodati u skriptu {\textit{compile.sh}} unutar temelje slike projekta.
 
-\subsection{Stvaranje nove temeljne slike sa instaliranom izvršnom okolinom}
+\subsection{Stvaranje nove temeljne slike s instaliranom izvršnom okolinom}
 
 Projekt nudi temeljnu sliku {\textit{sandworm/base/base}} koja sadrži osnovne alate potrebne za rad sustava te je poželjno da slike s instaliranim izvršnim okolinama budu izvedene iz nje. U suprotnom, potrebno je ponovno ostvariti funkcionalnosti koje ta temeljna slika nudi, što je moguće proširenjem njene datoteke {\textit{Dockerfile}} dostupne u potprojektu {\textit{sandworm-images}}.
 
@@ -913,7 +913,7 @@ izvrsna-okolina main.skr
 
 \subsection{Opisivanje postupka prevođenja ili obrade koda}
 
-Ukoliko je izvorni kod prije samog izvršavanja potrebno prevesti ili na neki drugi način obraditi, podršku za to potrebno je dodati u skriptu {\textit{compile.sh}} temeljne slike {\textit{sandworm/base/base}}. Trenutni sadržaj te datoteke, sa podrškom za jezike C i C++ je:
+Ako je izvorni kod prije samog izvršavanja potrebno prevesti ili na neki drugi način obraditi, podršku za to potrebno je dodati u skriptu {\textit{compile.sh}} temeljne slike {\textit{sandworm/base/base}}. Trenutni sadržaj te datoteke, s podrškom za jezike C i C++ je:
 
 \begin{lstlisting}
 # Tries to compile with a compiler if it's present
@@ -964,7 +964,7 @@ gdje svaki poddirektorij u direktoriju {\textit{inputs}} predstavlja jedan ulazn
 
 \section{Pakiranje rješenja u izvršne Docker slike}
 
-Kako bi se rješenje moglo izvršiti potrebno je ulaznu definiciju pretvoriti u niz izvršnih Docker slika gdje će svaka slika sadržavati izvršnu okolinu te izvorni kod združen sa ulaznim kontekstom za danu ulaznu definiciju. Ta pretvorba može biti izvršena koristeći komandnolinijsku aplikaciju ili koristeći web uslugu za pakiranje.
+Kako bi se rješenje moglo izvršiti potrebno je ulaznu definiciju pretvoriti u niz izvršnih Docker slika gdje će svaka slika sadržavati izvršnu okolinu te izvorni kod združen s ulaznim kontekstom za danu ulaznu definiciju. Ta pretvorba može biti izvršena koristeći komandnolinijsku aplikaciju ili koristeći web uslugu za pakiranje.
 
 Sam alat za pakiranje opisan je u poglavlju \ref{sec:packer} \nameref{sec:packer}.
 
@@ -976,7 +976,7 @@ Slike je moguće generirati lokalno koristeći komandnolinijsku aplikaciju dostu
 ./gradlew shadowJar
 \end{lstlisting}
 
-Nakon toga, pod pretpostavkama da je instalirana slika sa podrškom za izvršnu okolinu C (opisano u \ref{sec:base-images} \nameref{sec:base-images}), da se ulazna definicija nalazi u direktoriju {\textit{hello-world}} te da želimo da generirane slike imaju prefiks {\textit{sandworm/images/hello}}, izvršne slike možemo generirati naredbom
+Nakon toga, pod pretpostavkama da je instalirana slika s podrškom za izvršnu okolinu C (opisano u \ref{sec:base-images} \nameref{sec:base-images}), da se ulazna definicija nalazi u direktoriju {\textit{hello-world}} te da želimo da generirane slike imaju prefiks {\textit{sandworm/images/hello}}, izvršne slike možemo generirati naredbom
 
 \begin{lstlisting}
 java -jar build/libs/packer-1.0-SNAPSHOT-all.jar \
@@ -985,9 +985,9 @@ java -jar build/libs/packer-1.0-SNAPSHOT-all.jar \
 	--image-prefix sandworm/images/hello
 \end{lstlisting}
 
-Ovaj postupak generirati će tri Docker slike - jednu sa spremnim prevedenim izvornim kodom te dvije koje na tu sliku još dodaju kontekst izvođenja. Nazivi generiranih slika biti će {\textit{prefiks}}/source za sliku sa prevedenim kodom te {\textit{prefix}}/compiled/{\textit{naziv ulazne definicije}} za konačne izvršne slike.
+Ovaj postupak generirat će tri Docker slike - jednu sa spremnim prevedenim izvornim kodom te dvije koje na tu sliku još dodaju kontekst izvođenja. Nazivi generiranih slika bit će {\textit{prefiks}}/source za sliku s prevedenim kodom te {\textit{prefix}}/compiled/{\textit{naziv ulazne definicije}} za konačne izvršne slike.
 
-Točnije, gornjim postupkom biti će generirane slike {\textit{sandworm/images/hello/source}}, {\textit{sandworm/images/hello/compiled/hello\_world}} i {\textit{sandworm/images/hello/compiled/hello\_petar}}.
+Točnije, gornjim postupkom bit će generirane slike {\textit{sandworm/images/hello/source}}, {\textit{sandworm/images/hello/compiled/hello\_world}} i {\textit{sandworm/images/hello/compiled/hello\_petar}}.
 
 Konačno, izvršavanje slike za primjer {\textit{hello world}}, moguće je učiniti naredbom
 
@@ -1024,7 +1024,7 @@ Nakon završetka ovog poziva, slike će biti izgrađene na jednak način kao i u
 
 \subsection{Slanje generiranih slika na dijeljeni registar Docker slika}
 
-Kako bi radilice mogle pristupiti kreiranim slikama, potrebno ih je poslati na dijeljeni registar Docker slika. To je moguće učiniti ponovnim označavanjem svake slike, dodavajući putanju do registra kao prefiks imenu slike. Recimo, za sliku {\textit{hello\_world}} iz prijašnjeg primjera, to je moguće učiniti naredbom
+Kako bi radilice mogle pristupiti kreiranim slikama, potrebno ih je poslati na dijeljeni registar Docker slika. To je moguće učiniti ponovnim označavanjem svake slike, dodajući putanju do registra kao prefiks imenu slike. Recimo, za sliku {\textit{hello\_world}} iz prijašnjeg primjera, to je moguće učiniti naredbom
 
 \begin{lstlisting}
 docker tag \
@@ -1079,7 +1079,7 @@ Rad daje osvrt na zahtjeve i tehničke poteškoće u ostvarivanju sustava za uda
 
 \engtitle{Secure and Scalable Remote Execution of Students' Programming Assignments}
 \begin{abstract}
-The paper gives an overview of the requirements and technical difficulties of an implementation of a system for remote execution and evaluation of students' programming assignments. After a brief overview of existing solutions, it describes the requirements and features of a desireable system and offers an idea of a solution that satisfies those requirements. Finally, it covers a concrete implementation based on Docker and Spring and describes an implementation of horizontal scalability based on a microservice architecture and executable Docker images. The implementation given is made available as open source and can be used as a building block for implementing more complex systems.
+The paper gives an overview of the requirements and technical difficulties of an implementation of a system for remote execution and evaluation of students' programming assignments. After a brief overview of existing solutions, it describes the requirements and features of a desirable system and offers an idea of a solution that satisfies those requirements. Finally, it covers a concrete implementation based on Docker and Spring and describes an implementation of horizontal scalability based on a microservice architecture and executable Docker images. The implementation given is made available as open source and can be used as a building block for implementing more complex systems.
 
 \keywords{remote execution, students' programming assignments, secure, efficient, scalable, horizontal scalability, microservices, SPRUT, Docker, Kotlin, Spring}
 \end{abstract}
