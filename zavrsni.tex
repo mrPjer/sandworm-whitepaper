@@ -41,7 +41,7 @@ Iako se taj posao na prvi pogled čini jednostavnim, iza navedenih koraka skriva
 	\begin{itemize}
 	\item Koje programske jezike i okruženja podržati?
 	\item Koje inačice programskih jezika i okruženja podržati?
-	\item Kako ostvariti podršku za više sličnih izvršnih okolina na jednom sustavu?
+	\item Kako ostvariti potporu za više sličnih izvršnih okolina na jednom sustavu?
 	\item Što ako se program ne uspije uspješno prevesti?
 	\end{itemize}
 \item Kako sigurno i uspješno izvršiti program?
@@ -59,8 +59,6 @@ Iako se taj posao na prvi pogled čini jednostavnim, iza navedenih koraka skriva
 Uz sve to, sustav za vrednovanje također mora biti učinkovit. Primjera radi, ako kolegij upiše 600 studenata, od čega ih 500 preda rješenje laboratorijske vježbe te ako se vrednovanje te vježbe sastoji od 20 testnih primjera koji se u prosjeku svaki izvršava pet sekundi, za evaluaciju laboratorijske vježbe bit će potrebno 500*20*5 = 50.000 sekundi ili otprilike 14 sati, ako ispitivanje provodimo jedan po jedan primjer.
 
 Idealan sustav za vrednovanje rješenja trebao bi biti brz, učinkovit, siguran i lak za korištenje. U nastavku ćemo prvo promotriti par postojećih rješenja, a zatim opisati ostvarenje vlastitog sustava temeljenog na tehnologiji {\textit{Docker}}. Ostvareni sustav temeljen je na svojstvu razmjernog rasta kako bi se izvršavanje moglo rasporediti na veći broj nezavisnih sustava. Također nudi i fleksibilnost po pitanju izvršnih okolina koje su podržane te je jednostavan za postaviti i koristiti.
-
-% TODO neki hook zašto je ostvareni sustav kul
 
 \chapter{Postojeći sustavi}
 
@@ -92,7 +90,7 @@ Prednost Judge0 je u tome što sustav nudi jednostavno programsko sučelje kojim
 
 Evaluator{\footnote{\url{https://evaluator.mioc.hr/}}} je sustav koji se koristi u redovnoj nastavi zagrebačke XV. gimnazije te u sklopu vještine {\textit{Natjecateljsko programiranje (65973)}}{\footnote{\url{https://www.fer.unizg.hr/predmet/natpro}}} na Fakultetu elektrotehnike i računarstva.
 
-Kako se redovno koristi u nastavi, Evaluator je postao robustan i stabilan sustav s podrškom za različitim izvršnim okolinama te naprednim mogućnostima poput razmjernog rasta dodavanjem novih radilica te preciznog definiranja ograničenja na vrijeme izvođenja.
+Kako se redovno koristi u nastavi, Evaluator je postao robustan i stabilan sustav s potporom za različitim izvršnim okolinama te naprednim mogućnostima poput razmjernog rasta dodavanjem novih radilica te preciznog definiranja ograničenja na vrijeme izvođenja.
 
 Mana Evaluatora je u tome što se radi o zatvorenom sustavu kojeg nije moguće jednostavno preuzeti i prilagoditi vlastitim potrebama.
 
@@ -114,15 +112,15 @@ Sustav koji će biti opisan ostvaren je u obliku više nezavisnih mikroservisa k
 
 \subsection{Kotlin}
 
-Kotlin{\footnote{\url{https://kotlinlang.org/}}} je programski jezik koji se nedavno pojavio te je uzeo velikog maha u zajednici osoba koje razvijaju programska rješenja za platformu Android. Radi se o modernom programskom jeziku koji se (među ostalim) prevodi u Java bytekod te nudi potpunu interoperabilnost s postojećim JVM tehnologijama.
+Kotlin{\footnote{\url{https://kotlinlang.org/}}} je programski jezik koji se nedavno pojavio te je uzeo velikog maha u zajednici osoba koje razvijaju programska rješenja za platformu Android. Radi se o modernom programskom jeziku koji se (među ostalim) prevodi u Java bytekod te nudi potpuno međudjelovanje s postojećim JVM tehnologijama.
 
-Od prednosti nad programskim jezikom Java istaknut je sigurniji i bolji sustav tipova, jednostavnija i izražajnija sintaksa te bolja podršku za određene konstrukte funkcijskog programiranja.
+Od prednosti nad programskim jezikom Java istaknut je sigurniji i bolji sustav tipova, jednostavnija i izražajnija sintaksa te bolja potporu za određene konstrukte funkcijskog programiranja.
 
 Kotlin je korišten za izradu svih mikroservisa i pomoćnih biblioteka. 
 
 \subsection{H2}
 
-Kako je u nekom trenutku nužno spremiti rezultate vrednovanja, odlučeno je spremiti ih u relacijsku bazu podataka. Za tu komponentu je odabrana baza H2{\footnote{\url{http://www.h2database.com/html/main.html}}} jer korišteni programski okvir Spring Data ima odličnu podršku za istu. Također, H2 može svoje podatke spremati u običnu datoteku na datotečnom sustavu što pojednostavljuje proces postavljanja i održavanja baze podataka.
+Kako je u nekom trenutku nužno spremiti rezultate vrednovanja, odlučeno je spremiti ih u relacijsku bazu podataka. Za tu komponentu je odabrana baza H2{\footnote{\url{http://www.h2database.com/html/main.html}}} jer korišteni programski okvir Spring Data ima odličnu potporu za istu. Također, H2 može svoje podatke spremati u običnu datoteku na datotečnom sustavu što pojednostavljuje proces postavljanja i održavanja baze podataka.
 
 \section{Idejno ostvarenje}
 
@@ -135,7 +133,7 @@ Od sustava kojeg želimo napraviti, ali i koristiti, očekujemo:
 \item Jednostavnost korištenja
 \end{enumerate}
 
-Glavni alat na kojem će rješenje biti zasnovano jesu izvršne Docker slike. Naime, Docker omogućava da bilo koji program bude upakiran, zajedno s njegovom izvršnom okolinom, u crnu kutiju koja se zatim može izvršiti poput izvršne datoteke. Sve što je pritom potrebno je Docker okolina te se ne ovisi o implementacijskim detaljima programa koji se izvršava. Izvršne Docker slike mogu se pojednostavljeno smatrati kao statično povezivanje na steroidima - u kutiji uz program dolazi i cijeli \textit{userspace} operativnog sustava nad kojim će se program izvršiti.
+Glavni alat na kojem će rješenje biti zasnovano jesu izvršne Docker slike. Docker omogućava da bilo koji program bude upakiran, zajedno s njegovom izvršnom okolinom, u crnu kutiju koja se zatim može izvršiti poput izvršne datoteke. Sve što je pritom potrebno je Docker okolina te se ne ovisi o implementacijskim detaljima programa koji se izvršava. Izvršne Docker slike mogu se pojednostavljeno smatrati kao statično povezivanje na steroidima - u kutiji uz program dolazi i cijeli \textit{userspace} operativnog sustava nad kojim će se program izvršiti.
 
 Iduća veoma korisna činjenica je ta da se u samu Docker sliku mogu \textit{upeći} ulazni podaci koje će program primiti. Tako se dobiva izvršna Docker sliku koja će za deterministički program uvijek davati jednak izlaz, neovisno o tome gdje je pokrenuta, a može se pokrenuti bilo gdje, gdje postoji pristup Dockeru.
 
@@ -165,7 +163,7 @@ Konačno, cijeli proces vrednovanja može se opisati sljedećim koracima:
 
 \begin{enumerate}
 \item Za svaki par (program, ulazna definicija) generirati izvršnu Docker sliku s potpuno fiksiranim kontekstom izvršavanja
-\item Pokrenuti sliku na nekoj radilici s Docker podrškom - samo pokretanje će slati informacije o izvršavanju na udaljenu lokaciju
+\item Pokrenuti sliku na nekoj radilici s Docker potporom - samo pokretanje će slati informacije o izvršavanju na udaljenu lokaciju
 \item Preuzeti rezultate izvršavanja s nekog servisa za praćenje izvršavanja
 \end{enumerate}
 
@@ -205,7 +203,7 @@ Usluga za pakiranje rješenja i ulaznih definicija ({\textit{sandworm-packer-web
 Projekt je, sukladno logičkoj arhitekturi, podijeljen na odgovarajuće potprojekte. Oni su:
 
 \begin{enumerate}
-\item {\textit{sandworm-images}} - temeljne Docker slike potrebne za izgradnju izvršnih Docker slika s podrškom za razne izvršne okoline
+\item {\textit{sandworm-images}} - temeljne Docker slike potrebne za izgradnju izvršnih Docker slika s potporom za razne izvršne okoline
 \item {\textit{sandworm-packer}} - biblioteka i komandnolinijski alat za pakiranje ulaznih definicija u izvršne Docker slike
 \item {\textit{sandworm-packer-web}} - web usluga za pristup funkcionalnosti alata za pakiranje
 \item {\textit{sandworm-scheduler}} - usluga za zakazivanje izvođenja i upravljanje radilicama
@@ -268,7 +266,7 @@ RUN apt-get update \
 COPY runner.sh .
 \end{lstlisting}
 
-Za podršku za programske jezike C i C++ dovoljno je nad temeljnom slikom instalirati paket {\textit{build-essential}} (koji sadrži alate gcc i g++ potrebne za prevođenje koda) te ponuditi skriptu za pokretanje programa, {\textit{runner.sh}}. Njena definicija je:
+Za potporu za programske jezike C i C++ dovoljno je nad temeljnom slikom instalirati paket {\textit{build-essential}} (koji sadrži alate gcc i g++ potrebne za prevođenje koda) te ponuditi skriptu za pokretanje programa, {\textit{runner.sh}}. Njena definicija je:
 
 \begin{lstlisting}
 #!/usr/bin/env bash
@@ -280,11 +278,11 @@ Sve što je potrebno za pokrenuti preveden program je pokrenuti izvršnu datotek
 
 Zbog arhitekturalnih ograničenja je postupak prevođenja potrebno definirati u temeljnoj slici. 
 
-Dodavanje podrške za nove okoline, kao što je vidljivo iz priloženog, vrlo je jednostavno.
+Dodavanje potpore za nove okoline, kao što je vidljivo iz priloženog, vrlo je jednostavno.
 
 \subsubsection{JavaScript}
 
-Za razliku od jezika C i C++, programski jezik JavaScript je interpretirani jezik. No, to ne utječe pretjerano na količinu posla potrebnu za dodavanje podrške i za tu okolinu. Datoteka {\textit{Dockerfile}} prati sličnu strukturu kao i ona za jezike C i C++:
+Za razliku od jezika C i C++, programski jezik JavaScript je interpretirani jezik. No, to ne utječe pretjerano na količinu posla potrebnu za dodavanje potpore i za tu okolinu. Datoteka {\textit{Dockerfile}} prati sličnu strukturu kao i ona za jezike C i C++:
 
 \begin{lstlisting}
 FROM sandworm/base/base
@@ -311,7 +309,7 @@ Slično kao i prije, potrebno je pozvati izvršnu okolinu nad datotekom koja sad
 
 \subsubsection{Ostali jezici}
 
-U gornje dvije slike prikazan je postupak dodavanja podrške za jedan prevedeni i jedan interpretirani jezik. Kako dodavanje podrške za druge jezike prati istu šablonu, ostali neće biti ovdje navedeni, dok sam projekt sadrži još slike za programske jezike Python 2 i Python 3.
+U gornje dvije slike prikazan je postupak dodavanja potpore za jedan prevedeni i jedan interpretirani jezik. Kako dodavanje potpore za druge jezike prati istu šablonu, ostali neće biti ovdje navedeni, dok sam projekt sadrži još slike za programske jezike Python 2 i Python 3.
 
 \subsection{Praćenje i dijeljenje rezultata izvođenja}
 
@@ -407,7 +405,7 @@ data class Message(
 }
 \end{lstlisting}
 
-Kao jezik pisanja servisa odabran je Kotlin i na ovom primjeru je već vidljiva ekspresivnost jezika i prednost nad Javom. Kotlinov {\textit{Data Class}}{\footnote{\url{https://kotlinlang.org/docs/reference/data-classes.html}}} konstrukt omogućava da se entitet deklarativno opiše, dok će se sam jezik pobrinuti za ostvarenje gettera, settera, metoda {\textit{equals}}, {\textit{hashCode}} i {\textit{toString}}. Također je vidljiva i interoperabilnost s postojećim alatima - model je anotiran sa {\textit{javax.persistence.*}} anotacijama koje se mogu koristiti zbog Kotlinove potpune podrške za postojeći Java kod.
+Kao jezik pisanja servisa odabran je Kotlin i na ovom primjeru je već vidljiva ekspresivnost jezika i prednost nad Javom. Kotlinov {\textit{Data Class}}{\footnote{\url{https://kotlinlang.org/docs/reference/data-classes.html}}} konstrukt omogućava da se entitet deklarativno opiše, dok će se sam jezik pobrinuti za ostvarenje gettera, settera, metoda {\textit{equals}}, {\textit{hashCode}} i {\textit{toString}}. Također je vidljivo i međudjelovanje s postojećim alatima - model je anotiran sa {\textit{javax.persistence.*}} anotacijama koje se mogu koristiti zbog Kotlinove potpune potpore za postojeći Java kod.
 
 
 Nakon definicije modela definiran je jednostavan CRUD{\footnote{CRUD - {\textit{Create, Read, Update, Delete}}}} repozitorij:
@@ -620,7 +618,7 @@ Konačno, kako bi se povezale usluga za pakiranje i usluga za izvršavanje slika
 
 Službeni Docker registar je jednostavan za pokrenuti i koristiti, no mana mu je to što ne nudi mogućnost brisanja postojećih slika, što predstavlja problem u dužem korištenju jer je jedini način za čišćenje registra brisanje svih podataka i ponovno postavljanje onih koje se želi zadržati.
 
-S druge strane, generirane Docker slike će zauzimati malo prostora - zbog slojevite arhitekture slika, svaka pojedina slika će zauzimati samo onoliko prostora koliko donosi nad svojom temeljnom slikom pa će tako prostor zauzimati samo prevedeni korisnički programi (jednom po programu) te korisnički programi vezani uz ulaznu definiciju, za svaku definiciju posebno. Ako su korisnički programi i ulazne definicije maleni (red veličine kB), što je slučaj sa studentskim vježbama, jeftinije je kupiti novi disk nego brinuti o zauzeću. No, svejedno je potrebno biti svjestan ovog problema, pogotovo ako se uzme u obzir da postoji mogućnost da se korisnički program maliciozno upakira u sliku koja je veća od očekivanog.
+S druge strane, generirane Docker slike će zauzimati malo prostora - zbog slojevite arhitekture slika, svaka pojedina slika će zauzimati samo onoliko prostora koliko donosi nad svojom temeljnom slikom pa će tako prostor zauzimati samo prevedeni korisnički programi (jednom po programu) te korisnički programi vezani uz ulaznu definiciju, za svaku definiciju posebno. Ako su korisnički programi i ulazne definicije maleni (red veličine kB), što je slučaj sa studentskim vježbama, jeftinije je kupiti novi disk nego brinuti o zauzeću. No, unatoč tome potrebno je biti svjestan ovog problema, pogotovo ako se uzme u obzir da postoji mogućnost da se korisnički program maliciozno upakira u sliku koja je veća od očekivanog.
 
 \chapter{Vrednovanje}
 
@@ -721,7 +719,7 @@ sandworm/base/c_cpp 325MB
 sandworm/base/base 137MB
 \end{lstlisting}
 
-Vidljivo je da temeljna slika zauzima 137MB dok je dodavanje podrške za programske jezike C i C++ povećalo veličinu slike na 325MB. S druge strane, utjecaj prevođenja programa i dodavanje izvršnog konteksta nije vidljiv na razini MB.
+Vidljivo je da temeljna slika zauzima 137MB dok je dodavanje potpore za programske jezike C i C++ povećalo veličinu slike na 325MB. S druge strane, utjecaj prevođenja programa i dodavanje izvršnog konteksta nije vidljiv na razini MB.
 
 Ukratko, pakiranje u slike je prostorno učinkovito jer svaki novi sloj iskorištava prostor dostupan u sloju iz kojeg je izveden. Za pristup bez Dockera bi prostorno zauzeće bilo slično jer bi bilo nužno instalirati isti skup potpornih programa za izvršavanje kao i u slikama {\textit{base}} i {\textit{c\_cpp}}.
 
@@ -748,7 +746,7 @@ Ukratko, trenutni sustav bilježi mnogo informacija na temelju kojih se može vr
 \section{Unošenje izvršnih ograničenja}
 \label{sec:runtimeconstraints}
 
-Sustav trenutno nema podršku za definiranje izvršnih ograničenja (eng. {\textit{runtime constraints}}).
+Sustav trenutno nema potporu za definiranje izvršnih ograničenja (eng. {\textit{runtime constraints}}).
 
 Izvršna ograničenja su korisna jer njima možemo dodatno ograničiti izvođenje zadajući, recimo, najviše dozvoljeno vrijeme izvođenja, najvišu dozvoljenu količinu iskorištene memorije ili najviše dozvoljen broj pokrenutih dretvi.
 
@@ -758,7 +756,7 @@ Za izvršna ograničenja bitno je napomenuti da primjena istih ovisi o okolini u
 
 Primjerice, ako značajno ograničimo količinu memorije za proces koji izvršava kod pisan u programskom jeziku Java, a pritom ne obavijestimo virtualni stroj o ograničenjima (za JVM to možemo napraviti zastavicom {\textit{Xmx}}) isti nikad neće pokrenuti proces sakupljanja smeća te će program brzo nasilno završiti, iako je pisani program ispravan te ne bi zauzeo previše memorije ako bi se proces sakupljanja smeća na vrijeme pokrenuo.
 
-Uz samu podršku za zadavanje izvršnih ograničenja korisno bi bilo dodati i mogućnost definiranja istih kao dio ulazne definicije programa. Primjerice, jedna datoteka {\textit{constraints.yml}} pisana u formatu YAML\footnote{\url{https://en.wikipedia.org/wiki/YAML}} mogla bi sadržavati lako čitljivu definiciju svih ograničenja.Tu datoteku bi zatim upekli u sliku te pomoću nje prilikom pokretanja konstruirali parametre za poziv alata {\textit{isolate}}. Dodatno, na temelju nje bi morali izgraditi i podršku za ograničenja za pojedine tehnologije izvršavanja u njihovim odgovarajućim slikama kako bi izbjegli probleme poput onog sa sakupljanjem smeća navedenog prije.
+Uz samu potporu za zadavanje izvršnih ograničenja korisno bi bilo dodati i mogućnost definiranja istih kao dio ulazne definicije programa. Primjerice, jedna datoteka {\textit{constraints.yml}} pisana u formatu YAML\footnote{\url{https://en.wikipedia.org/wiki/YAML}} mogla bi sadržavati lako čitljivu definiciju svih ograničenja.Tu datoteku bi zatim upekli u sliku te pomoću nje prilikom pokretanja konstruirali parametre za poziv alata {\textit{isolate}}. Dodatno, na temelju nje bi morali izgraditi i potporu za ograničenja za pojedine tehnologije izvršavanja u njihovim odgovarajućim slikama kako bi izbjegli probleme poput onog sa sakupljanjem smeća navedenog prije.
 
 
 \section{Korištenje Infrastruktura-kao-Usluga sustava za automatsko provizioniranje radilica}
@@ -769,7 +767,7 @@ Predviđeno opterećenje sustava u akademskim uvjetima je skokovito - postojat �
 
 Kako će radilice biti potrebne samo kratko vrijeme, predlaže se da se sustav za upravljanje radilicama doradi tako da ih automatski provizionira kada je to potrebno te ugasi kada više nisu potrebne. Primjerice, ako se fizički strojevi koriste kao radilice, sustav za upravljanje može koristiti tehnologiju {\textit{Wake-on-LAN}}{\footnote{\url{https://en.wikipedia.org/wiki/Wake-on-LAN}} kako bi strojeve palio i gasio po potrebi i tako uštedio na troškovima energije.
 
-No, kako je posljedica ostvarene arhitekture ta da uistinu nije bitno na čemu se izvršavaju programi, dokle god to nešto ima podršku za Docker, može se također osloniti i na Infrastruktura-kao-Usluga (eng. {\textit{Infrastructure-as-a-Service}}{\footnote{{\url{https://en.wikipedia.org/wiki/Cloud_computing}}}} sustave za automatsko provizioniranje radilica kada su potrebne te gašenje istih kada više nisu. Ovim pristupom može se ostvariti viša paralelizacija izvođenja te se mogu smanjiti troškovi jer takve usluge nude naplaćivanje po satu, što odgovara potrebama koje su opisane.
+No, kako je posljedica ostvarene arhitekture ta da uistinu nije bitno na čemu se izvršavaju programi, dokle god to nešto ima potporu za Docker, može se također osloniti i na Infrastruktura-kao-Usluga (eng. {\textit{Infrastructure-as-a-Service}}{\footnote{{\url{https://en.wikipedia.org/wiki/Cloud_computing}}}} sustave za automatsko provizioniranje radilica kada su potrebne te gašenje istih kada više nisu. Ovim pristupom može se ostvariti viša paralelizacija izvođenja te se mogu smanjiti troškovi jer takve usluge nude naplaćivanje po satu, što odgovara potrebama koje su opisane.
 
 Tako je moguće imati samo jedan fizički stroj lokalno koji brine o zaprimanju zahtjeva, dok bi sav težak posao bio odrađen na dinamički provizioniranim radilicama.
 
@@ -786,9 +784,9 @@ Dano ostvarenje sustava zadovoljava sva svojstva koja su bila zadana na početku
 
 Pomoću tehnologije Docker također je ostvarena i sigurnost. Programska rješenja pokreću se u Docker okolinama koje su izolirane od ostatka sustava te program tako ne može naštetiti radilici na kojoj se izvršava.
 
-Najbitnija značajka sustava je jednostavnost održavanja - dodavanje podrški za nova izvršna okruženja jednostavno je i neometano te se ne može dogoditi da jedno okruženje smeta drugome. Dodavanje radilica također je jednostavan proces jer je jedini zahtjev nad radilicom taj da ista pokreće Docker te da je hardverski sposobna izvršiti program koji ćemo joj proslijediti.
+Najbitnija značajka sustava je jednostavnost održavanja - dodavanje potpora za nova izvršna okruženja jednostavno je i neometano te se ne može dogoditi da jedno okruženje smeta drugome. Dodavanje radilica također je jednostavan proces jer je jedini zahtjev nad radilicom taj da ista pokreće Docker te da je hardverski sposobna izvršiti program koji ćemo joj proslijediti.
 
-Mana sustava je neefikasnost u izvršavanju programa s kratkim vremenom izvođenja zbog velikog troška pokretanja i gašenja Docker okolina, no to je trošak koji je moguće amortizirati programima koji se duže izvršavaju te iskorištavanjem većeg stupnja paralelizacije kojeg sustav nudi.
+Mana sustava je neučinkovitost u izvršavanju programa s kratkim vremenom izvođenja zbog velikog troška pokretanja i gašenja Docker okolina, no to je trošak koji je moguće amortizirati programima koji se duže izvršavaju te iskorištavanjem većeg stupnja paralelizacije kojeg sustav nudi.
 
 Ostvareni sustav tek je podloga za ostvarenje platforme za vrednovanje studentskih rješenja. Potrebno je još barem ostvariti mehanizam bodovanja izlaza programa te napraviti korisničko sučelje prema programu koje će automatizirati postupak stvaranja i pokretanja izvršivih slika te prikazivanja bitnih elemenata rezultata.
 
@@ -876,11 +874,11 @@ Kako bi pojedine cjeline mogle dijeliti izvršne Docker slike među sobom potreb
 
 U nastavku su opisani postupci korištenja sustava. Ove postupke može izvoditi čovjek, ali ih se preporuča automatizirati kao dio ostvarenja složenijeg sustava.
 
-\section{Dodavanje podrške za nova izvršna okruženja}
+\section{Dodavanje potpore za nova izvršna okruženja}
 
-Ostvarenje podrške za postojeća izvršna okruženja opisano je u poglavlju \ref{sec:implementation} \nameref{sec:implementation}.
+Ostvarenje potpore za postojeća izvršna okruženja opisano je u poglavlju \ref{sec:implementation} \nameref{sec:implementation}.
 
-Za dodavanje podrške za novo izvršno okruženje potrebno je stvoriti novu temeljnu sliku s instaliranom izvršnom okolinom tog okružtenja te ponuditi skriptu {\textit{runner.sh}} koja opisuje način pokretanja izvornog koda unutar te izvršne okoline. Ako je potrebno opisati i postupak prevođenja ili druge obrade koda prije samog izvršavanja, postupak za to nužno je dodati u skriptu {\textit{compile.sh}} unutar temelje slike projekta.
+Za dodavanje potpore za novo izvršno okruženje potrebno je stvoriti novu temeljnu sliku s instaliranom izvršnom okolinom tog okružtenja te ponuditi skriptu {\textit{runner.sh}} koja opisuje način pokretanja izvornog koda unutar te izvršne okoline. Ako je potrebno opisati i postupak prevođenja ili druge obrade koda prije samog izvršavanja, postupak za to nužno je dodati u skriptu {\textit{compile.sh}} unutar temelje slike projekta.
 
 \subsection{Stvaranje nove temeljne slike s instaliranom izvršnom okolinom}
 
@@ -913,7 +911,7 @@ izvrsna-okolina main.skr
 
 \subsection{Opisivanje postupka prevođenja ili obrade koda}
 
-Ako je izvorni kod prije samog izvršavanja potrebno prevesti ili na neki drugi način obraditi, podršku za to potrebno je dodati u skriptu {\textit{compile.sh}} temeljne slike {\textit{sandworm/base/base}}. Trenutni sadržaj te datoteke, s podrškom za jezike C i C++ je:
+Ako je izvorni kod prije samog izvršavanja potrebno prevesti ili na neki drugi način obraditi, potporu za to potrebno je dodati u skriptu {\textit{compile.sh}} temeljne slike {\textit{sandworm/base/base}}. Trenutni sadržaj te datoteke, s potporom za jezike C i C++ je:
 
 \begin{lstlisting}
 # Tries to compile with a compiler if it's present
@@ -924,9 +922,9 @@ type g++ >/dev/null && ls *.cpp >/dev/null 2>&1 && g++ *.cpp
 exit 0
 \end{lstlisting}
 
-Skripta provjeri je li dostupna izvršna okolina u pitanju te nalaze li se u direktoriju datoteke koje ta okolina može prevesti. Ako su uvjeti zadovoljeni, postupak prevođenja se provodi.
+Skripta provjeri je li dostupna izvršna okolina u pitanju te nalaze li se u direktoriju datoteke koje ta okolina može prevesti. Ako su uvjeti međudjelovanje zadovoljeni, postupak prevođenja se provodi.
 
-Na temelju ovog primjera moguće je dodati i podršku za prevođenjem proizvoljnih formata datoteka.
+Na temelju ovog primjera moguće je dodati i potporu za prevođenjem proizvoljnih formata datoteka.
 
 Bitno je napomenuti da, ako se ove izmjene rade u temeljnoj slici {\textit{sandworm/base/base}} da je istu potrebno ponovno izgraditi izvršavanjem skripte {\textit{build.sh}} u njenom direktoriju.
 
@@ -976,7 +974,7 @@ Slike je moguće generirati lokalno koristeći komandnolinijsku aplikaciju dostu
 ./gradlew shadowJar
 \end{lstlisting}
 
-Nakon toga, pod pretpostavkama da je instalirana slika s podrškom za izvršnu okolinu C (opisano u \ref{sec:base-images} \nameref{sec:base-images}), da se ulazna definicija nalazi u direktoriju {\textit{hello-world}} te da želimo da generirane slike imaju prefiks {\textit{sandworm/images/hello}}, izvršne slike možemo generirati naredbom
+Nakon toga, pod pretpostavkama da je instalirana slika s potporom za izvršnu okolinu C (opisano u \ref{sec:base-images} \nameref{sec:base-images}), da se ulazna definicija nalazi u direktoriju {\textit{hello-world}} te da želimo da generirane slike imaju prefiks {\textit{sandworm/images/hello}}, izvršne slike možemo generirati naredbom
 
 \begin{lstlisting}
 java -jar build/libs/packer-1.0-SNAPSHOT-all.jar \
