@@ -59,7 +59,7 @@ Iako se taj posao na prvi pogled čini jednostavnim, iza navedenih koraka skriva
 
 Uz sve to, sustav za vrednovanje također mora biti učinkovit. Primjera radi, ako kolegij upiše 600 studenata, od čega ih 500 preda rješenje laboratorijske vježbe te ako se vrednovanje te vježbe sastoji od 20 testnih primjera koji se u prosjeku svaki izvršava pet sekundi, za evaluaciju laboratorijske vježbe bit će potrebno 500*20*5 = 50.000 sekundi ili otprilike 14 sati, ako ispitivanje provodimo jedan po jedan primjer.
 
-Idealan sustav za vrednovanje rješenja trebao bi biti brz, učinkovit, siguran i lak za korištenje. U nastavku ćemo prvo promotriti par postojećih rješenja, a zatim opisati implementaciju vlastitog sustava temeljenog na tehnologiji {\textit{Docker}}. Ostvareni sustav temeljen je na svojstvu razmjernog rasta kako bi se izvršavanje moglo rasporediti na neograničen broj nezavisnih sustava. Također nudi i fleksibilnost po pitanju izvršnih okolina koje su podržane te je jednostavan za postaviti i koristiti.
+Idealan sustav za vrednovanje rješenja trebao bi biti brz, učinkovit, siguran i lak za korištenje. U nastavku ćemo prvo promotriti par postojećih rješenja, a zatim opisati ostvarenje vlastitog sustava temeljenog na tehnologiji {\textit{Docker}}. Ostvareni sustav temeljen je na svojstvu razmjernog rasta kako bi se izvršavanje moglo rasporediti na neograničen broj nezavisnih sustava. Također nudi i fleksibilnost po pitanju izvršnih okolina koje su podržane te je jednostavan za postaviti i koristiti.
 
 % TODO neki hook zašto je ostvareni sustav kul
 
@@ -81,7 +81,7 @@ Ono što CodeAssign razlikuje od ostalih rješenja je to što se sve izvršavanj
 
 Kako CodeAssign ne dolazi u dodir s izvornim kodom rješenja niti izvršava sam program, nije prikladan za vrednovanje laboratorijskih vježbi jer ne može potvrditi valjanost programskog rješenja. S druge strane, zbog lakoće korištenja i održavanja te fleksibilnosti u odabiru programske okoline smatramo ga dobrim odabirom za jednostavnije vježbe čija je svrha utvrđivanje i lakše praćenje gradiva.
 
-CodeAssign je većinskim dijelom otvorenog koda{\footnote{\url{https://github.com/codeassign}}} te sama implementacija se može koristiti i u obrazovne svrhe.
+CodeAssign je većinskim dijelom otvorenog koda{\footnote{\url{https://github.com/codeassign}}} te se samo ostvarenje može koristiti i u obrazovne svrhe.
 
 \section{Judge0}
 
@@ -101,7 +101,7 @@ Mana Evaluatora je u tome što se radi o zatvorenom sustavu kojeg ne možemo jed
 
 \section{Korištene tehnologije}
 
-Prije samog opisa ostvarenja sustava dajemo kratak pregled korištenih tehnologija kako bi olakšali praćenje i razumijevanje samog postupka implementacije.
+Prije samog opisa ostvarenja sustava dajemo kratak pregled korištenih tehnologija kako bi olakšali praćenje i razumijevanje samog postupka ostvarenja.
 
 \subsection{Docker}
 
@@ -111,7 +111,7 @@ Docker sve više raste u popularnosti te je za očekivati da će postati \textit
 
 \subsection{Spring}
 
-Naš sustav ostvarili smo u obliku više nezavisnih mikroservisa kako bi osigurali mogućnost razmjernog rasta. Mikroservise smo ostvarili u programskom okviru Spring{\footnote{\url{https://spring.io/}}} jer je autor imao prijašnjeg iskustva s istim, a on nam je omogućio brz razvoj mikroservisa povezanih protokolom HTTP te brzu i jednostavnu implementaciju komunikacije s bazom podataka.
+Naš sustav ostvarili smo u obliku više nezavisnih mikroservisa kako bi osigurali mogućnost razmjernog rasta. Mikroservise smo ostvarili u programskom okviru Spring{\footnote{\url{https://spring.io/}}} jer je autor imao prijašnjeg iskustva s istim, a on nam je omogućio brz razvoj mikroservisa povezanih protokolom HTTP te brzo i jednostavno ostvarenje komunikacije s bazom podataka.
 
 \subsection{Kotlin}
 
@@ -410,7 +410,7 @@ data class Message(
 }
 \end{lstlisting}
 
-Kao jezik pisanja servisa odabrali smo Kotlin i na ovom primjeru je već vidljiva ekspresivnost jezika i prednost nad Javom. Kotlinov {\textit{Data Class}}{\footnote{\url{https://kotlinlang.org/docs/reference/data-classes.html}}} konstrukt nam omogućuje da deklarativno opišemo entitet koji želimo, dok će se sam jezik pobrinuti za implementacije gettera, settera, metoda {\textit{equals}}, {\textit{hashCode}} i {\textit{toString}}. Također je vidljiva i interoperabilnost s postojećim alatima - model smo anotirali sa {\textit{javax.persistence.*}} anotacijama koje možemo koristiti zbog Kotlinove potpune podrške za postojeći Java kod.
+Kao jezik pisanja servisa odabrali smo Kotlin i na ovom primjeru je već vidljiva ekspresivnost jezika i prednost nad Javom. Kotlinov {\textit{Data Class}}{\footnote{\url{https://kotlinlang.org/docs/reference/data-classes.html}}} konstrukt nam omogućuje da deklarativno opišemo entitet koji želimo, dok će se sam jezik pobrinuti za ostvarenje gettera, settera, metoda {\textit{equals}}, {\textit{hashCode}} i {\textit{toString}}. Također je vidljiva i interoperabilnost s postojećim alatima - model smo anotirali sa {\textit{javax.persistence.*}} anotacijama koje možemo koristiti zbog Kotlinove potpune podrške za postojeći Java kod.
 
 
 Nakon definicije modela definirali smo jednostavan CRUD{\footnote{CRUD - {\textit{Create, Read, Update, Delete}}}} repozitorij:
@@ -436,7 +436,7 @@ interface MessageRepository : CrudRepository<Message, Long> {
 
 Ovakav repozitorij možemo koristiti za komunikaciju s bazom podataka te nam on omogućava unos, ispis i uređivanje informacija o porukama koje primamo. Također smo definirali i dvije pomoćne metode koje nam omogućavaju dohvat svih poruka vezanih za određen zadatak te dohvat tih poruka ograničen na one koje su se dogodile nakon određenog trenutka u vremenu.
 
-U definiciji svog sustava dali smo samo sučelje repozitorija - za konkretnu implementaciju pobrinut će se programski okvir Spring na temelju naše deklaracije.
+U definiciji svog sustava dali smo samo sučelje repozitorija - za konkretno ostvarenje pobrinut će se programski okvir Spring na temelju naše deklaracije.
 
 Za kraj nam je ostalo definirati krajnje točke našeg mrežnog sučelja, što u programskom okviru {\textit{Spring}} radimo definicijom komponente zvane {\textit{Controller}}:
 
@@ -549,7 +549,7 @@ Alat je ostvaren u tri razreda. Pomoćni razred {\textit{RemoteLogger}} služi z
 
 \subsubsection{Web sučelje prema alatu za pakiranje}
 
-Kako bi omogućili jednostavnije korištenje napravljenog alata, oko njega smo napravili omotač koji za njega izlaže programsko sučelje preko protokola HTTP. Njega smo također ostvarili pomoću programskog okvira {\textit{Spring}}, a ono izlaže jednu krajnju točku koja preko POST zahtjeva prima ZIP datoteku koja sadrži ulaznu definiciju programa, lokaciju usluge za praćenje rezultata, naziv zadatka te naziv temeljne slike nad kojom će biti izgrađene izvršne slike. Kako je alat za pakiranje napravljen prvenstveno kao biblioteka koju koristi komandnolinijska aplikacija, implementiranje omotača svelo se na prosljeđivanje zahtjeva toj biblioteci. Implementaciju cijelog omotača ostvarili smo u jednom {\textit{Controlleru}} te Spring Boot pokretačkoj skripti. Ostvarenje {\textit{Controllera}} slijedi kako bi ilustrirali jednostavnost korištenja ostvarene biblioteke:
+Kako bi omogućili jednostavnije korištenje napravljenog alata, oko njega smo napravili omotač koji za njega izlaže programsko sučelje preko protokola HTTP. Njega smo također ostvarili pomoću programskog okvira {\textit{Spring}}, a ono izlaže jednu krajnju točku koja preko POST zahtjeva prima ZIP datoteku koja sadrži ulaznu definiciju programa, lokaciju usluge za praćenje rezultata, naziv zadatka te naziv temeljne slike nad kojom će biti izgrađene izvršne slike. Kako je alat za pakiranje napravljen prvenstveno kao biblioteka koju koristi komandnolinijska aplikacija, implementiranje omotača svelo se na prosljeđivanje zahtjeva toj biblioteci. Cijeli omotač ostvarili smo u jednom {\textit{Controlleru}} te Spring Boot pokretačkoj skripti. Ostvarenje {\textit{Controllera}} slijedi kako bi ilustrirali jednostavnost korištenja ostvarene biblioteke:
 
 \begin{lstlisting}
 package hr.fer.zemris.sandworm.packer.web
@@ -619,7 +619,7 @@ Radilica je ta koja izvršava program i šalje njegov ispis usluzi za prikupljan
 \subsection{Dijeljeni registar Docker slika}
 \label{sec:dockerregistry}
 
-Konačno, kako bi povezali uslugu za pakiranje i uslugu za izvršavanje slika, potrebno je među njima slike dijeliti. U tu svrhu nam je potreban dijeljeni registar Docker slika. Postoji mnogo implementacija Docker registara, a mi smo se za potrebe testiranja odlučili za službeni {\textit{Docker Registry}}{\footnote{\url{https://docs.docker.com/registry/}}} koji je ujedno dostupan kao i Docker slika.
+Konačno, kako bi povezali uslugu za pakiranje i uslugu za izvršavanje slika, potrebno je među njima slike dijeliti. U tu svrhu nam je potreban dijeljeni registar Docker slika. Postoji mnogo ostvarenja Docker registara, a mi smo se za potrebe testiranja odlučili za službeni {\textit{Docker Registry}}{\footnote{\url{https://docs.docker.com/registry/}}} koji je ujedno dostupan kao i Docker slika.
 
 Službeni Docker registar je jednostavan za pokrenuti i koristiti, no mana mu je to što ne nudi mogućnost brisanja postojećih slika, što predstavlja problem u dužem korištenju jer je jedini način za čišćenje registra brisanje svih podataka i ponovno postavljanje onih koje želimo zadržati.
 
@@ -651,7 +651,7 @@ Izvršna ograničenja su nam korisna jer s njima možemo dodatno ograničiti izv
 
 Izvršna ograničenja u postojećem sustavu mogu se ostvariti omatanjem skripte {\textit{runner.sh}} alatom {\textit{isolate}}\footnote{\url{https://github.com/ioi/isolate}}. {\textit{Isolate}} nam omogućava definiranje raznih izvršnih ograničenja nad bilo kojim programom pa tako i programima koje izvršavamo u sklopu našeg sustava.
 
-Za izvršna ograničenja je bitno napomenuti da primjena istih ovisi o okolini u kojoj se program izvršava. Primjerice, naivna implementacija ograničenja ukupne memorije bi ograničila količinu memorije koju proces može zauzeti i ubila ga ako on istu prijeđe. No, tehnologije zasnovane na sakupljačima smeća često ne pokreću proces oslobađanja memorije dok sami ne zaključe da je to potrebno.
+Za izvršna ograničenja je bitno napomenuti da primjena istih ovisi o okolini u kojoj se program izvršava. Primjerice, naivno ostvarenje ograničenja ukupne memorije bi ograničila količinu memorije koju proces može zauzeti i ubila ga ako on istu prijeđe. No, tehnologije zasnovane na sakupljačima smeća često ne pokreću proces oslobađanja memorije dok sami ne zaključe da je to potrebno.
 
 Primjerice, ako značajno ograničimo količinu memorije za proces koji izvršava kod pisan u programskom jeziku Java, a pritom ne obavijestimo virtualni stroj o ograničenjima (za JVM to možemo napraviti zastavicom {\textit{Xmx}}) isti nikad neće pokrenuti proces sakupljanja smeća te će program brzo nasilno završiti, iako je pisani program ispravan te ne bi zauzeo previše memorije ako bi se proces sakupljanja smeća na vrijeme pokrenuo.
 
