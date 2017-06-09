@@ -928,7 +928,30 @@ docker push \
 
 \section{Zakazivanje izvršavanja}
 
+Pod pretpostavkom da je usluga za zakazivanje izvršavanja dostupna na domeni {\textit{scheduler.example.com}}, izvršavanje je sada moguće zakazati HTTP zahtjevom poslanog naredbom
+
+\begin{lstlisting}
+curl --request POST \
+  --url https://scheduler.example.com/ \
+  --header 'content-type: multipart/form-data;' \
+  --form registryUrl=https://registry.example.com \
+  --form \
+image=registry.example.com/sandworm/images/hello/compiled/hello_world \
+  --form loggingEndpoint=https://logger.example.com/run-hello-world
+\end{lstlisting}
+
+Informacije o izvršavanju će biti poslane na uslugu za praćenje i skladištenje rezultata izvršavanja pod oznakom {\textit{run-hello-world}}.
+
 \section{Dohvat rezultata izvršavanja}
+
+Konačno, dohvat rezultata izvršavanja moguće je napraviti HTTP zahtjevom na uslugu za praćenje i skladištenje rezultata izvršavanja. Dovoljno joj je, kao parametar, proslijediti oznaku izvršavanja koja nas zanima.
+
+\begin{lstlisting}
+curl --request GET \
+  --url https://logger.example.com/scheduler-run
+\end{lstlisting}
+
+Rezultat ćemo dobiti u strukturiranom JSON obliku.
 
 \end{appendices}
 
